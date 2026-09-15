@@ -6,20 +6,23 @@
 ( function () {
 	const { apiFetch, url } = window.wp;
 
-	function field( input ) {
-		const root = input.closest( '.wetterwarner-region' );
-		return {
-			root,
-			search: root.querySelector( '.wetterwarner-region-search' ),
-			hidden: root.querySelector( '.wetterwarner-region-id' ),
-			list: root.querySelector( '.wetterwarner-region-results' ),
-		};
+	/**
+	 * Liefert die zusammengehörenden Felder oder null, falls das Formular
+	 * unvollständig ist.
+	 */
+	function field( element ) {
+		const root = element.closest( '.wetterwarner-region' );
+		const search = root && root.querySelector( '.wetterwarner-region-search' );
+		const hidden = root && root.querySelector( '.wetterwarner-region-id' );
+		const list = root && root.querySelector( '.wetterwarner-region-results' );
+		return search && hidden && list ? { root, search, hidden, list } : null;
 	}
 
 	function close( f ) {
 		f.list.hidden = true;
 		f.list.innerHTML = '';
 		f.search.setAttribute( 'aria-expanded', 'false' );
+		f.search.removeAttribute( 'aria-activedescendant' );
 	}
 
 	function choose( f, option ) {
@@ -38,6 +41,7 @@
 			const li = document.createElement( 'li' );
 			li.id = f.list.id + '-' + index;
 			li.setAttribute( 'role', 'option' );
+			li.setAttribute( 'aria-selected', 'false' );
 			li.dataset.id = region.id;
 			li.textContent = region.label;
 			f.list.appendChild( li );
@@ -51,6 +55,9 @@
 			return;
 		}
 		const f = field( event.target );
+		if ( ! f ) {
+			return;
+		}
 		const term = f.search.value.trim();
 
 		clearTimeout( f.search.wetterwarnerTimer );
@@ -70,6 +77,9 @@
 			return;
 		}
 		const f = field( event.target );
+		if ( ! f ) {
+			return;
+		}
 		const options = Array.from( f.list.children );
 		const active = f.list.querySelector( '[aria-selected="true"]' );
 		let index = options.indexOf( active );
@@ -80,7 +90,7 @@
 				return;
 			}
 			index = 'ArrowDown' === event.key ? Math.min( index + 1, options.length - 1 ) : Math.max( index - 1, 0 );
-			options.forEach( ( o, i ) => o.setAttribute( 'aria-selected', i === index ? 'true' : 'false' ) );
+			options.forEach( ( option, i ) => option.setAttribute( 'aria-selected', i === index ? 'true' : 'false' ) );
 			f.search.setAttribute( 'aria-activedescendant', options[ index ].id );
 			options[ index ].scrollIntoView( { block: 'nearest' } );
 		} else if ( 'Enter' === event.key && active ) {
@@ -92,15 +102,26 @@
 	} );
 
 	document.addEventListener( 'mousedown', ( event ) => {
-		const option = event.target.closest && event.target.closest( '.wetterwarner-region-results [role="option"]' );
-		if ( option ) {
-			event.preventDefault();
-			choose( field( option ), option );
+		const target = event.target;
+		if ( ! target.closest ) {
 			return;
 		}
+
+		const option = target.closest( '.wetterwarner-region-results [role="option"]' );
+		if ( option ) {
+			const f = field( option );
+			if ( f ) {
+				// Verhindert, dass das Suchfeld den Fokus verliert, bevor die Auswahl greift.
+				event.preventDefault();
+				choose( f, option );
+			}
+			return;
+		}
+
 		document.querySelectorAll( '.wetterwarner-region-results:not([hidden])' ).forEach( ( list ) => {
-			if ( ! list.closest( '.wetterwarner-region' ).contains( event.target ) ) {
-				close( field( list ) );
+			const f = field( list );
+			if ( f && ! f.root.contains( target ) ) {
+				close( f );
 			}
 		} );
 	} );

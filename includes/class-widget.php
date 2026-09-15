@@ -59,7 +59,8 @@ class Widget extends WP_Widget {
 		$list   = $this->get_field_id( 'region-results' );
 		?>
 		<div class="wetterwarner-widget-form">
-			<p class="wetterwarner-region">
+			<?php // Kein <p>: Ein Absatz darf keine Liste enthalten, der Browser würde ihn vorher schließen. ?>
+			<div class="wetterwarner-region">
 				<label for="<?php echo esc_attr( $this->get_field_id( 'region-search' ) ); ?>"><strong><?php esc_html_e( 'Warning region', 'wetterwarner' ); ?></strong></label>
 				<input
 					type="search"
@@ -75,7 +76,7 @@ class Widget extends WP_Widget {
 				<input type="hidden" class="wetterwarner-region-id" name="<?php echo esc_attr( $this->get_field_name( 'regionId' ) ); ?>" value="<?php echo esc_attr( $atts['regionId'] ); ?>" />
 				<ul class="wetterwarner-region-results" id="<?php echo esc_attr( $list ); ?>" role="listbox" hidden></ul>
 				<small><?php esc_html_e( 'Enter at least 2 characters. Search "demo" for sample warnings.', 'wetterwarner' ); ?></small>
-			</p>
+			</div>
 
 			<?php
 			$this->text( 'title', __( 'Title', 'wetterwarner' ), $atts );
