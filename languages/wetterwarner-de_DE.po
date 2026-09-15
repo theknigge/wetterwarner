@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-15T22:51:45+00:00\n"
+"POT-Creation-Date: 2026-09-15T23:02:31+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wetterwarner\n"
@@ -203,29 +203,53 @@ msgstr "Deutschland"
 msgid "Every 5 minutes"
 msgstr "Alle 5 Minuten"
 
-#: includes/class-regions.php:42
+#: includes/class-regions.php:37
 msgid "Sample town (demo)"
 msgstr "Musterstadt (Demo)"
 
-#: includes/class-regions.php:163
+#. translators: %s: warncell ID
+#: includes/class-regions.php:66
+#, php-format
+msgid "Warning region %s"
+msgstr "Warnregion %s"
+
+#: includes/class-regions.php:149
+#: includes/class-regions.php:246
+#: includes/class-source.php:227
+msgid "The API response could not be read."
+msgstr "Die Antwort der API konnte nicht gelesen werden."
+
+#: includes/class-regions.php:179
 msgid "District"
 msgstr "Landkreis"
 
-#: includes/class-regions.php:164
+#: includes/class-regions.php:180
 msgid "District area"
 msgstr "Kreisteil"
 
-#: includes/class-regions.php:165
+#: includes/class-regions.php:181
 msgid "Municipality"
 msgstr "Gemeinde"
 
-#: includes/class-regions.php:166
+#: includes/class-regions.php:182
 msgid "Inland lake"
 msgstr "Binnensee"
 
-#: includes/class-regions.php:167
+#: includes/class-regions.php:183
 msgid "Coast"
 msgstr "Küste"
+
+#: includes/class-regions.php:226
+#: includes/class-source.php:201
+msgid "Weather alerts could not be loaded."
+msgstr "Wetterwarnungen konnten nicht geladen werden."
+
+#. translators: %d: HTTP status code
+#: includes/class-regions.php:242
+#: includes/class-source.php:576
+#, php-format
+msgid "Data source responded with HTTP status %d."
+msgstr "Die Datenquelle antwortete mit HTTP-Status %d."
 
 #: includes/class-renderer.php:22
 #: build/wetterwarner/index.js:1
@@ -328,7 +352,7 @@ msgstr "unterhalb %d m"
 msgid "Current weather warning map: %s"
 msgstr "Aktuelle Warnkarte: %s"
 
-#: includes/class-rest.php:69
+#: includes/class-rest.php:75
 msgid "Warning region not found."
 msgstr "Warnregion nicht gefunden."
 
@@ -336,30 +360,16 @@ msgstr "Warnregion nicht gefunden."
 msgid "Invalid warning region."
 msgstr "Ungültige Warnregion."
 
-#: includes/class-source.php:201
-msgid "Weather alerts could not be loaded."
-msgstr "Wetterwarnungen konnten nicht geladen werden."
-
-#: includes/class-source.php:227
-msgid "The API response could not be read."
-msgstr "Die Antwort der API konnte nicht gelesen werden."
-
-#: includes/class-source.php:363
-#: includes/class-source.php:441
+#: includes/class-source.php:368
+#: includes/class-source.php:446
 msgid "The DWD response could not be read."
 msgstr "Die Antwort des DWD konnte nicht gelesen werden."
 
 #. translators: %s: error message
-#: includes/class-source.php:565
+#: includes/class-source.php:570
 #, php-format
 msgid "Data source could not be reached: %s"
 msgstr "Datenquelle nicht erreichbar: %s"
-
-#. translators: %d: HTTP status code
-#: includes/class-source.php:571
-#, php-format
-msgid "Data source responded with HTTP status %d."
-msgstr "Die Datenquelle antwortete mit HTTP-Status %d."
 
 #: includes/class-widget.php:21
 msgid "Displays official weather alerts of the Deutscher Wetterdienst and, if desired, a warning map."

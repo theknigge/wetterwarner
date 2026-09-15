@@ -233,6 +233,11 @@ class Source {
 				$list          = isset( $json['cells'][ $id ] ) && is_array( $json['cells'][ $id ] ) ? $json['cells'][ $id ] : array();
 				$result[ $id ] = array_map( array( __CLASS__, 'sanitize_warning' ), array_filter( $list, 'is_array' ) );
 			}
+
+			// Name, Bundesland und Typ der Regionen kommen gleich mit.
+			if ( isset( $json['regions'] ) && is_array( $json['regions'] ) ) {
+				Regions::remember( $json['regions'] );
+			}
 		}
 
 		return $result;

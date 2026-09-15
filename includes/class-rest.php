@@ -1,6 +1,7 @@
 <?php
 /**
  * REST-Endpunkte für die Regionsauswahl in Block- und Widget-Editor.
+ * Die Suche wird an die Wetterwarner-API weitergereicht und zwischengespeichert.
  *
  * GET /wp-json/wetterwarner/v1/regions?search=hannover
  * GET /wp-json/wetterwarner/v1/regions/103241000
@@ -60,7 +61,12 @@ class Rest {
 	}
 
 	public static function search( WP_REST_Request $request ) {
-		return rest_ensure_response( array_map( array( __CLASS__, 'prepare' ), Regions::search( $request['search'], (int) $request['per_page'] ) ) );
+		$regions = Regions::search( $request['search'], (int) $request['per_page'] );
+		if ( is_wp_error( $regions ) ) {
+			$regions->add_data( array( 'status' => 502 ) );
+			return $regions;
+		}
+		return rest_ensure_response( array_map( array( __CLASS__, 'prepare' ), $regions ) );
 	}
 
 	public static function single( WP_REST_Request $request ) {

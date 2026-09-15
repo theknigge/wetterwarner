@@ -110,6 +110,7 @@ const de = {
 		'Wähle die Warnregion, für die amtliche Warnungen des Deutschen Wetterdienstes angezeigt werden sollen.',
 	'Official weather alerts of the Deutscher Wetterdienst for a warning region.':
 		'Amtliche Wetterwarnungen des Deutschen Wetterdienstes für eine Warnregion.',
+	'Warning region %s': 'Warnregion %s',
 	'Wetterwarner API (api.it93.de)': 'Wetterwarner-API (api.it93.de)',
 	'DWD direct: districts (fallback)': 'DWD direkt: Landkreise (Rückfall)',
 	'DWD direct: municipalities (fallback)': 'DWD direkt: Gemeinden (Rückfall)',

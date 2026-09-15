@@ -54,6 +54,7 @@ Die Abrufe erfolgen ausschließlich serverseitig durch Deine WordPress-Installat
 Anbieter: Tim Knigge, IT93. [Datenschutz](https://it93.de/datenschutz/)
 
 * `https://api.it93.de/wetterwarner/v3/warnings` – Warnungen der genutzten Regionen
+* `https://api.it93.de/wetterwarner/v3/regions` – Regionssuche im Block- und Widget-Editor (übertragen wird nur der Suchbegriff)
 * `https://api.it93.de/wetterwarner/v3/maps/` – Warnkarten (nur wenn eine Karte angezeigt wird)
 
 **Deutscher Wetterdienst** – Nur als Rückfall, falls die Wetterwarner-API nicht erreichbar ist.

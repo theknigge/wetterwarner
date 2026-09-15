@@ -1,11 +1,14 @@
 <?php
 /**
- * Warnregionen (DWD Warncell-IDs): Suche, Lookup und Migration alter Feed-IDs.
+ * Warnregionen (DWD Warncell-IDs). Die vollständige Liste liegt in der
+ * Wetterwarner-API; das Plugin speichert nur die Angaben genutzter Regionen.
  *
  * @package Wetterwarner
  */
 
 namespace Wetterwarner;
+
+use WP_Error;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,24 +17,16 @@ class Regions {
 	/** Pseudo-Region mit Beispielmeldungen (ersetzt die alte Feed-ID "100"). */
 	const DEMO = 'demo';
 
-	/** @var array<int, array{0:int,1:string,2:string,3:string}>|null */
-	private static $list = null;
+	/** Gespeicherte Angaben genutzter Regionen (id => name, state, type). */
+	const OPTION = 'wetterwarner_regions';
 
-	/** @var array<int, int>|null Warncell-ID => Index in $list */
-	private static $index = null;
-
-	/**
-	 * Alle Regionen: array( id, name, bundesland, typ ).
-	 */
-	public static function all() {
-		if ( null === self::$list ) {
-			self::$list = require WETTERWARNER_DIR . 'data/regions.php';
-		}
-		return self::$list;
-	}
+	/** Zwischenspeicher für Suchergebnisse (Sekunden). */
+	const SEARCH_CACHE = DAY_IN_SECONDS;
 
 	/**
-	 * Region als assoziatives Array oder null.
+	 * Region als assoziatives Array: id, name, state, type.
+	 *
+	 * Reihenfolge: lokal gespeichert → einmaliger API-Abruf → neutraler Platzhalter.
 	 *
 	 * @param string|int $id Warncell-ID oder "demo".
 	 */
@@ -47,14 +42,57 @@ class Regions {
 		if ( ! self::is_valid_id( $id ) ) {
 			return null;
 		}
-		if ( null === self::$index ) {
-			self::$index = array();
-			foreach ( self::all() as $i => $row ) {
-				self::$index[ $row[0] ] = $i;
+
+		$id    = (string) $id;
+		$known = (array) get_option( self::OPTION, array() );
+		if ( isset( $known[ $id ] ) ) {
+			return $known[ $id ];
+		}
+
+		// Höchstens alle 10 Minuten je Region nachfragen, falls die API nicht antwortet.
+		$attempt = 'wetterwarner_region_try_' . $id;
+		if ( ! get_transient( $attempt ) ) {
+			set_transient( $attempt, 1, 10 * MINUTE_IN_SECONDS );
+			$region = self::api_request( 'regions/' . $id );
+			if ( ! is_wp_error( $region ) && self::is_region( $region ) && (string) $region['id'] === $id ) {
+				self::remember( array( $region ) );
+				return self::clean( $region );
 			}
 		}
-		$id = (int) $id;
-		return isset( self::$index[ $id ] ) ? self::format( self::all()[ self::$index[ $id ] ] ) : null;
+
+		return array(
+			'id'    => $id,
+			/* translators: %s: warncell ID */
+			'name'  => sprintf( __( 'Warning region %s', 'wetterwarner' ), $id ),
+			'state' => '',
+			'type'  => self::type_from_id( $id ),
+		);
+	}
+
+	/**
+	 * Speichert Regionsangaben aus API-Antworten (Warnungen, Suche, Einzelabruf).
+	 *
+	 * @param array $regions Liste oder Map von Regionen.
+	 */
+	public static function remember( array $regions ) {
+		$known   = (array) get_option( self::OPTION, array() );
+		$changed = false;
+
+		foreach ( $regions as $region ) {
+			if ( ! self::is_region( $region ) ) {
+				continue;
+			}
+			$region = self::clean( $region );
+			if ( ! isset( $known[ $region['id'] ] ) || $known[ $region['id'] ] !== $region ) {
+				$known[ $region['id'] ] = $region;
+				$changed                = true;
+			}
+		}
+
+		if ( $changed ) {
+			// Nicht unbegrenzt wachsen lassen.
+			update_option( self::OPTION, array_slice( $known, -500, null, true ), false );
+		}
 	}
 
 	/**
@@ -72,69 +110,47 @@ class Regions {
 	}
 
 	/**
-	 * Volltextsuche über Name und Warncell-ID.
+	 * Suche über die Wetterwarner-API (Ergebnisse werden einen Tag zwischengespeichert).
 	 *
 	 * @param string $search Suchbegriff.
 	 * @param int    $limit  Maximale Treffer.
+	 * @return array[]|WP_Error
 	 */
 	public static function search( $search, $limit = 20 ) {
-		$needle = self::normalize( $search );
-		$demo   = array();
+		$search = trim( (string) $search );
+		$demo   = in_array( strtolower( $search ), array( 'demo', 'test', '100' ), true ) ? array( self::get( self::DEMO ) ) : array();
 
-		if ( '' === $needle ) {
-			return array();
-		}
-		if ( in_array( $needle, array( 'demo', 'test', '100' ), true ) ) {
-			$demo[] = self::get( self::DEMO );
+		if ( strlen( $search ) < 2 ) {
+			return $demo;
 		}
 
-		$buckets = array( array(), array(), array() );
-		$digits  = ctype_digit( $needle );
+		$key     = 'wetterwarner_search_' . md5( strtolower( $search ) . '|' . $limit );
+		$results = get_transient( $key );
 
-		foreach ( self::all() as $row ) {
-			if ( $digits ) {
-				if ( 0 === strpos( (string) $row[0], $needle ) ) {
-					$buckets[0][] = $row;
-				}
-				continue;
-			}
-
-			$name = self::normalize( $row[1] );
-			$pos  = strpos( $name, $needle );
-			if ( false === $pos ) {
-				continue;
-			}
-			// Ohne Präfix wie "Stadt", "Kreis", "Gemeinde" vergleichen.
-			$bare = preg_replace( '/^(stadt|kreis|landkreis|gemeinde|markt|region|hansestadt|kreis und stadt)\s+/', '', $name );
-			if ( 0 === strpos( $bare, $needle ) || 0 === $pos ) {
-				$buckets[ $bare === $needle ? 0 : 1 ][] = $row;
-			} else {
-				$buckets[2][] = $row;
-			}
-		}
-
-		$results = array();
-		foreach ( $buckets as $bucket ) {
-			// Innerhalb eines Buckets: Landkreise vor Kreisteilen vor Gemeinden.
-			usort(
-				$bucket,
-				static function ( $a, $b ) {
-					$order = array(
-						'k' => 0,
-						't' => 1,
-						'g' => 2,
-						's' => 3,
-						'c' => 4,
-					);
-					return array( $order[ $a[3] ], $a[1] ) <=> array( $order[ $b[3] ], $b[1] );
-				}
+		if ( ! is_array( $results ) ) {
+			$response = self::api_request(
+				add_query_arg(
+					array(
+						'search' => rawurlencode( $search ),
+						'limit'  => (int) $limit,
+					),
+					'regions'
+				)
 			);
-			foreach ( $bucket as $row ) {
-				$results[] = self::format( $row );
-				if ( count( $results ) >= $limit ) {
-					break 2;
+
+			if ( is_wp_error( $response ) || ! isset( $response['regions'] ) || ! is_array( $response['regions'] ) ) {
+				// API nicht erreichbar: eine eingegebene Warncell-ID trotzdem zulassen.
+				if ( self::is_valid_id( $search ) ) {
+					return array_merge( $demo, array( self::get( $search ) ) );
 				}
+				if ( $demo ) {
+					return $demo;
+				}
+				return is_wp_error( $response ) ? $response : new WP_Error( 'wetterwarner_search', __( 'The API response could not be read.', 'wetterwarner' ) );
 			}
+
+			$results = array_values( array_map( array( __CLASS__, 'clean' ), array_filter( $response['regions'], array( __CLASS__, 'is_region' ) ) ) );
+			set_transient( $key, $results, self::SEARCH_CACHE );
 		}
 
 		return array_merge( $demo, $results );
@@ -169,27 +185,64 @@ class Regions {
 		return isset( $labels[ $type ] ) ? $labels[ $type ] : '';
 	}
 
-	private static function format( array $row ) {
+	public static function type_from_id( $id ) {
+		$types = array(
+			'1' => 'k',
+			'2' => 's',
+			'5' => 'c',
+			'8' => 'g',
+			'9' => 't',
+		);
+		$first = substr( (string) $id, 0, 1 );
+		return isset( $types[ $first ] ) ? $types[ $first ] : '';
+	}
+
+	/**
+	 * @param mixed $region
+	 */
+	public static function is_region( $region ) {
+		return is_array( $region ) && isset( $region['id'], $region['name'] ) && self::is_valid_id( $region['id'] );
+	}
+
+	/**
+	 * Übernimmt nur erwartete Felder aus API-Daten.
+	 */
+	public static function clean( array $region ) {
 		return array(
-			'id'    => (string) $row[0],
-			'name'  => $row[1],
-			'state' => $row[2],
-			'type'  => $row[3],
+			'id'    => (string) $region['id'],
+			'name'  => sanitize_text_field( (string) $region['name'] ),
+			'state' => isset( $region['state'] ) && preg_match( '/^[A-Z]{2}$/', (string) $region['state'] ) ? (string) $region['state'] : '',
+			'type'  => self::type_from_id( $region['id'] ),
 		);
 	}
 
-	private static function normalize( $text ) {
-		$text = mb_strtolower( trim( (string) $text ), 'UTF-8' );
-		$text = strtr(
-			$text,
+	/**
+	 * @param string $path Pfad relativ zur API-Basis-URL.
+	 * @return array|WP_Error Dekodierte JSON-Antwort.
+	 */
+	private static function api_request( $path ) {
+		$base = Source::api_url();
+		if ( '' === $base ) {
+			return new WP_Error( 'wetterwarner_api_disabled', __( 'Weather alerts could not be loaded.', 'wetterwarner' ) );
+		}
+
+		$response = wp_remote_get(
+			trailingslashit( $base ) . $path,
 			array(
-				'ä' => 'a',
-				'ö' => 'o',
-				'ü' => 'u',
-				'ß' => 'ss',
-				'é' => 'e',
+				'timeout'    => 8,
+				'user-agent' => 'Wetterwarner/' . WETTERWARNER_VERSION . ' (WordPress; +https://wordpress.org/plugins/wetterwarner/)',
 			)
 		);
-		return preg_replace( '/\s+/', ' ', $text );
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			/* translators: %d: HTTP status code */
+			return new WP_Error( 'wetterwarner_http', sprintf( __( 'Data source responded with HTTP status %d.', 'wetterwarner' ), wp_remote_retrieve_response_code( $response ) ) );
+		}
+
+		$json = json_decode( wp_remote_retrieve_body( $response ), true );
+		return is_array( $json ) ? $json : new WP_Error( 'wetterwarner_bad_json', __( 'The API response could not be read.', 'wetterwarner' ) );
 	}
 }
