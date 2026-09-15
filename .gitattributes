@@ -1,0 +1,13 @@
+# Zeilenenden immer LF, damit PHP-, JS- und Sprachdateien plattformgleich bleiben.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.webp binary
+*.mo binary
+*.zip binary
+*.eot binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+*.otf binary
