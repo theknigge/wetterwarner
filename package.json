@@ -1,0 +1,29 @@
+{
+	"name": "wetterwarner",
+	"version": "3.0.0",
+	"description": "Amtliche Wetterwarnungen des Deutschen Wetterdienstes als Block, Shortcode und Widget.",
+	"author": "Tim Knigge",
+	"license": "GPL-2.0-or-later",
+	"private": true,
+	"scripts": {
+		"build": "wp-scripts build --webpack-src-dir=src --output-path=build --webpack-copy-php",
+		"start": "wp-scripts start --webpack-src-dir=src --output-path=build --webpack-copy-php",
+		"build:regions": "node tools/build-regions.mjs",
+		"lint:js": "wp-scripts lint-js src",
+		"plugin-zip": "wp-scripts plugin-zip"
+	},
+	"files": [
+		"build",
+		"data",
+		"includes",
+		"languages",
+		"assets",
+		"wetterwarner.php",
+		"uninstall.php",
+		"readme.txt",
+		"LICENSE.md"
+	],
+	"devDependencies": {
+		"@wordpress/scripts": "^35.0.0"
+	}
+}

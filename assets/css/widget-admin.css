@@ -1,0 +1,34 @@
+.wetterwarner-region {
+	position: relative;
+}
+
+.wetterwarner-region label {
+	display: block;
+	margin-bottom: 4px;
+}
+
+.wetterwarner-region-results {
+	position: absolute;
+	z-index: 100;
+	right: 0;
+	left: 0;
+	max-height: 240px;
+	margin: 2px 0 0;
+	overflow-y: auto;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	background: #fff;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.wetterwarner-region-results li {
+	margin: 0;
+	padding: 6px 10px;
+	cursor: pointer;
+}
+
+.wetterwarner-region-results li:hover,
+.wetterwarner-region-results li[aria-selected="true"] {
+	background: #2271b1;
+	color: #fff;
+}

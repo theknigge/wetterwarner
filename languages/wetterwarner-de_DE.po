@@ -1,0 +1,505 @@
+# Copyright (C) 2026 Tim Knigge
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Wetterwarner 3.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wetterwarner/\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-15T22:22:14+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wetterwarner\n"
+
+#. Plugin Name of the plugin
+#: wetterwarner.php
+msgid "Wetterwarner"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: wetterwarner.php
+msgid "https://it93.de/projekte/wetterwarner/"
+msgstr ""
+
+#. Description of the plugin
+#: wetterwarner.php
+msgid "Zeigt amtliche Wetterwarnungen des Deutschen Wetterdienstes als Block, Shortcode oder Widget an."
+msgstr ""
+
+#. Author of the plugin
+#: wetterwarner.php
+msgid "Tim Knigge"
+msgstr ""
+
+#. Author URI of the plugin
+#: wetterwarner.php
+msgid "https://www.linkedin.com/in/tim-knigge-a1238912b/"
+msgstr ""
+
+#: includes/class-admin.php:74
+msgid "Colors"
+msgstr "Farben"
+
+#. translators: %d: warning level
+#: includes/class-admin.php:80
+#: includes/class-admin.php:338
+#, php-format
+msgid "Background color level %d"
+msgstr "Hintergrundfarbe Warnstufe %d"
+
+#: includes/class-admin.php:105
+msgid "These colors apply to all blocks, shortcodes and widgets when \"Color by warning level\" is enabled."
+msgstr "Diese Farben gelten für alle Blöcke, Shortcodes und Widgets, bei denen „Nach Warnstufe einfärben“ aktiviert ist."
+
+#: includes/class-admin.php:146
+msgid "Cache cleared."
+msgstr "Cache geleert."
+
+#: includes/class-admin.php:149
+msgid "Usage"
+msgstr "Verwendung"
+
+#: includes/class-admin.php:150
+msgid "Add the \"Wetterwarner\" block in the block editor or in a widget area. Alternatively use the shortcode:"
+msgstr "Füge den Block „Wetterwarner“ im Block-Editor oder in einem Widget-Bereich ein. Alternativ kannst Du den Shortcode verwenden:"
+
+#: includes/class-admin.php:153
+msgid "All shortcode attributes"
+msgstr "Alle Shortcode-Attribute"
+
+#: includes/class-admin.php:156
+msgid "Warncell ID of the region (required), or \"demo\""
+msgstr "Warncell-ID der Region (Pflicht) oder „demo“"
+
+#: includes/class-admin.php:157
+msgid "Texts, %region% is replaced"
+msgstr "Texte, %region% wird ersetzt"
+
+#: includes/class-admin.php:158
+msgid "Maximum number of alerts (default 3, 0 = all)"
+msgstr "Maximale Anzahl Warnungen (Standard 3, 0 = alle)"
+
+#: includes/class-admin.php:159
+msgid "Options: 1 or 0"
+msgstr "Optionen: 1 oder 0"
+
+#: includes/class-admin.php:160
+msgid "Map width in percent (0 = no map)"
+msgstr "Kartenbreite in Prozent (0 = keine Karte)"
+
+#: includes/class-admin.php:174
+msgid "Data status"
+msgstr "Datenstatus"
+
+#: includes/class-admin.php:179
+msgid "Districts (warnings.json)"
+msgstr "Landkreise (warnings.json)"
+
+#: includes/class-admin.php:180
+msgid "Municipalities (DWD geo service)"
+msgstr "Gemeinden (DWD-Geodienst)"
+
+#. translators: %s: human readable time difference
+#: includes/class-admin.php:191
+#, php-format
+msgid "Last update %s ago"
+msgstr "Zuletzt aktualisiert vor %s"
+
+#: includes/class-admin.php:192
+msgid "Not loaded yet"
+msgstr "Noch nicht geladen"
+
+#: includes/class-admin.php:202
+#: includes/class-admin.php:325
+msgid "Regions in use"
+msgstr "Genutzte Regionen"
+
+#: includes/class-admin.php:219
+msgid "Clear cache"
+msgstr "Cache leeren"
+
+#: includes/class-admin.php:227
+msgid "Sorry, you are not allowed to do that."
+msgstr "Du bist leider nicht berechtigt, das zu tun."
+
+#. translators: %s: list of old feed IDs
+#: includes/class-admin.php:250
+#, php-format
+msgid "Weather alerts now come directly from the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings."
+msgstr "Die Wetterwarnungen kommen jetzt direkt vom Deutschen Wetterdienst. Folgende alte Feed-IDs konnten nicht automatisch einer Warnregion zugeordnet werden: %s. Bitte wähle die Region in den Widget-Einstellungen neu aus."
+
+#: includes/class-admin.php:255
+msgid "Open widgets"
+msgstr "Widgets öffnen"
+
+#: includes/class-admin.php:257
+msgid "Dismiss"
+msgstr "Ausblenden"
+
+#: includes/class-admin.php:262
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: includes/class-admin.php:276
+msgid "Wetterwarner receives current weather alerts"
+msgstr "Wetterwarner empfängt aktuelle Wetterwarnungen"
+
+#: includes/class-admin.php:282
+msgid "The alerts of the Deutscher Wetterdienst are loaded and cached successfully."
+msgstr "Die Warnungen des Deutschen Wetterdienstes werden erfolgreich geladen und zwischengespeichert."
+
+#: includes/class-admin.php:290
+msgid "Wetterwarner cannot store warning maps"
+msgstr "Wetterwarner kann keine Warnkarten speichern"
+
+#: includes/class-admin.php:291
+msgid "The uploads directory is not writable. Warning maps cannot be displayed."
+msgstr "Das Upload-Verzeichnis ist nicht beschreibbar. Warnkarten können nicht angezeigt werden."
+
+#: includes/class-admin.php:297
+msgid "Wetterwarner cannot reach the Deutscher Wetterdienst"
+msgstr "Wetterwarner erreicht den Deutschen Wetterdienst nicht"
+
+#: includes/class-admin.php:313
+msgid "Version"
+msgstr ""
+
+#: includes/class-admin.php:317
+msgid "Map directory writable"
+msgstr "Kartenverzeichnis beschreibbar"
+
+#: includes/class-admin.php:321
+msgid "Next background update"
+msgstr "Nächste Hintergrundaktualisierung"
+
+#: includes/class-map.php:45
+#: build/wetterwarner/index.js:1
+msgid "Federal state of the region"
+msgstr "Bundesland der Region"
+
+#: includes/class-map.php:46
+#: build/wetterwarner/index.js:1
+msgid "Germany"
+msgstr "Deutschland"
+
+#: includes/class-plugin.php:144
+msgid "Every 5 minutes"
+msgstr "Alle 5 Minuten"
+
+#: includes/class-regions.php:42
+msgid "Sample town (demo)"
+msgstr "Musterstadt (Demo)"
+
+#: includes/class-regions.php:163
+msgid "District"
+msgstr "Landkreis"
+
+#: includes/class-regions.php:164
+msgid "District area"
+msgstr "Kreisteil"
+
+#: includes/class-regions.php:165
+msgid "Municipality"
+msgstr "Gemeinde"
+
+#: includes/class-regions.php:166
+msgid "Inland lake"
+msgstr "Binnensee"
+
+#: includes/class-regions.php:167
+msgid "Coast"
+msgstr "Küste"
+
+#: includes/class-renderer.php:22
+#: build/wetterwarner/index.js:1
+msgid "Weather alerts"
+msgstr "Wetterwarnungen"
+
+#: includes/class-renderer.php:23
+#: build/wetterwarner/index.js:1
+msgid "Weather alerts for %region%"
+msgstr "Wetterwarnungen für %region%"
+
+#: includes/class-renderer.php:24
+#: build/wetterwarner/index.js:1
+msgid "No weather alerts for %region%"
+msgstr "Keine Wetterwarnungen für %region%"
+
+#: includes/class-renderer.php:89
+msgid "Please select a warning region in the Wetterwarner settings."
+msgstr "Bitte wähle in den Wetterwarner-Einstellungen eine Warnregion aus."
+
+#: includes/class-renderer.php:101
+msgid "There are currently no warnings. The block is hidden on the website until a warning is issued (option \"Show always\")."
+msgstr "Aktuell liegen keine Warnungen vor. Auf der Webseite bleibt der Block ausgeblendet, bis eine Warnung vorliegt (Option „Auch ohne Warnungen anzeigen“)."
+
+#: includes/class-renderer.php:116
+msgid "Weather alerts are currently unavailable."
+msgstr "Wetterwarnungen sind derzeit nicht verfügbar."
+
+#: includes/class-renderer.php:117
+msgid "View alerts at dwd.de"
+msgstr "Warnungen auf dwd.de ansehen"
+
+#. translators: %s: link to Deutscher Wetterdienst
+#: includes/class-renderer.php:142
+#, php-format
+msgid "Source: %s"
+msgstr "Quelle: %s"
+
+#. translators: %d: warning level 1-4
+#: includes/class-renderer.php:193
+#, php-format
+msgid "Warning level %d"
+msgstr "Warnstufe %d"
+
+#: includes/class-renderer.php:197
+msgid "Prior information"
+msgstr "Vorabinformation"
+
+#: includes/class-renderer.php:205
+msgid "Details"
+msgstr ""
+
+#: includes/class-renderer.php:223
+#: includes/class-renderer.php:230
+msgid "D, m/d, g:i a"
+msgstr "D, d.m., H:i"
+
+#. translators: %s: start date and time
+#: includes/class-renderer.php:227
+#, php-format
+msgid "From %s until further notice"
+msgstr "Ab %s bis auf Weiteres"
+
+#. translators: %s: start date and time
+#: includes/class-renderer.php:227
+msgid "Until further notice"
+msgstr "Bis auf Weiteres"
+
+#: includes/class-renderer.php:230
+msgid "g:i a"
+msgstr "H:i \\U\\h\\r"
+
+#. translators: 1: start date and time, 2: end date or time
+#: includes/class-renderer.php:232
+#, php-format
+msgid "%1$s – %2$s"
+msgstr ""
+
+#. translators: 1: lower altitude, 2: upper altitude in meters
+#: includes/class-renderer.php:237
+#, php-format
+msgid "between %1$d m and %2$d m"
+msgstr "zwischen %1$d m und %2$d m"
+
+#. translators: %d: altitude in meters
+#: includes/class-renderer.php:240
+#, php-format
+msgid "above %d m"
+msgstr "oberhalb %d m"
+
+#. translators: %d: altitude in meters
+#: includes/class-renderer.php:243
+#, php-format
+msgid "below %d m"
+msgstr "unterhalb %d m"
+
+#. translators: %s: map area
+#: includes/class-renderer.php:261
+#, php-format
+msgid "Current weather warning map: %s"
+msgstr "Aktuelle Warnkarte: %s"
+
+#: includes/class-rest.php:69
+msgid "Warning region not found."
+msgstr "Warnregion nicht gefunden."
+
+#: includes/class-source.php:43
+msgid "Invalid warning region."
+msgstr "Ungültige Warnregion."
+
+#: includes/class-source.php:182
+#: includes/class-source.php:303
+msgid "The DWD response could not be read."
+msgstr "Die Antwort des DWD konnte nicht gelesen werden."
+
+#. translators: %s: error message
+#: includes/class-source.php:429
+#, php-format
+msgid "DWD could not be reached: %s"
+msgstr "Der DWD ist nicht erreichbar: %s"
+
+#. translators: %d: HTTP status code
+#: includes/class-source.php:435
+#, php-format
+msgid "DWD responded with HTTP status %d."
+msgstr "Der DWD antwortete mit HTTP-Status %d."
+
+#: includes/class-widget.php:21
+msgid "Displays official weather alerts of the Deutscher Wetterdienst and, if desired, a warning map."
+msgstr "Zeigt amtliche Wetterwarnungen des Deutschen Wetterdienstes und auf Wunsch eine Warnkarte an."
+
+#: includes/class-widget.php:63
+#: build/wetterwarner/index.js:1
+msgid "Warning region"
+msgstr "Warnregion"
+
+#: includes/class-widget.php:69
+msgid "Search town or district …"
+msgstr "Ort oder Landkreis suchen …"
+
+#: includes/class-widget.php:77
+msgid "Enter at least 2 characters. Search \"demo\" for sample warnings."
+msgstr "Mindestens 2 Zeichen eingeben. Mit „demo“ erhältst Du Beispielmeldungen."
+
+#: includes/class-widget.php:81
+#: build/wetterwarner/index.js:1
+msgid "Title"
+msgstr "Titel"
+
+#: includes/class-widget.php:82
+#: build/wetterwarner/index.js:1
+msgid "Introduction text"
+msgstr "Einleitungstext"
+
+#: includes/class-widget.php:83
+#: build/wetterwarner/index.js:1
+msgid "Text when there are no alerts"
+msgstr "Text ohne Warnungen"
+
+#: includes/class-widget.php:85
+msgid "%region% is replaced by the name of the region."
+msgstr "%region% wird durch den Namen der Region ersetzt."
+
+#: includes/class-widget.php:88
+#: build/wetterwarner/index.js:1
+msgid "Maximum number of alerts (0 = all)"
+msgstr "Maximale Anzahl Warnungen (0 = alle)"
+
+#: includes/class-widget.php:93
+#: build/wetterwarner/index.js:1
+msgid "Show even without alerts"
+msgstr "Auch ohne Warnungen anzeigen"
+
+#: includes/class-widget.php:94
+#: build/wetterwarner/index.js:1
+msgid "Show validity period"
+msgstr "Gültigkeitszeitraum anzeigen"
+
+#: includes/class-widget.php:95
+#: build/wetterwarner/index.js:1
+msgid "Show expandable details"
+msgstr "Aufklappbare Details anzeigen"
+
+#: includes/class-widget.php:96
+#: build/wetterwarner/index.js:1
+msgid "Show icons"
+msgstr "Icons anzeigen"
+
+#: includes/class-widget.php:97
+#: build/wetterwarner/index.js:1
+msgid "Color by warning level"
+msgstr "Nach Warnstufe einfärben"
+
+#: includes/class-widget.php:98
+#: build/wetterwarner/index.js:1
+msgid "Hide duplicate alerts"
+msgstr "Doppelte Warnungen ausblenden"
+
+#: includes/class-widget.php:99
+#: build/wetterwarner/index.js:1
+msgid "Link alerts to dwd.de"
+msgstr "Warnungen mit dwd.de verlinken"
+
+#: includes/class-widget.php:100
+#: build/wetterwarner/index.js:1
+msgid "Show source"
+msgstr "Quelle anzeigen"
+
+#: includes/class-widget.php:104
+#: build/wetterwarner/index.js:1
+msgid "Map width in % (0 = no map)"
+msgstr "Kartenbreite in % (0 = keine Karte)"
+
+#: includes/class-widget.php:108
+#: build/wetterwarner/index.js:1
+msgid "Map area"
+msgstr "Kartenausschnitt"
+
+#: build/wetterwarner/index.js:1
+msgid "Search for a town, district or warncell ID. Search \"demo\" for sample warnings."
+msgstr "Suche nach Ort, Landkreis oder Warncell-ID. Mit „demo“ erhältst Du Beispielmeldungen."
+
+#: build/wetterwarner/index.js:1
+msgid "Region"
+msgstr ""
+
+#: build/wetterwarner/index.js:1
+msgid "Texts"
+msgstr "Texte"
+
+#: build/wetterwarner/index.js:1
+msgid "Title level"
+msgstr "Überschriftenebene"
+
+#: build/wetterwarner/index.js:1
+msgid "%region% is replaced by the name of the region. Empty fields are hidden."
+msgstr "%region% wird durch den Namen der Region ersetzt. Leere Felder werden ausgeblendet."
+
+#: build/wetterwarner/index.js:1
+msgid "Display"
+msgstr "Anzeige"
+
+#: build/wetterwarner/index.js:1
+msgid "Warning map"
+msgstr "Warnkarte"
+
+#: build/wetterwarner/index.js:1
+msgid "Select the warning region for which official alerts of the Deutscher Wetterdienst should be displayed."
+msgstr "Wähle die Warnregion, für die amtliche Warnungen des Deutschen Wetterdienstes angezeigt werden sollen."
+
+#: build/wetterwarner/block.json
+msgctxt "block title"
+msgid "Wetterwarner"
+msgstr ""
+
+#: build/wetterwarner/block.json
+msgctxt "block description"
+msgid "Official weather alerts of the Deutscher Wetterdienst for a warning region."
+msgstr "Amtliche Wetterwarnungen des Deutschen Wetterdienstes für eine Warnregion."
+
+#: build/wetterwarner/block.json
+msgctxt "block keyword"
+msgid "wetter"
+msgstr ""
+
+#: build/wetterwarner/block.json
+msgctxt "block keyword"
+msgid "warnung"
+msgstr ""
+
+#: build/wetterwarner/block.json
+msgctxt "block keyword"
+msgid "unwetter"
+msgstr ""
+
+#: build/wetterwarner/block.json
+msgctxt "block keyword"
+msgid "dwd"
+msgstr ""
+
+#: build/wetterwarner/block.json
+msgctxt "block keyword"
+msgid "weather"
+msgstr ""
+
+#: build/wetterwarner/block.json
+msgctxt "block keyword"
+msgid "alert"
+msgstr ""

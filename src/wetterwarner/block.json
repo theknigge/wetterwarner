@@ -1,0 +1,43 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "wetterwarner/warnings",
+	"version": "3.0.0",
+	"title": "Wetterwarner",
+	"category": "widgets",
+	"description": "Official weather alerts of the Deutscher Wetterdienst for a warning region.",
+	"keywords": [ "wetter", "warnung", "unwetter", "dwd", "weather", "alert" ],
+	"textdomain": "wetterwarner",
+	"attributes": {
+		"regionId": { "type": "string", "default": "" },
+		"regionLabel": { "type": "string", "default": "" },
+		"title": { "type": "string" },
+		"titleLevel": { "type": "number", "default": 3 },
+		"introText": { "type": "string" },
+		"noWarningsText": { "type": "string" },
+		"maxWarnings": { "type": "number", "default": 3 },
+		"showAlways": { "type": "boolean", "default": false },
+		"showValidity": { "type": "boolean", "default": true },
+		"showDetails": { "type": "boolean", "default": true },
+		"showIcons": { "type": "boolean", "default": true },
+		"showColors": { "type": "boolean", "default": true },
+		"linkWarnings": { "type": "boolean", "default": false },
+		"hideDuplicates": { "type": "boolean", "default": true },
+		"showSource": { "type": "boolean", "default": true },
+		"mapSize": { "type": "number", "default": 0 },
+		"mapRegion": { "type": "string", "default": "auto" }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"color": { "background": true, "text": true, "link": true },
+		"spacing": { "margin": true, "padding": true },
+		"typography": { "fontSize": true, "lineHeight": true }
+	},
+	"example": {
+		"attributes": { "regionId": "demo", "maxWarnings": 2 }
+	},
+	"editorScript": "file:./index.js",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}
