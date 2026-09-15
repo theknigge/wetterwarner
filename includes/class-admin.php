@@ -176,8 +176,9 @@ class Admin {
 				<tbody>
 					<?php
 					foreach ( array(
-						'districts'      => __( 'Districts (warnings.json)', 'wetterwarner' ),
-						'municipalities' => __( 'Municipalities (DWD geo service)', 'wetterwarner' ),
+						'api'            => __( 'Wetterwarner API (api.it93.de)', 'wetterwarner' ),
+						'districts'      => __( 'DWD direct: districts (fallback)', 'wetterwarner' ),
+						'municipalities' => __( 'DWD direct: municipalities (fallback)', 'wetterwarner' ),
 					) as $key => $label ) :
 						$entry = isset( $status[ $key ] ) ? $status[ $key ] : array();
 						?>
@@ -291,11 +292,21 @@ class Admin {
 			$result['description'] = '<p>' . esc_html__( 'The uploads directory is not writable. Warning maps cannot be displayed.', 'wetterwarner' ) . '</p>';
 		}
 
-		foreach ( Source::status() as $entry ) {
-			if ( ! empty( $entry['error'] ) && ( empty( $entry['ok'] ) || $entry['error_time'] > $entry['ok'] ) ) {
+		$status  = Source::status();
+		// Ein erfolgreicher Abruf entfernt "error" – ist es gesetzt, schlug der letzte Versuch fehl.
+		$failing = static function ( $source ) use ( $status ) {
+			return ! empty( $status[ $source ]['error'] );
+		};
+
+		if ( $failing( 'api' ) ) {
+			if ( isset( $status['districts']['ok'] ) && ! $failing( 'districts' ) ) {
+				$result['status']      = 'recommended';
+				$result['label']       = __( 'Wetterwarner uses the direct DWD fallback', 'wetterwarner' );
+				$result['description'] = '<p>' . esc_html__( 'The Wetterwarner API is currently unreachable. Alerts are loaded directly from the Deutscher Wetterdienst.', 'wetterwarner' ) . '</p><p><small>' . esc_html( $status['api']['error'] ) . '</small></p>';
+			} else {
 				$result['status']      = 'critical';
 				$result['label']       = __( 'Wetterwarner cannot reach the Deutscher Wetterdienst', 'wetterwarner' );
-				$result['description'] = '<p>' . esc_html( $entry['error'] ) . '</p>';
+				$result['description'] = '<p>' . esc_html( $status['api']['error'] ) . '</p>';
 			}
 		}
 

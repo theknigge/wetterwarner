@@ -9,7 +9,7 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 global $wpdb;
 
-foreach ( array( 'wetterwarner_settings', 'wetterwarner_version', 'wetterwarner_usage', 'wetterwarner_status', 'wetterwarner_backup', 'wetterwarner_migration', 'widget_wetterwarner_widget' ) as $option ) {
+foreach ( array( 'wetterwarner_settings', 'wetterwarner_version', 'wetterwarner_usage', 'wetterwarner_status', 'wetterwarner_store','wetterwarner_migration', 'widget_wetterwarner_widget' ) as $option ) {
 	delete_option( $option );
 }
 

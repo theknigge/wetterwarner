@@ -110,6 +110,16 @@ const de = {
 		'Wähle die Warnregion, für die amtliche Warnungen des Deutschen Wetterdienstes angezeigt werden sollen.',
 	'Official weather alerts of the Deutscher Wetterdienst for a warning region.':
 		'Amtliche Wetterwarnungen des Deutschen Wetterdienstes für eine Warnregion.',
+	'Wetterwarner API (api.it93.de)': 'Wetterwarner-API (api.it93.de)',
+	'DWD direct: districts (fallback)': 'DWD direkt: Landkreise (Rückfall)',
+	'DWD direct: municipalities (fallback)': 'DWD direkt: Gemeinden (Rückfall)',
+	'Weather alerts could not be loaded.': 'Wetterwarnungen konnten nicht geladen werden.',
+	'The API response could not be read.': 'Die Antwort der API konnte nicht gelesen werden.',
+	'Data source could not be reached: %s': 'Datenquelle nicht erreichbar: %s',
+	'Data source responded with HTTP status %d.': 'Die Datenquelle antwortete mit HTTP-Status %d.',
+	'Wetterwarner uses the direct DWD fallback': 'Wetterwarner nutzt den direkten DWD-Rückfall',
+	'The Wetterwarner API is currently unreachable. Alerts are loaded directly from the Deutscher Wetterdienst.':
+		'Die Wetterwarner-API ist derzeit nicht erreichbar. Die Warnungen werden direkt vom Deutschen Wetterdienst geladen.',
 };
 
 const unquote = ( s ) => JSON.parse( s ); // PO-Strings sind kompatibel zu JSON-Strings.

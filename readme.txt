@@ -48,13 +48,23 @@ Die Warncell-ID findest Du über die Regionssuche im Block oder Widget.
 
 = Externe Dienste =
 
-Dieses Plugin ruft Daten des Deutschen Wetterdienstes ab. Die Abrufe erfolgen ausschließlich serverseitig durch Deine WordPress-Installation (alle 5 Minuten für genutzte Regionen); Besucher Deiner Webseite bauen keine Verbindung zum DWD auf. Es werden keine personenbezogenen Daten übertragen.
+Die Abrufe erfolgen ausschließlich serverseitig durch Deine WordPress-Installation – höchstens alle 5 Minuten, alle genutzten Regionen gemeinsam in einer Anfrage. Besucher Deiner Webseite bauen keine Verbindung zu externen Servern auf.
+
+**Wetterwarner-API (api.it93.de)** – Primäre Datenquelle. Die API speichert die Warnungen des Deutschen Wetterdienstes zentral zwischen, damit nicht jede Webseite die teils mehrere Megabyte großen DWD-Daten laden muss. Übertragen werden die Warncell-IDs der genutzten Regionen sowie technisch bedingt die IP-Adresse Deines Webservers; es werden keine Daten Deiner Besucher übertragen.
+Anbieter: Tim Knigge, IT93. [Datenschutz](https://it93.de/datenschutz/)
+
+* `https://api.it93.de/wetterwarner/v3/warnings` – Warnungen der genutzten Regionen
+* `https://api.it93.de/wetterwarner/v3/maps/` – Warnkarten (nur wenn eine Karte angezeigt wird)
+
+**Deutscher Wetterdienst** – Nur als Rückfall, falls die Wetterwarner-API nicht erreichbar ist.
 
 * `https://www.dwd.de/DWD/warnungen/warnapp/json/warnings.json` – Warnungen für Landkreise, Kreisteile, Küsten und Binnenseen
 * `https://maps.dwd.de/geoserver/dwd/ows` – Warnungen für Gemeinden (Geodienst, gefiltert nach Warncell-ID)
-* `https://www.dwd.de/DWD/warnungen/warnapp_gemeinden/json/` – Warnkarten (nur wenn eine Karte angezeigt wird)
+* `https://www.dwd.de/DWD/warnungen/warnapp_gemeinden/json/` – Warnkarten
 
-Anbieter: Deutscher Wetterdienst, Frankfurter Straße 135, 63067 Offenbach. [Nutzungsbedingungen/Copyright](https://www.dwd.de/DE/service/copyright/copyright_node.html), [Datenschutz](https://www.dwd.de/DE/service/datenschutz/datenschutz_node.html), [Informationen zur Objekteinbindung](https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/objekteinbindung.html).
+Die API-Adresse lässt sich über die Konstante `WETTERWARNER_API_URL` oder den Filter `wetterwarner_api_url` ändern; ein leerer Wert lädt ausschließlich direkt beim DWD.
+
+Anbieter der Wetterdaten: Deutscher Wetterdienst, Frankfurter Straße 135, 63067 Offenbach. [Nutzungsbedingungen/Copyright](https://www.dwd.de/DE/service/copyright/copyright_node.html), [Datenschutz](https://www.dwd.de/DE/service/datenschutz/datenschutz_node.html), [Informationen zur Objekteinbindung](https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/objekteinbindung.html).
 
 = Wichtige Hinweise =
 

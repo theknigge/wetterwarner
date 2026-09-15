@@ -135,7 +135,8 @@ class Plugin {
 		}
 		update_option( self::USAGE_OPTION, $usage, false );
 
-		Source::prewarm( array_map( 'strval', array_keys( $usage['regions'] ) ) );
+		// Alle genutzten Regionen gemeinsam, höchstens alle 5 Minuten.
+		Source::refresh( array_map( 'strval', array_keys( $usage['regions'] ) ) );
 		foreach ( array_keys( $usage['maps'] ) as $code ) {
 			Map::refresh( (string) $code );
 		}

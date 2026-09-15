@@ -2,12 +2,15 @@
 /**
  * Datenquelle: amtliche Warnungen des Deutschen Wetterdienstes.
  *
- * - Landkreise, Kreisteile, Küsten und Binnenseen: warnings.json (Objekteinbindung)
- * - Gemeinden: DWD-Geodienst (WFS "Warnungen_Gemeinden"), gefiltert nach Warncell-ID
+ * Primär über die Wetterwarner-API (api.it93.de), die die DWD-Daten zentral
+ * zwischenspeichert. Fällt die API aus, lädt das Plugin direkt beim DWD:
+ * - Landkreise, Kreisteile, Küsten, Binnenseen: warnings.json
+ * - Gemeinden: DWD-Geodienst (WFS "Warnungen_Gemeinden")
  *
- * Alle Abrufe werden als Transient zwischengespeichert. Zusätzlich bleibt die
- * letzte erfolgreiche Antwort als Reserve erhalten, falls der DWD kurzzeitig
- * nicht erreichbar ist.
+ * Lastbegrenzung: Alle genutzten Regionen werden gemeinsam in einer Anfrage
+ * geladen, regulär höchstens alle 5 Minuten (WP-Cron). Seitenaufrufe lesen
+ * nur den lokalen Speicher. Ausnahme: eine neu gewählte Region wird einmalig
+ * sofort geladen (höchstens einmal pro Minute).
  *
  * @package Wetterwarner
  */
@@ -20,16 +23,22 @@ defined( 'ABSPATH' ) || exit;
 
 class Source {
 
+	const API_URL      = 'https://api.it93.de/wetterwarner/v3/';
 	const DISTRICT_URL = 'https://www.dwd.de/DWD/warnungen/warnapp/json/warnings.json';
 	const WFS_URL      = 'https://maps.dwd.de/geoserver/dwd/ows';
 
-	const CACHE_TTL     = 300;
-	const PREFIX        = 'wetterwarner_feed_';
-	const BACKUP_OPTION = 'wetterwarner_backup';
+	/** Mindestabstand zwischen zwei regulären Abrufen (Sekunden). */
+	const REFRESH_INTERVAL = 300;
+
+	/** Ab diesem Alter wird auch ohne Cron nachgeladen (Sekunden). */
+	const MAX_AGE = 1800;
+
+	const STORE_OPTION  = 'wetterwarner_store';
 	const STATUS_OPTION = 'wetterwarner_status';
+	const LOCK          = 'wetterwarner_refresh_lock';
 
 	/**
-	 * Aktuelle Warnungen einer Region, sortiert nach Warnstufe.
+	 * Aktuelle Warnungen einer Region aus dem lokalen Speicher.
 	 *
 	 * @param string $region_id Warncell-ID oder "demo".
 	 * @return array[]|WP_Error
@@ -41,14 +50,22 @@ class Source {
 			$warnings = self::demo_warnings();
 		} elseif ( ! Regions::is_valid_id( $region_id ) ) {
 			return new WP_Error( 'wetterwarner_invalid_region', __( 'Invalid warning region.', 'wetterwarner' ) );
-		} elseif ( Regions::is_municipality( $region_id ) ) {
-			$warnings = self::municipality_warnings( $region_id );
 		} else {
-			$warnings = self::district_warnings( $region_id );
-		}
+			$store = self::store();
 
-		if ( is_wp_error( $warnings ) ) {
-			return $warnings;
+			if ( ! isset( $store['cells'][ $region_id ] ) ) {
+				self::refresh( array( $region_id ), true );
+				$store = self::store();
+			} elseif ( time() - $store['fetched'][ $region_id ] > self::MAX_AGE ) {
+				// WP-Cron läuft offenbar nicht – im Rahmen des 5-Minuten-Limits nachladen.
+				self::refresh( array_merge( array_keys( Plugin::usage()['regions'] ), array( $region_id ) ) );
+				$store = self::store();
+			}
+
+			if ( ! isset( $store['cells'][ $region_id ] ) ) {
+				return new WP_Error( 'wetterwarner_unavailable', self::last_error() );
+			}
+			$warnings = $store['cells'][ $region_id ];
 		}
 
 		/**
@@ -63,46 +80,90 @@ class Source {
 	}
 
 	/**
-	 * Lädt die angegebenen Regionen vorab in den Cache (WP-Cron).
+	 * Lädt die Warnungen mehrerer Regionen in einer Anfrage.
 	 *
 	 * @param string[] $region_ids Warncell-IDs.
+	 * @param bool     $new_region Einmaliger Sofortabruf für eine neue Region.
+	 * @return bool|WP_Error true bei Erfolg, false wenn übersprungen.
 	 */
-	public static function prewarm( array $region_ids ) {
-		$municipalities = array();
-		$districts      = false;
-
-		foreach ( $region_ids as $id ) {
-			if ( ! Regions::is_valid_id( $id ) ) {
-				continue;
-			}
-			if ( Regions::is_municipality( $id ) ) {
-				$municipalities[] = (string) $id;
-			} else {
-				$districts = true;
-			}
+	public static function refresh( array $region_ids, $new_region = false ) {
+		$ids = array_values( array_unique( array_filter( array_map( 'strval', $region_ids ), array( Regions::class, 'is_valid_id' ) ) ) );
+		if ( ! $ids ) {
+			return false;
 		}
 
-		if ( $districts ) {
-			self::load_district_feed( true );
+		$store = self::store();
+		if ( $new_region ) {
+			$attempt = 'wetterwarner_try_' . md5( implode( ',', $ids ) );
+			if ( get_transient( $attempt ) ) {
+				return false;
+			}
+			set_transient( $attempt, 1, MINUTE_IN_SECONDS );
+		} elseif ( time() - $store['last_request'] < self::REFRESH_INTERVAL - 30 ) {
+			// 30 Sekunden Toleranz, damit ein leicht verspäteter Cron-Lauf nicht übersprungen wird.
+			return false;
 		}
-		// Bis zu 50 Gemeinden je Anfrage bündeln.
-		foreach ( array_chunk( $municipalities, 50 ) as $chunk ) {
-			self::fetch_municipalities( $chunk );
+
+		if ( get_transient( self::LOCK ) ) {
+			return false;
 		}
+		set_transient( self::LOCK, 1, MINUTE_IN_SECONDS );
+
+		if ( ! $new_region ) {
+			// Vor dem Abruf merken: auch ein Fehlschlag zählt als Abruf.
+			$store['last_request'] = time();
+			self::save_store( $store );
+		}
+
+		$result = self::fetch_from_api( $ids );
+		if ( is_wp_error( $result ) ) {
+			$direct = self::fetch_direct( $ids );
+			$result = is_wp_error( $direct ) ? $result : $direct;
+		}
+
+		delete_transient( self::LOCK );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$store = self::store();
+		$now   = time();
+		foreach ( $result as $id => $warnings ) {
+			$store['cells'][ $id ]   = $warnings;
+			$store['fetched'][ $id ] = $now;
+		}
+		// Nicht mehr genutzte Regionen entfernen.
+		foreach ( $store['fetched'] as $id => $time ) {
+			if ( $now - $time > 2 * DAY_IN_SECONDS ) {
+				unset( $store['cells'][ $id ], $store['fetched'][ $id ] );
+			}
+		}
+		self::save_store( $store );
+
+		return true;
+	}
+
+	/**
+	 * Basis-URL der Wetterwarner-API. Leer = nur direkt beim DWD laden.
+	 */
+	public static function api_url() {
+		$url = defined( 'WETTERWARNER_API_URL' ) ? WETTERWARNER_API_URL : self::API_URL;
+
+		/**
+		 * Basis-URL der Wetterwarner-API, z. B. für eine eigene Instanz.
+		 *
+		 * @param string $url URL mit abschließendem Slash oder leer.
+		 */
+		return (string) apply_filters( 'wetterwarner_api_url', $url );
 	}
 
 	/**
 	 * Löscht alle zwischengespeicherten Warnungen.
 	 */
 	public static function clear_cache() {
-		global $wpdb;
-
-		$like = $wpdb->esc_like( '_transient_' . self::PREFIX ) . '%';
-		$rows = $wpdb->get_col( $wpdb->prepare( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s", $like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		foreach ( $rows as $name ) {
-			delete_transient( substr( $name, strlen( '_transient_' ) ) );
-		}
-		delete_option( self::BACKUP_OPTION );
+		delete_option( self::STORE_OPTION );
+		delete_transient( self::LOCK );
 	}
 
 	/**
@@ -114,26 +175,157 @@ class Source {
 		return (array) get_option( self::STATUS_OPTION, array() );
 	}
 
+	/**
+	 * @return array{cells: array<string, array[]>, fetched: array<string, int>, last_request: int}
+	 */
+	public static function store() {
+		$store = get_option( self::STORE_OPTION, array() );
+		return array(
+			'cells'        => isset( $store['cells'] ) ? (array) $store['cells'] : array(),
+			'fetched'      => isset( $store['fetched'] ) ? (array) $store['fetched'] : array(),
+			'last_request' => isset( $store['last_request'] ) ? (int) $store['last_request'] : 0,
+		);
+	}
+
+	private static function save_store( array $store ) {
+		update_option( self::STORE_OPTION, $store, false );
+	}
+
+	private static function last_error() {
+		foreach ( array( 'api', 'districts', 'municipalities' ) as $source ) {
+			$status = self::status();
+			if ( ! empty( $status[ $source ]['error'] ) ) {
+				return $status[ $source ]['error'];
+			}
+		}
+		return __( 'Weather alerts could not be loaded.', 'wetterwarner' );
+	}
+
 	/* ------------------------------------------------------------------ */
-	/* Landkreise, Kreisteile, Küsten, Binnenseen: warnings.json           */
+	/* Wetterwarner-API                                                    */
 	/* ------------------------------------------------------------------ */
 
-	private static function district_warnings( $region_id ) {
-		$feed = self::load_district_feed();
-		if ( is_wp_error( $feed ) ) {
-			return $feed;
+	/**
+	 * @param string[] $ids Warncell-IDs.
+	 * @return array<string, array[]>|WP_Error
+	 */
+	private static function fetch_from_api( array $ids ) {
+		$base = self::api_url();
+		if ( '' === $base ) {
+			return new WP_Error( 'wetterwarner_api_disabled', 'API disabled' );
 		}
 
-		// Landkreise sind teils in Kreisteile (9…) aufgeteilt und umgekehrt.
-		$kreis    = substr( $region_id, 1, 5 );
-		$related  = array( $region_id );
-		$type     = substr( $region_id, 0, 1 );
-		$result   = array();
-		$seen     = array();
+		$result = array();
+		foreach ( array_chunk( $ids, 100 ) as $chunk ) {
+			$body = self::request( add_query_arg( 'cells', implode( ',', $chunk ), trailingslashit( $base ) . 'warnings' ), 'api' );
+			if ( is_wp_error( $body ) ) {
+				return $body;
+			}
 
-		foreach ( $feed['cells'] as $cell => $warnings ) {
-			$cell = (string) $cell;
-			$match = in_array( $cell, $related, true )
+			$json = json_decode( $body, true );
+			if ( ! is_array( $json ) || ! isset( $json['cells'] ) || ! is_array( $json['cells'] ) ) {
+				$error = new WP_Error( 'wetterwarner_bad_json', __( 'The API response could not be read.', 'wetterwarner' ) );
+				self::set_status( 'api', $error );
+				return $error;
+			}
+
+			foreach ( $chunk as $id ) {
+				$list          = isset( $json['cells'][ $id ] ) && is_array( $json['cells'][ $id ] ) ? $json['cells'][ $id ] : array();
+				$result[ $id ] = array_map( array( __CLASS__, 'sanitize_warning' ), array_filter( $list, 'is_array' ) );
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Stellt sicher, dass Daten der API dem erwarteten Format entsprechen.
+	 */
+	private static function sanitize_warning( array $w ) {
+		$types = array( 'thunderstorm', 'wind', 'rain', 'snow', 'fog', 'frost', 'ice', 'thaw', 'heat', 'uv', 'other' );
+		$text  = static function ( $key ) use ( $w ) {
+			return isset( $w[ $key ] ) && is_scalar( $w[ $key ] ) ? (string) $w[ $key ] : '';
+		};
+		$int   = static function ( $key ) use ( $w ) {
+			return isset( $w[ $key ] ) && is_numeric( $w[ $key ] ) ? (int) $w[ $key ] : 0;
+		};
+
+		return array(
+			'event'          => $text( 'event' ),
+			'headline'       => $text( 'headline' ),
+			'description'    => $text( 'description' ),
+			'instruction'    => $text( 'instruction' ),
+			'stage'          => max( 1, min( 4, $int( 'stage' ) ) ),
+			'type'           => in_array( $text( 'type' ), $types, true ) ? $text( 'type' ) : 'other',
+			'start'          => $int( 'start' ),
+			'end'            => $int( 'end' ),
+			'prior'          => ! empty( $w['prior'] ),
+			'altitude_start' => $int( 'altitude_start' ),
+			'altitude_end'   => $int( 'altitude_end' ),
+		);
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Rückfall: direkt beim DWD                                           */
+	/* ------------------------------------------------------------------ */
+
+	/**
+	 * @param string[] $ids Warncell-IDs.
+	 * @return array<string, array[]>|WP_Error
+	 */
+	private static function fetch_direct( array $ids ) {
+		$districts = array();
+		$fallback  = array();
+		$result    = array();
+
+		$municipalities = array_filter( $ids, array( Regions::class, 'is_municipality' ) );
+		foreach ( array_chunk( $municipalities, 50 ) as $chunk ) {
+			$fetched = self::fetch_municipalities( $chunk );
+			if ( is_wp_error( $fetched ) ) {
+				// Geodienst nicht erreichbar: Warnungen des Landkreises verwenden.
+				foreach ( $chunk as $id ) {
+					$fallback[ $id ] = '1' . substr( $id, 1, 5 ) . '000';
+				}
+			} else {
+				$result += $fetched;
+			}
+		}
+
+		foreach ( $ids as $id ) {
+			if ( ! Regions::is_municipality( $id ) ) {
+				$districts[] = $id;
+			}
+		}
+
+		if ( $districts || $fallback ) {
+			$feed = self::load_district_feed();
+			if ( is_wp_error( $feed ) ) {
+				return $result ? $result : $feed;
+			}
+			foreach ( $districts as $id ) {
+				$result[ $id ] = self::district_warnings( $feed, $id );
+			}
+			foreach ( $fallback as $id => $district ) {
+				$result[ $id ] = self::district_warnings( $feed, $district );
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Warnungen einer Region aus warnings.json, inklusive verwandter Zellen:
+	 * Landkreise (1…) sind teils in Kreisteile (9…) aufgeteilt und umgekehrt.
+	 */
+	private static function district_warnings( array $feed, $region_id ) {
+		$kreis  = substr( $region_id, 1, 5 );
+		$type   = substr( $region_id, 0, 1 );
+		$result = array();
+		$seen   = array();
+
+		foreach ( $feed as $cell => $warnings ) {
+			$cell  = (string) $cell;
+			$match = $cell === $region_id
 				|| ( '1' === $type && 0 === strpos( $cell, '9' . $kreis ) )
 				|| ( '9' === $type && '1' . $kreis . '000' === $cell );
 
@@ -153,58 +345,38 @@ class Source {
 	}
 
 	/**
-	 * @param bool $force Cache ignorieren.
-	 * @return array{time:int, cells:array}|WP_Error
+	 * @return array<string, array[]>|WP_Error Normalisierte Warnungen je Zelle.
 	 */
-	private static function load_district_feed( $force = false ) {
-		$key = self::PREFIX . 'districts';
-
-		if ( ! $force ) {
-			$cached = get_transient( $key );
-			if ( is_array( $cached ) ) {
-				return $cached;
-			}
-		}
-
+	private static function load_district_feed() {
 		/**
 		 * URL der DWD-Warnungen auf Kreisebene (JSON/JSONP).
 		 *
 		 * @param string $url URL.
 		 */
-		$url  = apply_filters( 'wetterwarner_district_feed_url', self::DISTRICT_URL );
-		$body = self::request( $url, 'districts' );
-
-		if ( ! is_wp_error( $body ) ) {
-			$body = preg_replace( '/^\s*warnWetter\.loadWarnings\(|\);?\s*$/', '', $body );
-			$json = json_decode( $body, true );
-
-			if ( ! is_array( $json ) || ! isset( $json['warnings'] ) ) {
-				$body = new WP_Error( 'wetterwarner_bad_json', __( 'The DWD response could not be read.', 'wetterwarner' ) );
-				self::set_status( 'districts', $body );
-			} else {
-				$cells = array();
-				foreach ( array( 'warnings' => false, 'vorabInformation' => true ) as $group => $prior ) {
-					if ( empty( $json[ $group ] ) || ! is_array( $json[ $group ] ) ) {
-						continue;
-					}
-					foreach ( $json[ $group ] as $cell => $list ) {
-						foreach ( (array) $list as $warning ) {
-							$cells[ $cell ][] = self::normalize_district( $warning, $prior );
-						}
-					}
-				}
-				$feed = array(
-					'time'  => isset( $json['time'] ) ? (int) ( $json['time'] / 1000 ) : time(),
-					'cells' => $cells,
-				);
-				set_transient( $key, $feed, self::CACHE_TTL );
-				self::set_backup( 'districts', $feed );
-				return $feed;
-			}
+		$body = self::request( apply_filters( 'wetterwarner_district_feed_url', self::DISTRICT_URL ), 'districts', 30 );
+		if ( is_wp_error( $body ) ) {
+			return $body;
 		}
 
-		$backup = self::get_backup( 'districts' );
-		return null !== $backup ? $backup : $body;
+		$json = json_decode( preg_replace( '/^\s*warnWetter\.loadWarnings\(|\);?\s*$/', '', $body ), true );
+		if ( ! is_array( $json ) || ! isset( $json['warnings'] ) ) {
+			$error = new WP_Error( 'wetterwarner_bad_json', __( 'The DWD response could not be read.', 'wetterwarner' ) );
+			self::set_status( 'districts', $error );
+			return $error;
+		}
+
+		$cells = array();
+		foreach ( array( 'warnings' => false, 'vorabInformation' => true ) as $group => $prior ) {
+			if ( empty( $json[ $group ] ) || ! is_array( $json[ $group ] ) ) {
+				continue;
+			}
+			foreach ( $json[ $group ] as $cell => $list ) {
+				foreach ( (array) $list as $warning ) {
+					$cells[ $cell ][] = self::normalize_district( $warning, $prior );
+				}
+			}
+		}
+		return $cells;
 	}
 
 	private static function normalize_district( array $w, $prior ) {
@@ -233,46 +405,12 @@ class Source {
 		);
 	}
 
-	/* ------------------------------------------------------------------ */
-	/* Gemeinden: DWD-Geodienst (WFS)                                      */
-	/* ------------------------------------------------------------------ */
-
-	private static function municipality_warnings( $region_id ) {
-		$cached = get_transient( self::PREFIX . 'g' . $region_id );
-		if ( is_array( $cached ) ) {
-			return $cached;
-		}
-
-		$result = self::fetch_municipalities( array( $region_id ) );
-		if ( ! is_wp_error( $result ) ) {
-			return $result[ $region_id ];
-		}
-
-		$backup = self::get_backup( 'g' . $region_id );
-		if ( null !== $backup ) {
-			return $backup;
-		}
-
-		// Geodienst nicht erreichbar: Warnungen des zugehörigen Landkreises anzeigen.
-		$district = '1' . substr( $region_id, 1, 5 ) . '000';
-		if ( Regions::get( $district ) || Regions::get( '9' . substr( $region_id, 1, 5 ) . '999' ) ) {
-			$fallback = self::district_warnings( Regions::get( $district ) ? $district : '9' . substr( $region_id, 1, 5 ) . '999' );
-			if ( ! is_wp_error( $fallback ) ) {
-				return $fallback;
-			}
-		}
-		return $result;
-	}
-
 	/**
 	 * @param string[] $ids Warncell-IDs von Gemeinden.
 	 * @return array<string, array[]>|WP_Error
 	 */
 	private static function fetch_municipalities( array $ids ) {
-		$ids = array_values( array_filter( array_map( 'strval', $ids ), array( Regions::class, 'is_municipality' ) ) );
-		if ( ! $ids ) {
-			return array();
-		}
+		$ids = array_values( array_map( 'strval', $ids ) );
 
 		$url = add_query_arg(
 			array(
@@ -313,11 +451,6 @@ class Source {
 				continue;
 			}
 			$result[ $cell ][] = self::normalize_wfs( $p );
-		}
-
-		foreach ( $result as $cell => $warnings ) {
-			set_transient( self::PREFIX . 'g' . $cell, $warnings, self::CACHE_TTL );
-			self::set_backup( 'g' . $cell, $warnings );
 		}
 
 		return $result;
@@ -411,6 +544,9 @@ class Source {
 	}
 
 	/**
+	 * @param string $url     URL.
+	 * @param string $source  Statusschlüssel: api, districts, municipalities.
+	 * @param int    $timeout Sekunden.
 	 * @return string|WP_Error Antworttext.
 	 */
 	private static function request( $url, $source, $timeout = 10 ) {
@@ -426,13 +562,13 @@ class Source {
 			$error = new WP_Error(
 				'wetterwarner_http',
 				/* translators: %s: error message */
-				sprintf( __( 'DWD could not be reached: %s', 'wetterwarner' ), $response->get_error_message() )
+				sprintf( __( 'Data source could not be reached: %s', 'wetterwarner' ), $response->get_error_message() )
 			);
 		} elseif ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			$error = new WP_Error(
 				'wetterwarner_http',
 				/* translators: %d: HTTP status code */
-				sprintf( __( 'DWD responded with HTTP status %d.', 'wetterwarner' ), wp_remote_retrieve_response_code( $response ) )
+				sprintf( __( 'Data source responded with HTTP status %d.', 'wetterwarner' ), wp_remote_retrieve_response_code( $response ) )
 			);
 		} else {
 			self::set_status( $source, true );
@@ -444,7 +580,7 @@ class Source {
 	}
 
 	/**
-	 * @param string        $source "districts" oder "municipalities".
+	 * @param string        $source Statusschlüssel.
 	 * @param true|WP_Error $result Ergebnis.
 	 */
 	private static function set_status( $source, $result ) {
@@ -461,17 +597,6 @@ class Source {
 
 		$status[ $source ] = $entry;
 		update_option( self::STATUS_OPTION, $status, false );
-	}
-
-	private static function set_backup( $key, $data ) {
-		$backup         = (array) get_option( self::BACKUP_OPTION, array() );
-		$backup[ $key ] = $data;
-		update_option( self::BACKUP_OPTION, $backup, false );
-	}
-
-	private static function get_backup( $key ) {
-		$backup = (array) get_option( self::BACKUP_OPTION, array() );
-		return isset( $backup[ $key ] ) ? $backup[ $key ] : null;
 	}
 
 	/**

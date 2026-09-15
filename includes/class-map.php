@@ -1,7 +1,8 @@
 <?php
 /**
  * Warnkarten des DWD. Die Bilder werden lokal im Upload-Verzeichnis
- * zwischengespeichert, damit Besucher keine Verbindung zum DWD aufbauen.
+ * zwischengespeichert, damit Besucher keine externe Verbindung aufbauen.
+ * Quelle ist die Wetterwarner-API, im Fehlerfall direkt der DWD.
  *
  * @package Wetterwarner
  */
@@ -12,8 +13,13 @@ defined( 'ABSPATH' ) || exit;
 
 class Map {
 
-	const SOURCE_URL = 'https://www.dwd.de/DWD/warnungen/warnapp_gemeinden/json/warnungen_gemeinde_map_%s.png';
-	const MAX_AGE    = 900;
+	const DWD_URL = 'https://www.dwd.de/DWD/warnungen/warnapp_gemeinden/json/warnungen_gemeinde_map_%s.png';
+
+	/** Cron aktualisiert Karten, die älter sind (Sekunden). */
+	const REFRESH_AGE = 270;
+
+	/** Ohne Cron: beim Seitenaufruf erst ab diesem Alter nachladen (Sekunden). */
+	const LAZY_AGE = 3600;
 
 	/** Bundesland (Kürzel der Warncell-Liste) => DWD-Kartencode. */
 	const STATE_CODES = array(
@@ -82,8 +88,8 @@ class Map {
 	public static function get( $code ) {
 		$file = self::find_file( $code );
 
-		if ( ! $file || time() - filemtime( $file ) > self::MAX_AGE * 4 ) {
-			// Fehlt die Karte oder ist sie deutlich veraltet (Cron läuft nicht), sofort laden.
+		if ( ! $file || time() - filemtime( $file ) > self::LAZY_AGE ) {
+			// Nur wenn die Karte fehlt oder der Cron offensichtlich nicht läuft.
 			self::download( $code );
 			$file = self::find_file( $code );
 		}
@@ -102,14 +108,13 @@ class Map {
 	}
 
 	/**
-	 * Lädt eine Karte, sofern sie älter als MAX_AGE ist.
+	 * WP-Cron: Karte laden, sofern sie älter als REFRESH_AGE ist.
 	 *
 	 * @param string $code Kartencode.
-	 * @param bool   $force Alter ignorieren.
 	 */
-	public static function refresh( $code, $force = false ) {
+	public static function refresh( $code ) {
 		$file = self::find_file( $code );
-		if ( $force || ! $file || time() - filemtime( $file ) > self::MAX_AGE ) {
+		if ( ! $file || time() - filemtime( $file ) > self::REFRESH_AGE ) {
 			self::download( $code );
 		}
 	}
@@ -119,8 +124,10 @@ class Map {
 	 */
 	public static function clear_cache() {
 		$dir = self::upload_dir();
-		foreach ( (array) glob( $dir['path'] . '/map-*.{png,webp}', GLOB_BRACE ) as $file ) {
-			wp_delete_file( $file );
+		foreach ( array( 'png', 'webp' ) as $ext ) {
+			foreach ( (array) glob( $dir['path'] . '/map-*.' . $ext ) as $file ) {
+				wp_delete_file( $file );
+			}
 		}
 	}
 
@@ -135,8 +142,12 @@ class Map {
 		);
 	}
 
+	private static function is_code( $code ) {
+		return 'auto' !== $code && array_key_exists( $code, self::choices() );
+	}
+
 	private static function find_file( $code ) {
-		if ( ! array_key_exists( $code, self::choices() ) || 'auto' === $code ) {
+		if ( ! self::is_code( $code ) ) {
 			return null;
 		}
 		$dir = self::upload_dir();
@@ -150,28 +161,25 @@ class Map {
 	}
 
 	private static function download( $code ) {
-		if ( ! array_key_exists( $code, self::choices() ) || 'auto' === $code ) {
+		if ( ! self::is_code( $code ) ) {
 			return false;
 		}
-
 		$dir = self::upload_dir();
 		if ( ! wp_mkdir_p( $dir['path'] ) ) {
 			return false;
 		}
 
-		$response = wp_remote_get(
-			sprintf( self::SOURCE_URL, $code ),
-			array(
-				'timeout'    => 15,
-				'user-agent' => 'Wetterwarner/' . WETTERWARNER_VERSION . ' (WordPress; +https://wordpress.org/plugins/wetterwarner/)',
-			)
-		);
-
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			return false;
+		$base = Source::api_url();
+		if ( '' !== $base ) {
+			$body = self::fetch( trailingslashit( $base ) . 'maps/' . $code . '.webp' );
+			if ( $body && 'RIFF' === substr( $body, 0, 4 ) && 'WEBP' === substr( $body, 8, 4 ) ) {
+				return self::store( $dir['path'] . '/map-' . $code . '.webp', $body, $dir['path'] . '/map-' . $code . '.png' );
+			}
 		}
-		$body = wp_remote_retrieve_body( $response );
-		if ( 0 !== strpos( $body, "\x89PNG" ) ) {
+
+		// Rückfall: PNG direkt vom DWD, wenn möglich lokal als WebP gespeichert.
+		$body = self::fetch( sprintf( self::DWD_URL, $code ) );
+		if ( ! $body || 0 !== strpos( $body, "\x89PNG" ) ) {
 			return false;
 		}
 
@@ -181,19 +189,40 @@ class Map {
 			return false;
 		}
 
-		// Wenn möglich als WebP speichern (deutlich kleiner). Der Bildinhalt bleibt unverändert.
 		$editor = wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ? wp_get_image_editor( $tmp ) : null;
-		if ( $editor && ! is_wp_error( $editor ) ) {
-			$saved = $editor->save( $dir['path'] . '/map-' . $code . '.webp', 'image/webp' );
-			if ( ! is_wp_error( $saved ) ) {
-				wp_delete_file( $tmp );
-				if ( is_file( $png ) ) {
-					wp_delete_file( $png );
-				}
-				return true;
+		if ( $editor && ! is_wp_error( $editor ) && ! is_wp_error( $editor->save( $dir['path'] . '/map-' . $code . '.webp', 'image/webp' ) ) ) {
+			wp_delete_file( $tmp );
+			if ( is_file( $png ) ) {
+				wp_delete_file( $png );
 			}
+			return true;
 		}
 
+		// Ohne WebP-Unterstützung als PNG ablegen; eine ältere WebP-Datei würde sonst Vorrang haben.
+		if ( is_file( $dir['path'] . '/map-' . $code . '.webp' ) ) {
+			wp_delete_file( $dir['path'] . '/map-' . $code . '.webp' );
+		}
 		return rename( $tmp, $png ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename
+	}
+
+	private static function fetch( $url ) {
+		$response = wp_remote_get(
+			$url,
+			array(
+				'timeout'    => 15,
+				'user-agent' => 'Wetterwarner/' . WETTERWARNER_VERSION . ' (WordPress; +https://wordpress.org/plugins/wetterwarner/)',
+			)
+		);
+		return is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ? '' : wp_remote_retrieve_body( $response );
+	}
+
+	private static function store( $file, $body, $remove ) {
+		if ( false === file_put_contents( $file . '.tmp', $body ) || ! rename( $file . '.tmp', $file ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
+			return false;
+		}
+		if ( is_file( $remove ) ) {
+			wp_delete_file( $remove );
+		}
+		return true;
 	}
 }
