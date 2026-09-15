@@ -164,7 +164,9 @@ class Plugin {
 
 	private static function schedule() {
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
-			wp_schedule_event( time() + MINUTE_IN_SECONDS, self::CRON_SCHEDULE, self::CRON_HOOK );
+			// Kurz nach Aktivierung oder Update laufen lassen, damit Warnungen und
+			// Regionsnamen schon vor dem ersten Besucher im Speicher liegen.
+			wp_schedule_event( time() + 10, self::CRON_SCHEDULE, self::CRON_HOOK );
 		}
 	}
 
