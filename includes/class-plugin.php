@@ -27,6 +27,7 @@ class Plugin {
 		add_shortcode( 'wetterwarner', array( __CLASS__, 'shortcode' ) );
 
 		Admin::init();
+		Telemetry::init();
 	}
 
 	public static function register_block() {

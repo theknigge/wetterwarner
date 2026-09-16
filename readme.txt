@@ -55,6 +55,8 @@ Anbieter: Tim Knigge, IT93. [Datenschutz](https://it93.de/datenschutz/)
 
 * `https://api.it93.de/wetterwarner/v3/warnings` – Warnungen der genutzten Regionen
 * `https://api.it93.de/wetterwarner/v3/regions` – Regionssuche im Block- und Widget-Editor (übertragen wird nur der Suchbegriff)
+
+**Optional: Entwicklung unterstützen** – Nur wenn Du ausdrücklich zustimmst (Hinweis im Backend oder „Einstellungen > Wetterwarner“), werden beim regulären Abruf zusätzlich die Adresse Deiner Website sowie die Plugin-, WordPress- und PHP-Version übermittelt. Daten Deiner Besucher werden nicht übertragen. Die Zustimmung kann jederzeit widerrufen werden; die gespeicherten Angaben werden dann gelöscht. Einträge ohne Kontakt werden nach 90 Tagen automatisch entfernt.
 * `https://api.it93.de/wetterwarner/v3/maps/` – Warnkarten (nur wenn eine Karte angezeigt wird)
 
 **Deutscher Wetterdienst** – Nur als Rückfall, falls die Wetterwarner-API nicht erreichbar ist.

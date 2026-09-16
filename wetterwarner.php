@@ -29,6 +29,7 @@ require_once WETTERWARNER_DIR . 'includes/class-renderer.php';
 require_once WETTERWARNER_DIR . 'includes/class-rest.php';
 require_once WETTERWARNER_DIR . 'includes/class-widget.php';
 require_once WETTERWARNER_DIR . 'includes/class-admin.php';
+require_once WETTERWARNER_DIR . 'includes/class-telemetry.php';
 require_once WETTERWARNER_DIR . 'includes/class-plugin.php';
 
 register_activation_hook( __FILE__, array( 'Wetterwarner\\Plugin', 'activate' ) );

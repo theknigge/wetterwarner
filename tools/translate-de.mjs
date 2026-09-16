@@ -111,6 +111,16 @@ const de = {
 	'Official weather alerts of the Deutscher Wetterdienst for a warning region.':
 		'Amtliche Wetterwarnungen des Deutschen Wetterdienstes für eine Warnregion.',
 	'Warning region %s': 'Warnregion %s',
+	'Support development': 'Entwicklung unterstützen',
+	'Usage data': 'Nutzungsdaten',
+	'Support development and share usage data': 'Entwicklung unterstützen und Nutzungsdaten teilen',
+	'Shares the address of this website and the plugin, WordPress and PHP versions with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted.':
+		'Übermittelt die Adresse dieser Website sowie die Plugin-, WordPress- und PHP-Version an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen; die gespeicherten Angaben werden dann gelöscht.',
+	'Support the development of Wetterwarner?': 'Entwicklung von Wetterwarner unterstützen?',
+	'May Wetterwarner share usage data with the developer? This includes the address of this website and the plugin, WordPress and PHP versions – no visitor data. It shows where Wetterwarner is used and which versions still need to be supported. You can revoke your consent at any time under Settings › Wetterwarner.':
+		'Darf Wetterwarner Nutzungsdaten mit dem Entwickler teilen? Übermittelt werden die Adresse dieser Website sowie die Plugin-, WordPress- und PHP-Version – keine Daten Deiner Besucher. So sehen wir, wo Wetterwarner im Einsatz ist und welche Versionen weiter unterstützt werden müssen. Du kannst die Zustimmung jederzeit unter Einstellungen › Wetterwarner widerrufen.',
+	'Yes, share usage data': 'Ja, Nutzungsdaten teilen',
+	'No, thanks': 'Nein, danke',
 	'Wetterwarner API (api.it93.de)': 'Wetterwarner-API (api.it93.de)',
 	'DWD direct: districts (fallback)': 'DWD direkt: Landkreise (Rückfall)',
 	'DWD direct: municipalities (fallback)': 'DWD direkt: Gemeinden (Rückfall)',

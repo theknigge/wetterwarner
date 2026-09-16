@@ -9,7 +9,23 @@ defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
 global $wpdb;
 
-foreach ( array( 'wetterwarner_settings', 'wetterwarner_version', 'wetterwarner_usage', 'wetterwarner_status', 'wetterwarner_store', 'wetterwarner_regions', 'wetterwarner_migration', 'widget_wetterwarner_widget' ) as $option ) {
+// Freiwillige Nutzungsdaten bei der API löschen lassen.
+if ( 'yes' === get_option( 'wetterwarner_telemetry' ) ) {
+	$wetterwarner_api = defined( 'WETTERWARNER_API_URL' ) ? WETTERWARNER_API_URL : 'https://api.it93.de/wetterwarner/v3/';
+	if ( '' !== $wetterwarner_api ) {
+		$wetterwarner_home = home_url();
+		$wetterwarner_path = trim( (string) wp_parse_url( $wetterwarner_home, PHP_URL_PATH ), '/' );
+		wp_remote_post(
+			trailingslashit( $wetterwarner_api ) . 'sites/forget',
+			array(
+				'timeout' => 5,
+				'headers' => array( 'X-Wetterwarner-Site' => strtolower( wp_parse_url( $wetterwarner_home, PHP_URL_HOST ) . ( '' !== $wetterwarner_path ? '/' . $wetterwarner_path : '' ) ) ),
+			)
+		);
+	}
+}
+
+foreach ( array( 'wetterwarner_settings', 'wetterwarner_version', 'wetterwarner_usage', 'wetterwarner_status', 'wetterwarner_store', 'wetterwarner_regions', 'wetterwarner_migration', 'wetterwarner_telemetry', 'widget_wetterwarner_widget' ) as $option ) {
 	delete_option( $option );
 }
 

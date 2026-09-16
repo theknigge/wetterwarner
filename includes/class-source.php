@@ -558,6 +558,8 @@ class Source {
 		$response = wp_remote_get(
 			$url,
 			array(
+				// Freiwillige Nutzungsdaten nur an die eigene API und nur nach Zustimmung.
+				'headers'    => 'api' === $source ? Telemetry::headers() : array(),
 				'timeout'    => $timeout,
 				'user-agent' => 'Wetterwarner/' . WETTERWARNER_VERSION . ' (WordPress; +https://wordpress.org/plugins/wetterwarner/)',
 			)
