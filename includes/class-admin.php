@@ -138,22 +138,9 @@ class Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		$status    = Source::status();
-		$usage     = Plugin::usage();
-		$dashboard = Source::dashboard();
+		$status = Source::status();
+		$usage  = Plugin::usage();
 		?>
-		<style>
-			.wetterwarner-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
-			.wetterwarner-stat { background: #f0f0f0; padding: 1rem; border-radius: 4px; }
-			.wetterwarner-stat-value { font-size: 2em; font-weight: bold; color: #eb0000; }
-			.wetterwarner-stat-label { font-size: 0.9em; color: #666; margin-top: 0.5rem; }
-			.wetterwarner-sites { margin-top: 1.5rem; }
-			.wetterwarner-site { background: #fafafa; padding: 1rem; margin-bottom: 0.75rem; border-left: 3px solid #eb0000; }
-			.wetterwarner-site-host { font-weight: bold; margin-bottom: 0.5rem; }
-			.wetterwarner-site-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem; font-size: 0.9em; }
-			.wetterwarner-site-info-item { display: flex; flex-direction: column; }
-			.wetterwarner-site-info-label { color: #666; font-size: 0.8em; }
-		</style>
 		<div class="wrap">
 			<h1>Wetterwarner</h1>
 
@@ -243,8 +230,6 @@ class Admin {
 				<?php wp_nonce_field( 'wetterwarner_clear_cache' ); ?>
 				<?php submit_button( __( 'Clear cache', 'wetterwarner' ), 'secondary' ); ?>
 			</form>
-
-			<?php self::render_dashboard_stats( $dashboard ); ?>
 
 			<?php Telemetry::render(); ?>
 		</div>
@@ -382,98 +367,5 @@ class Admin {
 			'fields' => $fields,
 		);
 		return $info;
-	}
-
-	/**
-	 * Zeigt Statistiken vom API-Dashboard an.
-	 */
-	public static function render_dashboard_stats( $dashboard ) {
-		if ( ! is_array( $dashboard ) || empty( $dashboard['system'] ) ) {
-			return;
-		}
-
-		$system = $dashboard['system'];
-		?>
-		<hr>
-		<h2><?php esc_html_e( 'System Status', 'wetterwarner' ); ?></h2>
-
-		<div class="wetterwarner-stats">
-			<div class="wetterwarner-stat">
-				<div class="wetterwarner-stat-label"><?php esc_html_e( 'Districts', 'wetterwarner' ); ?></div>
-				<?php if ( ! empty( $system['sources']['districts']['warning_count'] ) ) : ?>
-					<div class="wetterwarner-stat-value"><?php echo intval( $system['sources']['districts']['warning_count'] ); ?></div>
-					<div class="wetterwarner-stat-label"><?php echo esc_html( human_time_diff( $system['sources']['districts']['updated'] ) ) . ' ago'; ?></div>
-				<?php else : ?>
-					<div class="wetterwarner-stat-value">–</div>
-				<?php endif; ?>
-			</div>
-
-			<div class="wetterwarner-stat">
-				<div class="wetterwarner-stat-label"><?php esc_html_e( 'Municipalities', 'wetterwarner' ); ?></div>
-				<?php if ( ! empty( $system['sources']['municipalities']['warning_count'] ) ) : ?>
-					<div class="wetterwarner-stat-value"><?php echo intval( $system['sources']['municipalities']['warning_count'] ); ?></div>
-					<div class="wetterwarner-stat-label"><?php echo esc_html( human_time_diff( $system['sources']['municipalities']['updated'] ) ) . ' ago'; ?></div>
-				<?php else : ?>
-					<div class="wetterwarner-stat-value">–</div>
-				<?php endif; ?>
-			</div>
-
-			<div class="wetterwarner-stat">
-				<div class="wetterwarner-stat-label"><?php esc_html_e( 'Regions available', 'wetterwarner' ); ?></div>
-				<div class="wetterwarner-stat-value"><?php echo intval( $system['regions']['count'] ?? 0 ); ?></div>
-				<?php if ( ! empty( $system['regions']['updated'] ) ) : ?>
-					<div class="wetterwarner-stat-label"><?php echo esc_html( human_time_diff( $system['regions']['updated'] ) ) . ' ago'; ?></div>
-				<?php endif; ?>
-			</div>
-
-			<div class="wetterwarner-stat">
-				<div class="wetterwarner-stat-label"><?php esc_html_e( 'Warning maps', 'wetterwarner' ); ?></div>
-				<div class="wetterwarner-stat-value"><?php echo intval( $system['maps']['count'] ?? 0 ); ?></div>
-				<?php if ( ! empty( $system['maps']['last_update'] ) ) : ?>
-					<div class="wetterwarner-stat-label"><?php echo esc_html( human_time_diff( $system['maps']['last_update'] ) ) . ' ago'; ?></div>
-				<?php endif; ?>
-			</div>
-		</div>
-
-		<?php if ( ! empty( $dashboard['sites'] ) ) : ?>
-			<hr>
-			<h2><?php esc_html_e( 'Contributed Sites', 'wetterwarner' ); ?></h2>
-			<p><?php echo esc_html( count( $dashboard['sites'] ) ) . ' ' . esc_html__( 'website(s) sharing usage data', 'wetterwarner' ); ?></p>
-
-			<div class="wetterwarner-sites">
-				<?php foreach ( array_slice( $dashboard['sites'], 0, 10 ) as $site ) : ?>
-					<div class="wetterwarner-site">
-						<div class="wetterwarner-site-host">
-							<a href="<?php echo esc_url( 'https://' . $site['host'] ); ?>" target="_blank" rel="noopener noreferrer">
-								<?php echo esc_html( $site['host'] ); ?>
-							</a>
-						</div>
-						<div class="wetterwarner-site-info">
-							<div class="wetterwarner-site-info-item">
-								<span class="wetterwarner-site-info-label">Plugin</span>
-								<span><?php echo esc_html( $site['plugin_version'] ?? '–' ); ?></span>
-							</div>
-							<div class="wetterwarner-site-info-item">
-								<span class="wetterwarner-site-info-label">WordPress</span>
-								<span><?php echo esc_html( $site['wp_version'] ?? '–' ); ?></span>
-							</div>
-							<div class="wetterwarner-site-info-item">
-								<span class="wetterwarner-site-info-label">PHP</span>
-								<span><?php echo esc_html( $site['php_version'] ?? '–' ); ?></span>
-							</div>
-							<div class="wetterwarner-site-info-item">
-								<span class="wetterwarner-site-info-label"><?php esc_html_e( 'Last seen', 'wetterwarner' ); ?></span>
-								<span><?php echo esc_html( human_time_diff( $site['last_seen'] ) ); ?></span>
-							</div>
-						</div>
-					</div>
-				<?php endforeach; ?>
-			</div>
-
-			<?php if ( count( $dashboard['sites'] ) > 10 ) : ?>
-				<p class="description"><?php echo esc_html( sprintf( __( 'Showing first 10 of %d sites. Full list available in API admin panel.', 'wetterwarner' ), count( $dashboard['sites'] ) ) ); ?></p>
-			<?php endif; ?>
-		<?php endif; ?>
-		<?php
 	}
 }
