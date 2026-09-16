@@ -2,13 +2,13 @@
 /**
  * Plugin Name:       Wetterwarner
  * Plugin URI:        https://it93.de/projekte/wetterwarner/
- * Description:       Zeigt amtliche Wetterwarnungen des Deutschen Wetterdienstes als Block, Shortcode oder Widget an.
+ * Description:       Displays official weather warnings from the German Weather Service (DWD) as a block, shortcode or widget.
  * Version:           3.0.0
  * Author:            Tim Knigge
- * Author URI:        https://wetterwarner.de/
+ * Author URI:        https://it93.systems/
  * Requires at least: 6.3
  * Requires PHP:      8.1
- * Tested up to:      7.0
+ * Tested up to:      7.1
  * Text Domain:       wetterwarner
  * Domain Path:       /languages
  * License:           GPLv2 or later

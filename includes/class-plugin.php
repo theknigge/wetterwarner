@@ -31,9 +31,6 @@ class Plugin {
 	}
 
 	public static function register_block() {
-		// Mitgelieferte deutsche Übersetzung, solange kein Sprachpaket von translate.wordpress.org existiert.
-		load_plugin_textdomain( 'wetterwarner', false, dirname( plugin_basename( WETTERWARNER_FILE ) ) . '/languages' );
-
 		register_block_type( WETTERWARNER_DIR . 'build/wetterwarner' );
 
 		wp_register_style( 'wetterwarner-warnings-style', false, array(), WETTERWARNER_VERSION ); // Nur Rückfall, falls der Block-Build fehlt.

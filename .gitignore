@@ -1,4 +1,6 @@
 node_modules/
 wetterwarner.zip
 *.zip
+# Berichte von Plugin Check
+wetterwarner-*-php-*.md
 .DS_Store

@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 $wetterwarner_preview = defined( 'REST_REQUEST' ) && REST_REQUEST;
 $wetterwarner_level   = isset( $attributes['titleLevel'] ) ? min( 6, max( 2, (int) $attributes['titleLevel'] ) ) : 3;
 
-echo Wetterwarner\Renderer::render( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Renderer escapes.
+$wetterwarner_html = Wetterwarner\Renderer::render(
 	$attributes,
 	array(
 		// Im Editor liefert der äußere Block-Wrapper bereits Farben und Abstände.
@@ -22,3 +22,6 @@ echo Wetterwarner\Renderer::render( // phpcs:ignore WordPress.Security.EscapeOut
 		'preview'      => $wetterwarner_preview,
 	)
 );
+
+// Renderer::render() escapt alle dynamischen Werte selbst.
+echo $wetterwarner_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

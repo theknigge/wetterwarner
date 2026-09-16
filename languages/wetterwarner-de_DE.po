@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-16T11:19:35+00:00\n"
+"POT-Creation-Date: 2026-09-16T14:50:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wetterwarner\n"
@@ -28,8 +28,8 @@ msgstr ""
 
 #. Description of the plugin
 #: wetterwarner.php
-msgid "Zeigt amtliche Wetterwarnungen des Deutschen Wetterdienstes als Block, Shortcode oder Widget an."
-msgstr ""
+msgid "Displays official weather warnings from the German Weather Service (DWD) as a block, shortcode or widget."
+msgstr "Zeigt amtliche Wetterwarnungen des Deutschen Wetterdienstes als Block, Shortcode oder Widget an."
 
 #. Author of the plugin
 #: wetterwarner.php
@@ -38,139 +38,153 @@ msgstr ""
 
 #. Author URI of the plugin
 #: wetterwarner.php
-msgid "https://wetterwarner.de/"
+msgid "https://it93.systems/"
 msgstr ""
 
-#: includes/class-admin.php:74
+#: includes/class-admin.php:76
 msgid "Colors"
 msgstr "Farben"
 
 #. translators: %d: warning level
-#: includes/class-admin.php:80
-#: includes/class-admin.php:345
+#: includes/class-admin.php:82
+#: includes/class-admin.php:360
 #, php-format
 msgid "Background color level %d"
 msgstr "Hintergrundfarbe Warnstufe %d"
 
-#: includes/class-admin.php:105
+#: includes/class-admin.php:107
 msgid "These colors apply to all blocks, shortcodes and widgets when \"Color by warning level\" is enabled."
 msgstr "Diese Farben gelten für alle Blöcke, Shortcodes und Widgets, bei denen „Nach Warnstufe einfärben“ aktiviert ist."
 
-#: includes/class-admin.php:146
+#: includes/class-admin.php:148
 msgid "Cache cleared."
 msgstr "Cache geleert."
 
-#: includes/class-admin.php:151
+#: includes/class-admin.php:153
 msgid "Usage"
 msgstr "Verwendung"
 
-#: includes/class-admin.php:152
+#: includes/class-admin.php:154
 msgid "Add the \"Wetterwarner\" block in the block editor or in a widget area. Alternatively use the shortcode:"
 msgstr "Füge den Block „Wetterwarner“ im Block-Editor oder in einem Widget-Bereich ein. Alternativ kannst Du den Shortcode verwenden:"
 
-#: includes/class-admin.php:155
+#: includes/class-admin.php:157
 msgid "All shortcode attributes"
 msgstr "Alle Shortcode-Attribute"
 
-#: includes/class-admin.php:158
+#: includes/class-admin.php:160
 msgid "Warncell ID of the region (required), or \"demo\""
 msgstr "Warncell-ID der Region (Pflicht) oder „demo“"
 
-#: includes/class-admin.php:159
+#: includes/class-admin.php:161
 msgid "Texts, %region% is replaced"
 msgstr "Texte, %region% wird ersetzt"
 
-#: includes/class-admin.php:160
+#: includes/class-admin.php:162
 msgid "Maximum number of alerts (default 3, 0 = all)"
 msgstr "Maximale Anzahl Warnungen (Standard 3, 0 = alle)"
 
-#: includes/class-admin.php:161
+#: includes/class-admin.php:163
 msgid "Options: 1 or 0"
 msgstr "Optionen: 1 oder 0"
 
-#: includes/class-admin.php:162
+#: includes/class-admin.php:164
 msgid "Map width in percent (0 = no map)"
 msgstr "Kartenbreite in Prozent (0 = keine Karte)"
 
-#: includes/class-admin.php:176
+#. translators: %s: link to the documentation
+#: includes/class-admin.php:173
+#, php-format
+msgid "Detailed instructions and examples can be found in the %s."
+msgstr "Ausführliche Anleitungen und Beispiele findest Du in der %s."
+
+#: includes/class-admin.php:174
+msgid "documentation"
+msgstr "Dokumentation"
+
+#: includes/class-admin.php:187
 msgid "Data status"
 msgstr "Datenstatus"
 
-#: includes/class-admin.php:181
+#: includes/class-admin.php:192
 msgid "Wetterwarner API (api.wetterwarner.de)"
 msgstr "Wetterwarner-API (api.wetterwarner.de)"
 
 #. translators: %s: human readable time difference
-#: includes/class-admin.php:192
+#: includes/class-admin.php:203
 #, php-format
 msgid "Last update %s ago"
 msgstr "Zuletzt aktualisiert vor %s"
 
-#: includes/class-admin.php:193
+#: includes/class-admin.php:204
 msgid "Not loaded yet"
 msgstr "Noch nicht geladen"
 
-#: includes/class-admin.php:203
-#: includes/class-admin.php:332
+#: includes/class-admin.php:214
+#: includes/class-admin.php:347
 msgid "Regions in use"
 msgstr "Genutzte Regionen"
 
-#: includes/class-admin.php:220
+#: includes/class-admin.php:231
 msgid "Clear cache"
 msgstr "Cache leeren"
 
-#: includes/class-admin.php:230
+#: includes/class-admin.php:241
 #: includes/class-telemetry.php:176
 msgid "Sorry, you are not allowed to do that."
 msgstr "Du bist leider nicht berechtigt, das zu tun."
 
 #. translators: %s: list of old feed IDs
-#: includes/class-admin.php:253
+#: includes/class-admin.php:264
 #, php-format
 msgid "Wetterwarner 3.0 uses the official warning regions of the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings."
 msgstr "Wetterwarner 3.0 nutzt die amtlichen Warnregionen des Deutschen Wetterdienstes. Folgende alte Feed-IDs konnten nicht automatisch einer Warnregion zugeordnet werden: %s. Bitte wähle die Region in den Widget-Einstellungen neu aus."
 
-#: includes/class-admin.php:258
+#: includes/class-admin.php:269
 msgid "Open widgets"
 msgstr "Widgets öffnen"
 
-#: includes/class-admin.php:260
+#: includes/class-admin.php:271
 msgid "Dismiss"
 msgstr "Ausblenden"
 
-#: includes/class-admin.php:265
+#: includes/class-admin.php:278
 msgid "Settings"
 msgstr "Einstellungen"
 
 #: includes/class-admin.php:279
+msgid "Documentation"
+msgstr "Dokumentation"
+
+#: includes/class-admin.php:294
 msgid "Wetterwarner receives current weather alerts"
 msgstr "Wetterwarner empfängt aktuelle Wetterwarnungen"
 
-#: includes/class-admin.php:285
+#: includes/class-admin.php:300
 msgid "The alerts of the Deutscher Wetterdienst are loaded and cached successfully."
 msgstr "Die Warnungen des Deutschen Wetterdienstes werden erfolgreich geladen und zwischengespeichert."
 
-#: includes/class-admin.php:293
+#: includes/class-admin.php:308
 msgid "Wetterwarner cannot store warning maps"
 msgstr "Wetterwarner kann keine Warnkarten speichern"
 
-#: includes/class-admin.php:294
+#: includes/class-admin.php:309
 msgid "The uploads directory is not writable. Warning maps cannot be displayed."
 msgstr "Das Upload-Verzeichnis ist nicht beschreibbar. Warnkarten können nicht angezeigt werden."
 
-#: includes/class-admin.php:305
+#: includes/class-admin.php:320
 msgid "Wetterwarner cannot reach the Wetterwarner API"
 msgstr "Wetterwarner erreicht die Wetterwarner-API nicht"
 
-#: includes/class-admin.php:320
+#: includes/class-admin.php:335
 msgid "Version"
 msgstr ""
 
-#: includes/class-admin.php:324
+#: includes/class-admin.php:339
 msgid "Map directory writable"
 msgstr "Kartenverzeichnis beschreibbar"
 
-#: includes/class-admin.php:328
+#: includes/class-admin.php:343
 msgid "Next background update"
 msgstr "Nächste Hintergrundaktualisierung"
 
@@ -184,7 +198,7 @@ msgstr "Bundesland der Region"
 msgid "Germany"
 msgstr "Deutschland"
 
-#: includes/class-plugin.php:148
+#: includes/class-plugin.php:145
 msgid "Every 5 minutes"
 msgstr "Alle 5 Minuten"
 

@@ -14,6 +14,8 @@ class Admin {
 	const OPTION = 'wetterwarner_settings';
 	const PAGE   = 'wetterwarner';
 
+	const DOCS_URL = 'https://wetterwarner.de/dokumentation/';
+
 	const DEFAULT_COLORS = array(
 		1 => 'rgba(255,255,170,0.5)',
 		2 => 'rgba(255,218,188,0.5)',
@@ -164,6 +166,15 @@ class Admin {
 					</tbody>
 				</table>
 			</details>
+			<p>
+				<?php
+				printf(
+					/* translators: %s: link to the documentation */
+					esc_html__( 'Detailed instructions and examples can be found in the %s.', 'wetterwarner' ),
+					'<a href="' . esc_url( self::DOCS_URL ) . '" target="_blank" rel="noopener">' . esc_html__( 'documentation', 'wetterwarner' ) . '</a>'
+				);
+				?>
+			</p>
 
 			<form action="options.php" method="post">
 				<?php
@@ -262,7 +273,11 @@ class Admin {
 	}
 
 	public static function action_links( $links ) {
-		array_unshift( $links, '<a href="' . esc_url( admin_url( 'options-general.php?page=' . self::PAGE ) ) . '">' . esc_html__( 'Settings', 'wetterwarner' ) . '</a>' );
+		array_unshift(
+			$links,
+			'<a href="' . esc_url( admin_url( 'options-general.php?page=' . self::PAGE ) ) . '">' . esc_html__( 'Settings', 'wetterwarner' ) . '</a>',
+			'<a href="' . esc_url( self::DOCS_URL ) . '" target="_blank" rel="noopener">' . esc_html__( 'Documentation', 'wetterwarner' ) . '</a>'
+		);
 		return $links;
 	}
 

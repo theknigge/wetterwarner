@@ -121,6 +121,11 @@ const de = {
 		'Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen.',
 	'Yes, share usage data': 'Ja, Nutzungsdaten teilen',
 	'No, thanks': 'Nein, danke',
+	Documentation: 'Dokumentation',
+	documentation: 'Dokumentation',
+	'Detailed instructions and examples can be found in the %s.': 'Ausführliche Anleitungen und Beispiele findest Du in der %s.',
+	'Displays official weather warnings from the German Weather Service (DWD) as a block, shortcode or widget.':
+		'Zeigt amtliche Wetterwarnungen des Deutschen Wetterdienstes als Block, Shortcode oder Widget an.',
 	'Privacy policy': 'Datenschutzerklärung',
 	'Would you like the development of Wetterwarner to continue?': 'Du möchtest, dass die Entwicklung von Wetterwarner weitergeht?',
 	'Support me as the developer with the costs for software, hosting and more.': 'Unterstütze mich als Entwickler bei den Kosten für Software, Hosting & Co.',
