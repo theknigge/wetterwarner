@@ -2,7 +2,7 @@
 /**
  * Warnkarten des DWD. Die Bilder werden lokal im Upload-Verzeichnis
  * zwischengespeichert, damit Besucher keine externe Verbindung aufbauen.
- * Quelle ist die Wetterwarner-API, im Fehlerfall direkt der DWD.
+ * Quelle ist ausschließlich die Wetterwarner-API.
  *
  * @package Wetterwarner
  */
@@ -12,8 +12,6 @@ namespace Wetterwarner;
 defined( 'ABSPATH' ) || exit;
 
 class Map {
-
-	const DWD_URL = 'https://www.dwd.de/DWD/warnungen/warnapp_gemeinden/json/warnungen_gemeinde_map_%s.png';
 
 	/** Cron aktualisiert Karten, die älter sind (Sekunden). */
 	const REFRESH_AGE = 270;
@@ -93,7 +91,8 @@ class Map {
 			self::download( $code );
 			$file = self::find_file( $code );
 		}
-		if ( ! $file ) {
+		// Keine Rückfallebene: eine veraltete Warnkarte lieber ausblenden als falsch anzeigen.
+		if ( ! $file || time() - filemtime( $file ) > Source::MAX_STALE ) {
 			return null;
 		}
 
@@ -177,32 +176,7 @@ class Map {
 			}
 		}
 
-		// Rückfall: PNG direkt vom DWD, wenn möglich lokal als WebP gespeichert.
-		$body = self::fetch( sprintf( self::DWD_URL, $code ) );
-		if ( ! $body || 0 !== strpos( $body, "\x89PNG" ) ) {
-			return false;
-		}
-
-		$png = $dir['path'] . '/map-' . $code . '.png';
-		$tmp = $png . '.tmp';
-		if ( false === file_put_contents( $tmp, $body ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-			return false;
-		}
-
-		$editor = wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ? wp_get_image_editor( $tmp ) : null;
-		if ( $editor && ! is_wp_error( $editor ) && ! is_wp_error( $editor->save( $dir['path'] . '/map-' . $code . '.webp', 'image/webp' ) ) ) {
-			wp_delete_file( $tmp );
-			if ( is_file( $png ) ) {
-				wp_delete_file( $png );
-			}
-			return true;
-		}
-
-		// Ohne WebP-Unterstützung als PNG ablegen; eine ältere WebP-Datei würde sonst Vorrang haben.
-		if ( is_file( $dir['path'] . '/map-' . $code . '.webp' ) ) {
-			wp_delete_file( $dir['path'] . '/map-' . $code . '.webp' );
-		}
-		return rename( $tmp, $png ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename
+		return false;
 	}
 
 	private static function fetch( $url ) {

@@ -179,8 +179,6 @@ class Admin {
 					<?php
 					foreach ( array(
 						'api'            => __( 'Wetterwarner API (api.wetterwarner.de)', 'wetterwarner' ),
-						'districts'      => __( 'DWD direct: districts (fallback)', 'wetterwarner' ),
-						'municipalities' => __( 'DWD direct: municipalities (fallback)', 'wetterwarner' ),
 					) as $key => $label ) :
 						$entry = isset( $status[ $key ] ) ? $status[ $key ] : array();
 						?>
@@ -252,7 +250,7 @@ class Admin {
 			esc_html(
 				sprintf(
 					/* translators: %s: list of old feed IDs */
-					__( 'Weather alerts now come directly from the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings.', 'wetterwarner' ),
+					__( 'Wetterwarner 3.0 uses the official warning regions of the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings.', 'wetterwarner' ),
 					implode( ', ', (array) $unmatched )
 				)
 			),
@@ -303,15 +301,9 @@ class Admin {
 		};
 
 		if ( $failing( 'api' ) ) {
-			if ( isset( $status['districts']['ok'] ) && ! $failing( 'districts' ) ) {
-				$result['status']      = 'recommended';
-				$result['label']       = __( 'Wetterwarner uses the direct DWD fallback', 'wetterwarner' );
-				$result['description'] = '<p>' . esc_html__( 'The Wetterwarner API is currently unreachable. Alerts are loaded directly from the Deutscher Wetterdienst.', 'wetterwarner' ) . '</p><p><small>' . esc_html( $status['api']['error'] ) . '</small></p>';
-			} else {
-				$result['status']      = 'critical';
-				$result['label']       = __( 'Wetterwarner cannot reach the Deutscher Wetterdienst', 'wetterwarner' );
-				$result['description'] = '<p>' . esc_html( $status['api']['error'] ) . '</p>';
-			}
+			$result['status']      = 'critical';
+			$result['label']       = __( 'Wetterwarner cannot reach the Wetterwarner API', 'wetterwarner' );
+			$result['description'] = '<p>' . esc_html( $status['api']['error'] ) . '</p>';
 		}
 
 		if ( 'good' !== $result['status'] ) {

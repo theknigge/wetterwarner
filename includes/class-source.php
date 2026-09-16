@@ -2,10 +2,9 @@
 /**
  * Datenquelle: amtliche Warnungen des Deutschen Wetterdienstes.
  *
- * Primär über die Wetterwarner-API (api.wetterwarner.de), die die DWD-Daten zentral
- * zwischenspeichert. Fällt die API aus, lädt das Plugin direkt beim DWD:
- * - Landkreise, Kreisteile, Küsten, Binnenseen: warnings.json
- * - Gemeinden: DWD-Geodienst (WFS "Warnungen_Gemeinden")
+ * Ausschließlich über die Wetterwarner-API (api.wetterwarner.de), die die DWD-Daten
+ * zentral zwischenspeichert. Ist die API nicht erreichbar, bleiben die zuletzt
+ * geladenen Warnungen höchstens MAX_STALE Sekunden sichtbar.
  *
  * Lastbegrenzung: Alle genutzten Regionen werden gemeinsam in einer Anfrage
  * geladen, regulär höchstens alle 5 Minuten (WP-Cron). Seitenaufrufe lesen
@@ -23,15 +22,16 @@ defined( 'ABSPATH' ) || exit;
 
 class Source {
 
-	const API_URL      = 'https://api.wetterwarner.de/v3/';
-	const DISTRICT_URL = 'https://www.dwd.de/DWD/warnungen/warnapp/json/warnings.json';
-	const WFS_URL      = 'https://maps.dwd.de/geoserver/dwd/ows';
+	const API_URL = 'https://api.wetterwarner.de/v3/';
 
 	/** Mindestabstand zwischen zwei regulären Abrufen (Sekunden). */
 	const REFRESH_INTERVAL = 300;
 
 	/** Ab diesem Alter wird auch ohne Cron nachgeladen (Sekunden). */
 	const MAX_AGE = 1800;
+
+	/** Ist die API länger nicht erreichbar, werden gespeicherte Warnungen danach nicht mehr angezeigt (Sekunden). */
+	const MAX_STALE = 7200;
 
 	const STORE_OPTION  = 'wetterwarner_store';
 	const STATUS_OPTION = 'wetterwarner_status';
@@ -64,6 +64,10 @@ class Source {
 
 			if ( ! isset( $store['cells'][ $region_id ] ) ) {
 				return new WP_Error( 'wetterwarner_unavailable', self::last_error() );
+			}
+			// Keine Rückfallebene: veraltete Warnungen nicht unbegrenzt anzeigen.
+			if ( time() - $store['fetched'][ $region_id ] > self::MAX_STALE ) {
+				return new WP_Error( 'wetterwarner_stale', self::last_error() );
 			}
 			$warnings = $store['cells'][ $region_id ];
 		}
@@ -116,10 +120,6 @@ class Source {
 		}
 
 		$result = self::fetch_from_api( $ids );
-		if ( is_wp_error( $result ) ) {
-			$direct = self::fetch_direct( $ids );
-			$result = is_wp_error( $direct ) ? $result : $direct;
-		}
 
 		delete_transient( self::LOCK );
 
@@ -192,7 +192,7 @@ class Source {
 	}
 
 	private static function last_error() {
-		foreach ( array( 'api', 'districts', 'municipalities' ) as $source ) {
+		foreach ( array( 'api' ) as $source ) {
 			$status = self::status();
 			if ( ! empty( $status[ $source ]['error'] ) ) {
 				return $status[ $source ]['error'];
@@ -267,225 +267,6 @@ class Source {
 			'prior'          => ! empty( $w['prior'] ),
 			'altitude_start' => $int( 'altitude_start' ),
 			'altitude_end'   => $int( 'altitude_end' ),
-		);
-	}
-
-	/* ------------------------------------------------------------------ */
-	/* Rückfall: direkt beim DWD                                           */
-	/* ------------------------------------------------------------------ */
-
-	/**
-	 * @param string[] $ids Warncell-IDs.
-	 * @return array<string, array[]>|WP_Error
-	 */
-	private static function fetch_direct( array $ids ) {
-		$districts = array();
-		$fallback  = array();
-		$result    = array();
-
-		$municipalities = array_filter( $ids, array( Regions::class, 'is_municipality' ) );
-		foreach ( array_chunk( $municipalities, 50 ) as $chunk ) {
-			$fetched = self::fetch_municipalities( $chunk );
-			if ( is_wp_error( $fetched ) ) {
-				// Geodienst nicht erreichbar: Warnungen des Landkreises verwenden.
-				foreach ( $chunk as $id ) {
-					$fallback[ $id ] = '1' . substr( $id, 1, 5 ) . '000';
-				}
-			} else {
-				$result += $fetched;
-			}
-		}
-
-		foreach ( $ids as $id ) {
-			if ( ! Regions::is_municipality( $id ) ) {
-				$districts[] = $id;
-			}
-		}
-
-		if ( $districts || $fallback ) {
-			$feed = self::load_district_feed();
-			if ( is_wp_error( $feed ) ) {
-				return $result ? $result : $feed;
-			}
-			foreach ( $districts as $id ) {
-				$result[ $id ] = self::district_warnings( $feed, $id );
-			}
-			foreach ( $fallback as $id => $district ) {
-				$result[ $id ] = self::district_warnings( $feed, $district );
-			}
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Warnungen einer Region aus warnings.json, inklusive verwandter Zellen:
-	 * Landkreise (1…) sind teils in Kreisteile (9…) aufgeteilt und umgekehrt.
-	 */
-	private static function district_warnings( array $feed, $region_id ) {
-		$kreis  = substr( $region_id, 1, 5 );
-		$type   = substr( $region_id, 0, 1 );
-		$result = array();
-		$seen   = array();
-
-		foreach ( $feed as $cell => $warnings ) {
-			$cell  = (string) $cell;
-			$match = $cell === $region_id
-				|| ( '1' === $type && 0 === strpos( $cell, '9' . $kreis ) )
-				|| ( '9' === $type && '1' . $kreis . '000' === $cell );
-
-			if ( ! $match ) {
-				continue;
-			}
-			foreach ( $warnings as $warning ) {
-				$key = md5( $warning['event'] . '|' . $warning['start'] . '|' . $warning['end'] . '|' . $warning['stage'] );
-				if ( ! isset( $seen[ $key ] ) ) {
-					$seen[ $key ] = true;
-					$result[]     = $warning;
-				}
-			}
-		}
-
-		return $result;
-	}
-
-	/**
-	 * @return array<string, array[]>|WP_Error Normalisierte Warnungen je Zelle.
-	 */
-	private static function load_district_feed() {
-		/**
-		 * URL der DWD-Warnungen auf Kreisebene (JSON/JSONP).
-		 *
-		 * @param string $url URL.
-		 */
-		$body = self::request( apply_filters( 'wetterwarner_district_feed_url', self::DISTRICT_URL ), 'districts', 30 );
-		if ( is_wp_error( $body ) ) {
-			return $body;
-		}
-
-		$json = json_decode( preg_replace( '/^\s*warnWetter\.loadWarnings\(|\);?\s*$/', '', $body ), true );
-		if ( ! is_array( $json ) || ! isset( $json['warnings'] ) ) {
-			$error = new WP_Error( 'wetterwarner_bad_json', __( 'The DWD response could not be read.', 'wetterwarner' ) );
-			self::set_status( 'districts', $error );
-			return $error;
-		}
-
-		$cells = array();
-		foreach ( array( 'warnings' => false, 'vorabInformation' => true ) as $group => $prior ) {
-			if ( empty( $json[ $group ] ) || ! is_array( $json[ $group ] ) ) {
-				continue;
-			}
-			foreach ( $json[ $group ] as $cell => $list ) {
-				foreach ( (array) $list as $warning ) {
-					$cells[ $cell ][] = self::normalize_district( $warning, $prior );
-				}
-			}
-		}
-		return $cells;
-	}
-
-	private static function normalize_district( array $w, $prior ) {
-		$level = isset( $w['level'] ) ? (int) $w['level'] : 2;
-
-		if ( $level >= 20 ) {
-			$stage = 1; // UV.
-		} elseif ( $level >= 10 ) {
-			$stage = 11 === $level ? 3 : 2; // Hitze.
-		} else {
-			$stage = max( 1, min( 4, $level - 1 ) );
-		}
-
-		return array(
-			'event'          => isset( $w['event'] ) ? (string) $w['event'] : '',
-			'headline'       => isset( $w['headline'] ) ? (string) $w['headline'] : '',
-			'description'    => isset( $w['description'] ) ? (string) $w['description'] : '',
-			'instruction'    => isset( $w['instruction'] ) ? (string) $w['instruction'] : '',
-			'stage'          => $stage,
-			'type'           => self::event_type( isset( $w['event'] ) ? $w['event'] : '', isset( $w['type'] ) ? $w['type'] : null ),
-			'start'          => isset( $w['start'] ) ? (int) ( $w['start'] / 1000 ) : 0,
-			'end'            => ! empty( $w['end'] ) ? (int) ( $w['end'] / 1000 ) : 0,
-			'prior'          => $prior || 1 === $level,
-			'altitude_start' => ! empty( $w['altitudeStart'] ) ? (int) $w['altitudeStart'] : 0,
-			'altitude_end'   => ! empty( $w['altitudeEnd'] ) ? (int) $w['altitudeEnd'] : 0,
-		);
-	}
-
-	/**
-	 * @param string[] $ids Warncell-IDs von Gemeinden.
-	 * @return array<string, array[]>|WP_Error
-	 */
-	private static function fetch_municipalities( array $ids ) {
-		$ids = array_values( array_map( 'strval', $ids ) );
-
-		$url = add_query_arg(
-			array(
-				'service'      => 'WFS',
-				'version'      => '2.0.0',
-				'request'      => 'GetFeature',
-				'typeName'     => 'dwd:Warnungen_Gemeinden',
-				'outputFormat' => 'application/json',
-				'propertyName' => 'WARNCELLID,STATUS,MSGTYPE,EVENT,HEADLINE,DESCRIPTION,INSTRUCTION,SEVERITY,URGENCY,ONSET,EXPIRES,ALTITUDE,CEILING',
-				'CQL_FILTER'   => rawurlencode( 'WARNCELLID IN (' . implode( ',', array_map( 'intval', $ids ) ) . ')' ),
-			),
-			/**
-			 * URL des DWD-Geodienstes (WFS).
-			 *
-			 * @param string $url URL.
-			 */
-			apply_filters( 'wetterwarner_wfs_url', self::WFS_URL )
-		);
-
-		// Der Geodienst antwortet mitunter langsamer als warnings.json.
-		$body = self::request( $url, 'municipalities', 20 );
-		if ( is_wp_error( $body ) ) {
-			return $body;
-		}
-
-		$json = json_decode( $body, true );
-		if ( ! is_array( $json ) || ! isset( $json['features'] ) ) {
-			$error = new WP_Error( 'wetterwarner_bad_json', __( 'The DWD response could not be read.', 'wetterwarner' ) );
-			self::set_status( 'municipalities', $error );
-			return $error;
-		}
-
-		$result = array_fill_keys( $ids, array() );
-		foreach ( $json['features'] as $feature ) {
-			$p    = isset( $feature['properties'] ) ? $feature['properties'] : array();
-			$cell = isset( $p['WARNCELLID'] ) ? (string) $p['WARNCELLID'] : '';
-			if ( ! isset( $result[ $cell ] ) || ( isset( $p['STATUS'] ) && 'Actual' !== $p['STATUS'] ) || ( isset( $p['MSGTYPE'] ) && 'Cancel' === $p['MSGTYPE'] ) ) {
-				continue;
-			}
-			$result[ $cell ][] = self::normalize_wfs( $p );
-		}
-
-		return $result;
-	}
-
-	private static function normalize_wfs( array $p ) {
-		$stages = array(
-			'Minor'    => 1,
-			'Moderate' => 2,
-			'Severe'   => 3,
-			'Extreme'  => 4,
-		);
-		$feet   = static function ( $value ) {
-			$meters = (int) round( (float) $value * 0.3048 );
-			// Der DWD kodiert "ohne Obergrenze" als 9842,5 ft (3000 m).
-			return $meters >= 3000 ? 0 : $meters;
-		};
-
-		return array(
-			'event'          => isset( $p['EVENT'] ) ? (string) $p['EVENT'] : '',
-			'headline'       => isset( $p['HEADLINE'] ) ? (string) $p['HEADLINE'] : '',
-			'description'    => isset( $p['DESCRIPTION'] ) ? (string) $p['DESCRIPTION'] : '',
-			'instruction'    => isset( $p['INSTRUCTION'] ) ? (string) $p['INSTRUCTION'] : '',
-			'stage'          => isset( $p['SEVERITY'], $stages[ $p['SEVERITY'] ] ) ? $stages[ $p['SEVERITY'] ] : 1,
-			'type'           => self::event_type( isset( $p['EVENT'] ) ? $p['EVENT'] : '' ),
-			'start'          => ! empty( $p['ONSET'] ) ? (int) strtotime( $p['ONSET'] ) : 0,
-			'end'            => ! empty( $p['EXPIRES'] ) ? (int) strtotime( $p['EXPIRES'] ) : 0,
-			'prior'          => isset( $p['URGENCY'] ) && 'Future' === $p['URGENCY'],
-			'altitude_start' => ! empty( $p['ALTITUDE'] ) ? $feet( $p['ALTITUDE'] ) : 0,
-			'altitude_end'   => ! empty( $p['CEILING'] ) ? $feet( $p['CEILING'] ) : 0,
 		);
 	}
 

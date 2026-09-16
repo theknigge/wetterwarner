@@ -59,13 +59,7 @@ Anbieter: Tim Knigge, IT93. [Datenschutz](https://wetterwarner.de/datenschutz)
 
 **Optional: Entwicklung unterstützen** – Nur wenn Du ausdrücklich zustimmst (Hinweis im Backend oder „Einstellungen > Wetterwarner“), werden beim regulären Abruf zusätzlich die Adresse Deiner Website sowie die Plugin-, WordPress- und PHP-Version übermittelt. Daten Deiner Besucher werden nicht übertragen. Die Zustimmung kann jederzeit widerrufen werden; die gespeicherten Angaben werden dann gelöscht. Einträge ohne Kontakt werden nach 90 Tagen automatisch entfernt.
 
-**Deutscher Wetterdienst** – Nur als Rückfall, falls die Wetterwarner-API nicht erreichbar ist.
-
-* `https://www.dwd.de/DWD/warnungen/warnapp/json/warnings.json` – Warnungen für Landkreise, Kreisteile, Küsten und Binnenseen
-* `https://maps.dwd.de/geoserver/dwd/ows` – Warnungen für Gemeinden (Geodienst, gefiltert nach Warncell-ID)
-* `https://www.dwd.de/DWD/warnungen/warnapp_gemeinden/json/` – Warnkarten
-
-Die API-Adresse lässt sich über die Konstante `WETTERWARNER_API_URL` oder den Filter `wetterwarner_api_url` ändern; ein leerer Wert lädt ausschließlich direkt beim DWD.
+Die API-Adresse lässt sich über die Konstante `WETTERWARNER_API_URL` oder den Filter `wetterwarner_api_url` ändern, z. B. für eine eigene Instanz.
 
 Anbieter der Wetterdaten: Deutscher Wetterdienst, Frankfurter Straße 135, 63067 Offenbach. [Nutzungsbedingungen/Copyright](https://www.dwd.de/DE/service/copyright/copyright_node.html), [Datenschutz](https://www.dwd.de/DE/service/datenschutz/datenschutz_node.html), [Informationen zur Objekteinbindung](https://www.dwd.de/DE/wetter/warnungen_aktuell/objekt_einbindung/objekteinbindung.html).
 
@@ -106,6 +100,9 @@ Deine Widgets werden automatisch übernommen. Die alten wettwarn.de Feed-IDs wer
 = Die Warnungen aktualisieren sich nicht =
 Verwendest Du ein Caching-Plugin, wird die Seite eventuell länger zwischengespeichert. Unter "Einstellungen > Wetterwarner" siehst Du, wann die Daten zuletzt geladen wurden.
 
+= Was passiert, wenn die Wetterwarner-API nicht erreichbar ist? =
+Die zuletzt geladenen Warnungen bleiben bis zu zwei Stunden sichtbar. Danach erscheint statt veralteter Warnungen ein Hinweis mit Link zu den aktuellen Warnungen auf dwd.de. Unter "Werkzeuge > Website-Zustand" wird der Ausfall als kritisch gemeldet.
+
 = Wie erreiche ich den Entwickler? | Fehler melden =
 Nutze das WordPress [Support Forum](https://wordpress.org/support/plugin/wetterwarner/) oder das [Kontaktformular](https://it93.de/kontakt/).
 
@@ -117,14 +114,14 @@ Nutze das WordPress [Support Forum](https://wordpress.org/support/plugin/wetterw
 == Upgrade Notice ==
 
 = 3.0.0 =
-Großes Update: Neue Datenquelle direkt vom Deutschen Wetterdienst, Block und Shortcode. Benötigt WordPress 6.3. Bestehende Widgets werden automatisch übernommen – bitte nach dem Update kurz prüfen.
+Großes Update: Amtliche DWD-Warnungen über die neue Wetterwarner-API, Block und Shortcode. Benötigt WordPress 6.3. Bestehende Widgets werden automatisch übernommen – bitte nach dem Update kurz prüfen.
 
 == Changelog ==
 
 = 3.0.0 =
 * Neu: Block "Wetterwarner" mit Live-Vorschau im Editor
 * Neu: Shortcode `[wetterwarner]`
-* Neu: Datenquelle direkt vom Deutschen Wetterdienst (statt wettwarn.de RSS)
+* Neu: Amtliche Warnungen des Deutschen Wetterdienstes über die Wetterwarner-API (statt wettwarn.de RSS)
 * Neu: Auswahl aus über 11.000 DWD-Warnregionen inklusive Gemeinden, mit Suchfunktion
 * Neu: Aufklappbare Details mit Beschreibung und Handlungsempfehlungen (ersetzt Tooltip)
 * Neu: Aktuelle Gemeinde-Warnkarten des DWD, automatische Bundesland-Auswahl

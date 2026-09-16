@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-16T11:09:18+00:00\n"
+"POT-Creation-Date: 2026-09-16T11:19:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wetterwarner\n"
@@ -47,7 +47,7 @@ msgstr "Farben"
 
 #. translators: %d: warning level
 #: includes/class-admin.php:80
-#: includes/class-admin.php:353
+#: includes/class-admin.php:345
 #, php-format
 msgid "Background color level %d"
 msgstr "Hintergrundfarbe Warnstufe %d"
@@ -100,102 +100,86 @@ msgstr "Datenstatus"
 msgid "Wetterwarner API (api.wetterwarner.de)"
 msgstr "Wetterwarner-API (api.wetterwarner.de)"
 
-#: includes/class-admin.php:182
-msgid "DWD direct: districts (fallback)"
-msgstr "DWD direkt: Landkreise (Rückfall)"
-
-#: includes/class-admin.php:183
-msgid "DWD direct: municipalities (fallback)"
-msgstr "DWD direkt: Gemeinden (Rückfall)"
-
 #. translators: %s: human readable time difference
-#: includes/class-admin.php:194
+#: includes/class-admin.php:192
 #, php-format
 msgid "Last update %s ago"
 msgstr "Zuletzt aktualisiert vor %s"
 
-#: includes/class-admin.php:195
+#: includes/class-admin.php:193
 msgid "Not loaded yet"
 msgstr "Noch nicht geladen"
 
-#: includes/class-admin.php:205
-#: includes/class-admin.php:340
+#: includes/class-admin.php:203
+#: includes/class-admin.php:332
 msgid "Regions in use"
 msgstr "Genutzte Regionen"
 
-#: includes/class-admin.php:222
+#: includes/class-admin.php:220
 msgid "Clear cache"
 msgstr "Cache leeren"
 
-#: includes/class-admin.php:232
+#: includes/class-admin.php:230
 #: includes/class-telemetry.php:176
 msgid "Sorry, you are not allowed to do that."
 msgstr "Du bist leider nicht berechtigt, das zu tun."
 
 #. translators: %s: list of old feed IDs
-#: includes/class-admin.php:255
+#: includes/class-admin.php:253
 #, php-format
-msgid "Weather alerts now come directly from the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings."
-msgstr "Die Wetterwarnungen kommen jetzt direkt vom Deutschen Wetterdienst. Folgende alte Feed-IDs konnten nicht automatisch einer Warnregion zugeordnet werden: %s. Bitte wähle die Region in den Widget-Einstellungen neu aus."
+msgid "Wetterwarner 3.0 uses the official warning regions of the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings."
+msgstr "Wetterwarner 3.0 nutzt die amtlichen Warnregionen des Deutschen Wetterdienstes. Folgende alte Feed-IDs konnten nicht automatisch einer Warnregion zugeordnet werden: %s. Bitte wähle die Region in den Widget-Einstellungen neu aus."
 
-#: includes/class-admin.php:260
+#: includes/class-admin.php:258
 msgid "Open widgets"
 msgstr "Widgets öffnen"
 
-#: includes/class-admin.php:262
+#: includes/class-admin.php:260
 msgid "Dismiss"
 msgstr "Ausblenden"
 
-#: includes/class-admin.php:267
+#: includes/class-admin.php:265
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: includes/class-admin.php:281
+#: includes/class-admin.php:279
 msgid "Wetterwarner receives current weather alerts"
 msgstr "Wetterwarner empfängt aktuelle Wetterwarnungen"
 
-#: includes/class-admin.php:287
+#: includes/class-admin.php:285
 msgid "The alerts of the Deutscher Wetterdienst are loaded and cached successfully."
 msgstr "Die Warnungen des Deutschen Wetterdienstes werden erfolgreich geladen und zwischengespeichert."
 
-#: includes/class-admin.php:295
+#: includes/class-admin.php:293
 msgid "Wetterwarner cannot store warning maps"
 msgstr "Wetterwarner kann keine Warnkarten speichern"
 
-#: includes/class-admin.php:296
+#: includes/class-admin.php:294
 msgid "The uploads directory is not writable. Warning maps cannot be displayed."
 msgstr "Das Upload-Verzeichnis ist nicht beschreibbar. Warnkarten können nicht angezeigt werden."
 
-#: includes/class-admin.php:308
-msgid "Wetterwarner uses the direct DWD fallback"
-msgstr "Wetterwarner nutzt den direkten DWD-Rückfall"
+#: includes/class-admin.php:305
+msgid "Wetterwarner cannot reach the Wetterwarner API"
+msgstr "Wetterwarner erreicht die Wetterwarner-API nicht"
 
-#: includes/class-admin.php:309
-msgid "The Wetterwarner API is currently unreachable. Alerts are loaded directly from the Deutscher Wetterdienst."
-msgstr "Die Wetterwarner-API ist derzeit nicht erreichbar. Die Warnungen werden direkt vom Deutschen Wetterdienst geladen."
-
-#: includes/class-admin.php:312
-msgid "Wetterwarner cannot reach the Deutscher Wetterdienst"
-msgstr "Wetterwarner erreicht den Deutschen Wetterdienst nicht"
-
-#: includes/class-admin.php:328
+#: includes/class-admin.php:320
 msgid "Version"
 msgstr ""
 
-#: includes/class-admin.php:332
+#: includes/class-admin.php:324
 msgid "Map directory writable"
 msgstr "Kartenverzeichnis beschreibbar"
 
-#: includes/class-admin.php:336
+#: includes/class-admin.php:328
 msgid "Next background update"
 msgstr "Nächste Hintergrundaktualisierung"
 
-#: includes/class-map.php:51
+#: includes/class-map.php:49
 #: build/wetterwarner/index.js:1
 msgid "Federal state of the region"
 msgstr "Bundesland der Region"
 
-#: includes/class-map.php:52
+#: includes/class-map.php:50
 #: build/wetterwarner/index.js:1
 msgid "Germany"
 msgstr "Deutschland"
@@ -247,7 +231,7 @@ msgstr "Wetterwarnungen konnten nicht geladen werden."
 
 #. translators: %d: HTTP status code
 #: includes/class-regions.php:242
-#: includes/class-source.php:578
+#: includes/class-source.php:359
 #, php-format
 msgid "Data source responded with HTTP status %d."
 msgstr "Die Datenquelle antwortete mit HTTP-Status %d."
@@ -361,13 +345,8 @@ msgstr "Warnregion nicht gefunden."
 msgid "Invalid warning region."
 msgstr "Ungültige Warnregion."
 
-#: includes/class-source.php:368
-#: includes/class-source.php:446
-msgid "The DWD response could not be read."
-msgstr "Die Antwort des DWD konnte nicht gelesen werden."
-
 #. translators: %s: error message
-#: includes/class-source.php:572
+#: includes/class-source.php:353
 #, php-format
 msgid "Data source could not be reached: %s"
 msgstr "Datenquelle nicht erreichbar: %s"

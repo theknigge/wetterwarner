@@ -31,8 +31,8 @@ const de = {
 	'Regions in use': 'Genutzte Regionen',
 	'Clear cache': 'Cache leeren',
 	'Sorry, you are not allowed to do that.': 'Du bist leider nicht berechtigt, das zu tun.',
-	'Weather alerts now come directly from the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings.':
-		'Die Wetterwarnungen kommen jetzt direkt vom Deutschen Wetterdienst. Folgende alte Feed-IDs konnten nicht automatisch einer Warnregion zugeordnet werden: %s. Bitte wähle die Region in den Widget-Einstellungen neu aus.',
+	'Wetterwarner 3.0 uses the official warning regions of the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings.':
+		'Wetterwarner 3.0 nutzt die amtlichen Warnregionen des Deutschen Wetterdienstes. Folgende alte Feed-IDs konnten nicht automatisch einer Warnregion zugeordnet werden: %s. Bitte wähle die Region in den Widget-Einstellungen neu aus.',
 	'Open widgets': 'Widgets öffnen',
 	Dismiss: 'Ausblenden',
 	Settings: 'Einstellungen',
@@ -42,7 +42,7 @@ const de = {
 	'Wetterwarner cannot store warning maps': 'Wetterwarner kann keine Warnkarten speichern',
 	'The uploads directory is not writable. Warning maps cannot be displayed.':
 		'Das Upload-Verzeichnis ist nicht beschreibbar. Warnkarten können nicht angezeigt werden.',
-	'Wetterwarner cannot reach the Deutscher Wetterdienst': 'Wetterwarner erreicht den Deutschen Wetterdienst nicht',
+	'Wetterwarner cannot reach the Wetterwarner API': 'Wetterwarner erreicht die Wetterwarner-API nicht',
 	'Map directory writable': 'Kartenverzeichnis beschreibbar',
 	'Next background update': 'Nächste Hintergrundaktualisierung',
 	'Federal state of the region': 'Bundesland der Region',
@@ -126,15 +126,10 @@ const de = {
 	'Support me as the developer with the costs for software, hosting and more.': 'Unterstütze mich als Entwickler bei den Kosten für Software, Hosting & Co.',
 	'Donate with PayPal': 'Mit PayPal spenden',
 	'Wetterwarner API (api.wetterwarner.de)': 'Wetterwarner-API (api.wetterwarner.de)',
-	'DWD direct: districts (fallback)': 'DWD direkt: Landkreise (Rückfall)',
-	'DWD direct: municipalities (fallback)': 'DWD direkt: Gemeinden (Rückfall)',
 	'Weather alerts could not be loaded.': 'Wetterwarnungen konnten nicht geladen werden.',
 	'The API response could not be read.': 'Die Antwort der API konnte nicht gelesen werden.',
 	'Data source could not be reached: %s': 'Datenquelle nicht erreichbar: %s',
 	'Data source responded with HTTP status %d.': 'Die Datenquelle antwortete mit HTTP-Status %d.',
-	'Wetterwarner uses the direct DWD fallback': 'Wetterwarner nutzt den direkten DWD-Rückfall',
-	'The Wetterwarner API is currently unreachable. Alerts are loaded directly from the Deutscher Wetterdienst.':
-		'Die Wetterwarner-API ist derzeit nicht erreichbar. Die Warnungen werden direkt vom Deutschen Wetterdienst geladen.',
 };
 
 const unquote = ( s ) => JSON.parse( s ); // PO-Strings sind kompatibel zu JSON-Strings.
