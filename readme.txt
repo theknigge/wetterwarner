@@ -28,7 +28,7 @@ Wetterwarner zeigt die amtlichen Wetterwarnungen des Deutschen Wetterdienstes (D
 * Datenschutzfreundlich: Besucher laden keine Inhalte von externen Servern, auch die Warnkarte wird lokal ausgeliefert
 * Keine Abhängigkeit zu jQuery oder Icon-Fonts im Frontend
 
-[Live Demo](https://it93.de/projekte/wetterwarner/demo)
+[Website & Dokumentation](https://wetterwarner.de/dokumentation/)
 
 = Shortcode =
 

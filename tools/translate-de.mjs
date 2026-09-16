@@ -117,8 +117,8 @@ const de = {
 	'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted.':
 		'Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen; die gespeicherten Angaben werden dann gelöscht.',
 	'Support the development of Wetterwarner?': 'Entwicklung von Wetterwarner unterstützen?',
-	'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time under Settings › Wetterwarner; the stored information will then be deleted.':
-		'Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit unter Einstellungen › Wetterwarner widerrufen; die gespeicherten Angaben werden dann gelöscht.',
+	'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time.':
+		'Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen.',
 	'Yes, share usage data': 'Ja, Nutzungsdaten teilen',
 	'No, thanks': 'Nein, danke',
 	'Privacy policy': 'Datenschutzerklärung',

@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-16T10:14:43+00:00\n"
+"POT-Creation-Date: 2026-09-16T11:03:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wetterwarner\n"
@@ -414,8 +414,8 @@ msgid "Support the development of Wetterwarner?"
 msgstr "Entwicklung von Wetterwarner unterstützen?"
 
 #: includes/class-telemetry.php:164
-msgid "Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time under Settings › Wetterwarner; the stored information will then be deleted."
-msgstr "Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit unter Einstellungen › Wetterwarner widerrufen; die gespeicherten Angaben werden dann gelöscht."
+msgid "Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time."
+msgstr "Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen."
 
 #: includes/class-telemetry.php:166
 msgid "Yes, share usage data"

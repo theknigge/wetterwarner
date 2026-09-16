@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-16T10:14:43+00:00\n"
+"POT-Creation-Date: 2026-09-16T11:03:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wetterwarner\n"
@@ -412,7 +412,7 @@ msgid "Support the development of Wetterwarner?"
 msgstr ""
 
 #: includes/class-telemetry.php:164
-msgid "Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time under Settings › Wetterwarner; the stored information will then be deleted."
+msgid "Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time."
 msgstr ""
 
 #: includes/class-telemetry.php:166

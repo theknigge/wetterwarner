@@ -161,7 +161,7 @@ class Telemetry {
 		printf(
 			'<div class="notice notice-info"><p><strong>%1$s</strong></p><p>%2$s <a href="%7$s" target="_blank" rel="noopener">%8$s</a></p><p><a class="button button-primary" href="%3$s">%4$s</a> <a class="button" href="%5$s">%6$s</a></p></div>',
 			esc_html__( 'Support the development of Wetterwarner?', 'wetterwarner' ),
-			esc_html__( 'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time under Settings › Wetterwarner; the stored information will then be deleted.', 'wetterwarner' ),
+			esc_html__( 'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time.', 'wetterwarner' ),
 			esc_url( $link( 'yes' ) ),
 			esc_html__( 'Yes, share usage data', 'wetterwarner' ),
 			esc_url( $link( 'no' ) ),
