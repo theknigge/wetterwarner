@@ -2,6 +2,9 @@
 /**
  * Automatisch erzeugt von tools/build-regions.mjs – nicht manuell bearbeiten.
  * Alte wettwarn.de Feed-IDs (DWD-Kreiskennung CCC) => Warncell-ID.
+ *
+ * Datenbasis: Deutscher Wetterdienst, Liste der Warncell-IDs (CC BY 4.0,
+ * https://creativecommons.org/licenses/by/4.0/) – gefiltert und umgewandelt.
  */
 
 defined( 'ABSPATH' ) || exit;

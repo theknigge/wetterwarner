@@ -50,7 +50,7 @@ for ( const line of lines ) {
 const php = ( v ) => `'${ String( v ).replace( /\\/g, '\\\\' ).replace( /'/g, "\\'" ) }'`;
 writeFileSync(
 	join( root, 'data/ccc-map.php' ),
-	`<?php\n/**\n * Automatisch erzeugt von tools/build-regions.mjs – nicht manuell bearbeiten.\n * Alte wettwarn.de Feed-IDs (DWD-Kreiskennung CCC) => Warncell-ID.\n */\n\ndefined( 'ABSPATH' ) || exit;\n\nreturn array(\n` +
+	`<?php\n/**\n * Automatisch erzeugt von tools/build-regions.mjs – nicht manuell bearbeiten.\n * Alte wettwarn.de Feed-IDs (DWD-Kreiskennung CCC) => Warncell-ID.\n *\n * Datenbasis: Deutscher Wetterdienst, Liste der Warncell-IDs (CC BY 4.0,\n * https://creativecommons.org/licenses/by/4.0/) – gefiltert und umgewandelt.\n */\n\ndefined( 'ABSPATH' ) || exit;\n\nreturn array(\n` +
 		Object.keys( ccc )
 			.sort()
 			.map( ( k ) => `\t${ php( k ) } => ${ ccc[ k ] },` )

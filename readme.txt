@@ -50,12 +50,12 @@ Die Warncell-ID findest Du über die Regionssuche im Block oder Widget.
 
 Die Abrufe erfolgen ausschließlich serverseitig durch Deine WordPress-Installation – höchstens alle 5 Minuten, alle genutzten Regionen gemeinsam in einer Anfrage. Besucher Deiner Webseite bauen keine Verbindung zu externen Servern auf.
 
-**Wetterwarner-API (api.it93.de)** – Primäre Datenquelle. Die API speichert die Warnungen des Deutschen Wetterdienstes zentral zwischen, damit nicht jede Webseite die teils mehrere Megabyte großen DWD-Daten laden muss. Übertragen werden die Warncell-IDs der genutzten Regionen sowie technisch bedingt die IP-Adresse Deines Webservers; es werden keine Daten Deiner Besucher übertragen.
+**Wetterwarner-API (api.wetterwarner.de)** – Primäre Datenquelle. Die API speichert die Warnungen des Deutschen Wetterdienstes zentral zwischen, damit nicht jede Webseite die teils mehrere Megabyte großen DWD-Daten laden muss. Übertragen werden die Warncell-IDs der genutzten Regionen sowie technisch bedingt die IP-Adresse Deines Webservers; es werden keine Daten Deiner Besucher übertragen.
 Anbieter: Tim Knigge, IT93. [Datenschutz](https://it93.de/datenschutz/)
 
-* `https://api.it93.de/wetterwarner/v3/warnings` – Warnungen der genutzten Regionen
-* `https://api.it93.de/wetterwarner/v3/regions` – Regionssuche im Block- und Widget-Editor (übertragen wird nur der Suchbegriff)
-* `https://api.it93.de/wetterwarner/v3/maps/` – Warnkarten (nur wenn eine Karte angezeigt wird)
+* `https://api.wetterwarner.de/v3/warnings` – Warnungen der genutzten Regionen
+* `https://api.wetterwarner.de/v3/regions` – Regionssuche im Block- und Widget-Editor (übertragen wird nur der Suchbegriff)
+* `https://api.wetterwarner.de/v3/maps/` – Warnkarten (nur wenn eine Karte angezeigt wird)
 
 **Optional: Entwicklung unterstützen** – Nur wenn Du ausdrücklich zustimmst (Hinweis im Backend oder „Einstellungen > Wetterwarner“), werden beim regulären Abruf zusätzlich die Adresse Deiner Website sowie die Plugin-, WordPress- und PHP-Version übermittelt. Daten Deiner Besucher werden nicht übertragen. Die Zustimmung kann jederzeit widerrufen werden; die gespeicherten Angaben werden dann gelöscht. Einträge ohne Kontakt werden nach 90 Tagen automatisch entfernt.
 
@@ -77,7 +77,8 @@ Das Plugin wurde nach bestem Wissen und Gewissen erstellt und getestet. Nur für
 
 = Credits =
 
-* Icons angelehnt an [Lucide](https://lucide.dev) (ISC-Lizenz)
+* Icons von [Lucide](https://lucide.dev) (ISC-Lizenz, Warndreieck aus Feather unter MIT-Lizenz) – Lizenztexte in `licenses/lucide.txt`
+* Warnungen, Warnkarten und Warnregionen: Deutscher Wetterdienst, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de)
 * [wp-color-picker-alpha](https://github.com/kallookoo/wp-color-picker-alpha) (GPLv2)
 
 == Installation ==

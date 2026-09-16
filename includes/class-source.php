@@ -2,7 +2,7 @@
 /**
  * Datenquelle: amtliche Warnungen des Deutschen Wetterdienstes.
  *
- * Primär über die Wetterwarner-API (api.it93.de), die die DWD-Daten zentral
+ * Primär über die Wetterwarner-API (api.wetterwarner.de), die die DWD-Daten zentral
  * zwischenspeichert. Fällt die API aus, lädt das Plugin direkt beim DWD:
  * - Landkreise, Kreisteile, Küsten, Binnenseen: warnings.json
  * - Gemeinden: DWD-Geodienst (WFS "Warnungen_Gemeinden")
@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Source {
 
-	const API_URL      = 'https://api.it93.de/wetterwarner/v3/';
+	const API_URL      = 'https://api.wetterwarner.de/v3/';
 	const DISTRICT_URL = 'https://www.dwd.de/DWD/warnungen/warnapp/json/warnings.json';
 	const WFS_URL      = 'https://maps.dwd.de/geoserver/dwd/ows';
 

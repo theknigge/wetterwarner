@@ -17,6 +17,7 @@
 		"data",
 		"includes",
 		"languages",
+		"licenses",
 		"assets",
 		"wetterwarner.php",
 		"uninstall.php",

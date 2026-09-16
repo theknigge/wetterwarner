@@ -276,7 +276,11 @@ class Renderer {
 }
 
 /**
- * Inline-SVG-Icons (angelehnt an Lucide, ISC-Lizenz).
+ * Inline-SVG-Icons, überwiegend aus Lucide (https://lucide.dev).
+ *
+ * Lucide: ISC License, Copyright (c) 2026 Lucide Icons and Contributors.
+ * Warndreieck aus Feather: MIT License, Copyright (c) 2013-present Cole Bemis.
+ * Vollständige Lizenztexte: licenses/lucide.txt
  */
 class Icons {
 

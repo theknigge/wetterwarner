@@ -124,7 +124,7 @@ const de = {
 	'Would you like the development of Wetterwarner to continue?': 'Du möchtest, dass die Entwicklung von Wetterwarner weitergeht?',
 	'Support me as the developer with the costs for software, hosting and more.': 'Unterstütze mich als Entwickler bei den Kosten für Software, Hosting & Co.',
 	'Donate with PayPal': 'Mit PayPal spenden',
-	'Wetterwarner API (api.it93.de)': 'Wetterwarner-API (api.it93.de)',
+	'Wetterwarner API (api.wetterwarner.de)': 'Wetterwarner-API (api.wetterwarner.de)',
 	'DWD direct: districts (fallback)': 'DWD direkt: Landkreise (Rückfall)',
 	'DWD direct: municipalities (fallback)': 'DWD direkt: Gemeinden (Rückfall)',
 	'Weather alerts could not be loaded.': 'Wetterwarnungen konnten nicht geladen werden.',

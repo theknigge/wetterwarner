@@ -178,7 +178,7 @@ class Admin {
 				<tbody>
 					<?php
 					foreach ( array(
-						'api'            => __( 'Wetterwarner API (api.it93.de)', 'wetterwarner' ),
+						'api'            => __( 'Wetterwarner API (api.wetterwarner.de)', 'wetterwarner' ),
 						'districts'      => __( 'DWD direct: districts (fallback)', 'wetterwarner' ),
 						'municipalities' => __( 'DWD direct: municipalities (fallback)', 'wetterwarner' ),
 					) as $key => $label ) :
