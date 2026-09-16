@@ -113,7 +113,6 @@ export default function Edit( { attributes, setAttributes } ) {
 					{ toggle( 'showColors', __( 'Color by warning level', 'wetterwarner' ) ) }
 					{ toggle( 'hideDuplicates', __( 'Hide duplicate alerts', 'wetterwarner' ) ) }
 					{ toggle( 'linkWarnings', __( 'Link alerts to dwd.de', 'wetterwarner' ) ) }
-					{ toggle( 'showSource', __( 'Show source', 'wetterwarner' ) ) }
 				</PanelBody>
 
 				<PanelBody title={ __( 'Warning map', 'wetterwarner' ) } initialOpen={ false }>

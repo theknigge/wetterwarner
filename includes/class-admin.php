@@ -158,7 +158,7 @@ class Admin {
 						<tr><td><code>region</code></td><td><?php esc_html_e( 'Warncell ID of the region (required), or "demo"', 'wetterwarner' ); ?></td></tr>
 						<tr><td><code>title</code>, <code>intro</code>, <code>no_warnings</code></td><td><?php esc_html_e( 'Texts, %region% is replaced', 'wetterwarner' ); ?></td></tr>
 						<tr><td><code>max</code></td><td><?php esc_html_e( 'Maximum number of alerts (default 3, 0 = all)', 'wetterwarner' ); ?></td></tr>
-						<tr><td><code>show_always</code>, <code>validity</code>, <code>details</code>, <code>icons</code>, <code>colors</code>, <code>link</code>, <code>hide_duplicates</code>, <code>source</code></td><td><?php esc_html_e( 'Options: 1 or 0', 'wetterwarner' ); ?></td></tr>
+						<tr><td><code>show_always</code>, <code>validity</code>, <code>details</code>, <code>icons</code>, <code>colors</code>, <code>link</code>, <code>hide_duplicates</code></td><td><?php esc_html_e( 'Options: 1 or 0', 'wetterwarner' ); ?></td></tr>
 						<tr><td><code>map</code></td><td><?php esc_html_e( 'Map width in percent (0 = no map)', 'wetterwarner' ); ?></td></tr>
 						<tr><td><code>map_region</code></td><td><code><?php echo esc_html( implode( ', ', array_keys( Map::choices() ) ) ); ?></code></td></tr>
 					</tbody>

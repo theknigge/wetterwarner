@@ -69,10 +69,6 @@
       "type": "boolean",
       "default": true
     },
-    "showSource": {
-      "type": "boolean",
-      "default": true
-    },
     "mapSize": {
       "type": "number",
       "default": 0

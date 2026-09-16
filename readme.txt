@@ -40,7 +40,7 @@ Mögliche Attribute:
 * `title`, `intro`, `no_warnings` – Texte, `%region%` wird durch den Regionsnamen ersetzt
 * `max` – maximale Anzahl Warnungen (Standard 3, 0 = alle)
 * `show_always` – auch ohne Warnungen anzeigen (1/0)
-* `validity`, `details`, `icons`, `colors`, `link`, `hide_duplicates`, `source` – Anzeigeoptionen (1/0)
+* `validity`, `details`, `icons`, `colors`, `link`, `hide_duplicates` – Anzeigeoptionen (1/0)
 * `map` – Breite der Warnkarte in Prozent (0 = keine Karte)
 * `map_region` – `auto`, `de`, `baw`, `bay`, `bbb`, `hes`, `mvp`, `nib`, `nrw`, `rps`, `sac`, `saa`, `shh`, `thu`
 
@@ -55,9 +55,9 @@ Anbieter: Tim Knigge, IT93. [Datenschutz](https://it93.de/datenschutz/)
 
 * `https://api.it93.de/wetterwarner/v3/warnings` – Warnungen der genutzten Regionen
 * `https://api.it93.de/wetterwarner/v3/regions` – Regionssuche im Block- und Widget-Editor (übertragen wird nur der Suchbegriff)
+* `https://api.it93.de/wetterwarner/v3/maps/` – Warnkarten (nur wenn eine Karte angezeigt wird)
 
 **Optional: Entwicklung unterstützen** – Nur wenn Du ausdrücklich zustimmst (Hinweis im Backend oder „Einstellungen > Wetterwarner“), werden beim regulären Abruf zusätzlich die Adresse Deiner Website sowie die Plugin-, WordPress- und PHP-Version übermittelt. Daten Deiner Besucher werden nicht übertragen. Die Zustimmung kann jederzeit widerrufen werden; die gespeicherten Angaben werden dann gelöscht. Einträge ohne Kontakt werden nach 90 Tagen automatisch entfernt.
-* `https://api.it93.de/wetterwarner/v3/maps/` – Warnkarten (nur wenn eine Karte angezeigt wird)
 
 **Deutscher Wetterdienst** – Nur als Rückfall, falls die Wetterwarner-API nicht erreichbar ist.
 

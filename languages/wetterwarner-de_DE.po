@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-16T09:47:58+00:00\n"
+"POT-Creation-Date: 2026-09-16T09:54:23+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wetterwarner\n"
@@ -200,7 +200,7 @@ msgstr "Bundesland der Region"
 msgid "Germany"
 msgstr "Deutschland"
 
-#: includes/class-plugin.php:149
+#: includes/class-plugin.php:148
 msgid "Every 5 minutes"
 msgstr "Alle 5 Minuten"
 
@@ -267,88 +267,88 @@ msgstr "Wetterwarnungen für %region%"
 msgid "No weather alerts for %region%"
 msgstr "Keine Wetterwarnungen für %region%"
 
-#: includes/class-renderer.php:89
+#: includes/class-renderer.php:88
 msgid "Please select a warning region in the Wetterwarner settings."
 msgstr "Bitte wähle in den Wetterwarner-Einstellungen eine Warnregion aus."
 
-#: includes/class-renderer.php:101
+#: includes/class-renderer.php:100
 msgid "There are currently no warnings. The block is hidden on the website until a warning is issued (option \"Show always\")."
 msgstr "Aktuell liegen keine Warnungen vor. Auf der Webseite bleibt der Block ausgeblendet, bis eine Warnung vorliegt (Option „Auch ohne Warnungen anzeigen“)."
 
-#: includes/class-renderer.php:116
+#: includes/class-renderer.php:115
 msgid "Weather alerts are currently unavailable."
 msgstr "Wetterwarnungen sind derzeit nicht verfügbar."
 
-#: includes/class-renderer.php:117
+#: includes/class-renderer.php:116
 msgid "View alerts at dwd.de"
 msgstr "Warnungen auf dwd.de ansehen"
 
 #. translators: %s: link to Deutscher Wetterdienst
-#: includes/class-renderer.php:142
+#: includes/class-renderer.php:141
 #, php-format
 msgid "Source: %s"
 msgstr "Quelle: %s"
 
 #. translators: %d: warning level 1-4
-#: includes/class-renderer.php:193
+#: includes/class-renderer.php:191
 #, php-format
 msgid "Warning level %d"
 msgstr "Warnstufe %d"
 
-#: includes/class-renderer.php:197
+#: includes/class-renderer.php:195
 msgid "Prior information"
 msgstr "Vorabinformation"
 
-#: includes/class-renderer.php:205
+#: includes/class-renderer.php:203
 msgid "Details"
 msgstr ""
 
-#: includes/class-renderer.php:223
-#: includes/class-renderer.php:230
+#: includes/class-renderer.php:221
+#: includes/class-renderer.php:228
 msgid "D, m/d, g:i a"
 msgstr "D, d.m., H:i"
 
 #. translators: %s: start date and time
-#: includes/class-renderer.php:227
+#: includes/class-renderer.php:225
 #, php-format
 msgid "From %s until further notice"
 msgstr "Ab %s bis auf Weiteres"
 
 #. translators: %s: start date and time
-#: includes/class-renderer.php:227
+#: includes/class-renderer.php:225
 msgid "Until further notice"
 msgstr "Bis auf Weiteres"
 
-#: includes/class-renderer.php:230
+#: includes/class-renderer.php:228
 msgid "g:i a"
 msgstr "H:i \\U\\h\\r"
 
 #. translators: 1: start date and time, 2: end date or time
-#: includes/class-renderer.php:232
+#: includes/class-renderer.php:230
 #, php-format
 msgid "%1$s – %2$s"
 msgstr ""
 
 #. translators: 1: lower altitude, 2: upper altitude in meters
-#: includes/class-renderer.php:237
+#: includes/class-renderer.php:235
 #, php-format
 msgid "between %1$d m and %2$d m"
 msgstr "zwischen %1$d m und %2$d m"
 
 #. translators: %d: altitude in meters
-#: includes/class-renderer.php:240
+#: includes/class-renderer.php:238
 #, php-format
 msgid "above %d m"
 msgstr "oberhalb %d m"
 
 #. translators: %d: altitude in meters
-#: includes/class-renderer.php:243
+#: includes/class-renderer.php:241
 #, php-format
 msgid "below %d m"
 msgstr "unterhalb %d m"
 
 #. translators: %s: map area
-#: includes/class-renderer.php:261
+#: includes/class-renderer.php:259
 #, php-format
 msgid "Current weather warning map: %s"
 msgstr "Aktuelle Warnkarte: %s"
@@ -496,17 +496,12 @@ msgstr "Doppelte Warnungen ausblenden"
 msgid "Link alerts to dwd.de"
 msgstr "Warnungen mit dwd.de verlinken"
 
-#: includes/class-widget.php:101
-#: build/wetterwarner/index.js:1
-msgid "Show source"
-msgstr "Quelle anzeigen"
-
-#: includes/class-widget.php:105
+#: includes/class-widget.php:104
 #: build/wetterwarner/index.js:1
 msgid "Map width in % (0 = no map)"
 msgstr "Kartenbreite in % (0 = keine Karte)"
 
-#: includes/class-widget.php:109
+#: includes/class-widget.php:108
 #: build/wetterwarner/index.js:1
 msgid "Map area"
 msgstr "Kartenausschnitt"

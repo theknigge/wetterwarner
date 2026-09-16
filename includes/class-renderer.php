@@ -30,7 +30,6 @@ class Renderer {
 			'showColors'     => true,
 			'linkWarnings'   => false,
 			'hideDuplicates' => true,
-			'showSource'     => true,
 			'mapSize'        => 0,
 			'mapRegion'      => 'auto',
 		);
@@ -136,13 +135,12 @@ class Renderer {
 			$html .= self::map( $map_code, $atts, $region );
 		}
 
-		if ( $atts['showSource'] ) {
-			$html .= '<p class="wetterwarner__source">' . sprintf(
-				/* translators: %s: link to Deutscher Wetterdienst */
-				esc_html__( 'Source: %s', 'wetterwarner' ),
-				'<a href="https://www.dwd.de/" target="_blank" rel="noopener">Deutscher Wetterdienst</a>'
-			) . '</p>';
-		}
+		// Pflichtangabe: Der DWD erlaubt die Nutzung nur unter CC BY 4.0 mit Quellenangabe – daher nicht abschaltbar.
+		$html .= '<p class="wetterwarner__source">' . sprintf(
+			/* translators: %s: link to Deutscher Wetterdienst */
+			esc_html__( 'Source: %s', 'wetterwarner' ),
+			'<a href="https://www.dwd.de/" target="_blank" rel="noopener">Deutscher Wetterdienst</a>'
+		) . '</p>';
 
 		return $html . '</div>';
 	}

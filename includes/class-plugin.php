@@ -66,7 +66,6 @@ class Plugin {
 			'colors'          => 'showColors',
 			'link'            => 'linkWarnings',
 			'hide_duplicates' => 'hideDuplicates',
-			'source'          => 'showSource',
 			'map'             => 'mapSize',
 			'map_region'      => 'mapRegion',
 		);
@@ -231,7 +230,6 @@ class Plugin {
 			'ww_hintergrundfarbe'    => 'showColors',
 			'ww_meldungen_verlinken' => 'linkWarnings',
 			'ww_doppelte_ausblenden' => 'hideDuplicates',
-			'ww_quelle_zeigen'       => 'showSource',
 			'ww_kartengroesse'       => 'mapSize',
 		);
 
@@ -248,7 +246,7 @@ class Plugin {
 					$new[ $to ] = $old[ $from ];
 				}
 			}
-			foreach ( array( 'showAlways', 'showValidity', 'showDetails', 'showIcons', 'showColors', 'linkWarnings', 'hideDuplicates', 'showSource' ) as $flag ) {
+			foreach ( array( 'showAlways', 'showValidity', 'showDetails', 'showIcons', 'showColors', 'linkWarnings', 'hideDuplicates' ) as $flag ) {
 				$new[ $flag ] = ! empty( $new[ $flag ] );
 			}
 

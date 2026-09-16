@@ -31,7 +31,6 @@ $old = array(
 		'ww_icons_zeigen'        => 1,
 		'ww_hintergrundfarbe'    => 1,
 		'ww_gueltigkeit_zeigen'  => 1,
-		'ww_quelle_zeigen'       => 1,
 		'ww_tooltip_zeigen'      => 1,
 		'ww_meldungen_verlinken' => 1,
 		'ww_doppelte_ausblenden' => 1,
@@ -92,8 +91,8 @@ $check( 'Kartengröße übernommen', 65 === $w['mapSize'], $w['mapSize'] );
 $check( 'Niedersachsen → nib', 'nib' === $w['mapRegion'], $w['mapRegion'] );
 $check(
 	'Alle Häkchen übernommen',
-	$w['showIcons'] && $w['showColors'] && $w['showValidity'] && $w['showSource'] && $w['showDetails'] && $w['linkWarnings'] && $w['hideDuplicates'] && $w['showAlways'],
-	array_intersect_key( $w, array_flip( array( 'showIcons', 'showColors', 'showValidity', 'showSource', 'showDetails', 'linkWarnings', 'hideDuplicates', 'showAlways' ) ) )
+	$w['showIcons'] && $w['showColors'] && $w['showValidity'] && $w['showDetails'] && $w['linkWarnings'] && $w['hideDuplicates'] && $w['showAlways'],
+	array_intersect_key( $w, array_flip( array( 'showIcons', 'showColors', 'showValidity', 'showDetails', 'linkWarnings', 'hideDuplicates', 'showAlways' ) ) )
 );
 $check( 'Keine alten Schlüssel mehr', ! array_intersect( array_keys( $w ), array( 'ww_feed_id', 'ww_widget_titel', 'ww_kartenbundeslandURL' ) ), array_keys( $w ) );
 

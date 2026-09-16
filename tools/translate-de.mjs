@@ -95,7 +95,6 @@ const de = {
 	'Color by warning level': 'Nach Warnstufe einfärben',
 	'Hide duplicate alerts': 'Doppelte Warnungen ausblenden',
 	'Link alerts to dwd.de': 'Warnungen mit dwd.de verlinken',
-	'Show source': 'Quelle anzeigen',
 	'Map width in % (0 = no map)': 'Kartenbreite in % (0 = keine Karte)',
 	'Map area': 'Kartenausschnitt',
 	'Search for a town, district or warncell ID. Search "demo" for sample warnings.':

@@ -98,7 +98,6 @@ class Widget extends WP_Widget {
 			$this->checkbox( 'showColors', __( 'Color by warning level', 'wetterwarner' ), $atts );
 			$this->checkbox( 'hideDuplicates', __( 'Hide duplicate alerts', 'wetterwarner' ), $atts );
 			$this->checkbox( 'linkWarnings', __( 'Link alerts to dwd.de', 'wetterwarner' ), $atts );
-			$this->checkbox( 'showSource', __( 'Show source', 'wetterwarner' ), $atts );
 			?>
 
 			<p>

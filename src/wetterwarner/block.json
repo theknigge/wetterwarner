@@ -23,7 +23,6 @@
 		"showColors": { "type": "boolean", "default": true },
 		"linkWarnings": { "type": "boolean", "default": false },
 		"hideDuplicates": { "type": "boolean", "default": true },
-		"showSource": { "type": "boolean", "default": true },
 		"mapSize": { "type": "number", "default": 0 },
 		"mapRegion": { "type": "string", "default": "auto" }
 	},
