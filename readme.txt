@@ -1,6 +1,6 @@
 === Wetterwarner ===
 Contributors: bocanegra
-Donate link: https://it93.de/unterstuetzen/
+Donate link: https://wetterwarner.de/unterstuetzen/
 Tags: Wetter, Unwetter, Wetterwarnung, DWD, Block
 Requires at least: 6.3
 Tested up to: 7.0
