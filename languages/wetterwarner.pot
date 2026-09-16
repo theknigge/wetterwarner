@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-16T10:01:57+00:00\n"
+"POT-Creation-Date: 2026-09-16T10:14:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wetterwarner\n"
@@ -126,7 +126,7 @@ msgid "Clear cache"
 msgstr ""
 
 #: includes/class-admin.php:232
-#: includes/class-telemetry.php:170
+#: includes/class-telemetry.php:176
 msgid "Sorry, you are not allowed to do that."
 msgstr ""
 
@@ -370,51 +370,56 @@ msgstr ""
 msgid "Data source could not be reached: %s"
 msgstr ""
 
-#: includes/class-telemetry.php:82
+#: includes/class-telemetry.php:84
 msgid "Usage data"
 msgstr ""
 
-#: includes/class-telemetry.php:85
+#: includes/class-telemetry.php:87
 msgid "Consent"
 msgstr ""
 
-#: includes/class-telemetry.php:110
+#: includes/class-telemetry.php:112
 msgid "Would you like the development of Wetterwarner to continue?"
 msgstr ""
 
-#: includes/class-telemetry.php:111
+#: includes/class-telemetry.php:113
 msgid "Support me as the developer with the costs for software, hosting and more."
 msgstr ""
 
-#: includes/class-telemetry.php:113
+#: includes/class-telemetry.php:115
 msgid "Donate with PayPal"
 msgstr ""
 
-#: includes/class-telemetry.php:114
+#: includes/class-telemetry.php:116
 msgid "Support development"
 msgstr ""
 
-#: includes/class-telemetry.php:127
+#: includes/class-telemetry.php:129
 msgid "Support development and share usage data"
 msgstr ""
 
-#: includes/class-telemetry.php:128
+#: includes/class-telemetry.php:130
 msgid "Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted."
 msgstr ""
 
-#: includes/class-telemetry.php:159
+#: includes/class-telemetry.php:132
+#: includes/class-telemetry.php:170
+msgid "Privacy policy"
+msgstr ""
+
+#: includes/class-telemetry.php:163
 msgid "Support the development of Wetterwarner?"
 msgstr ""
 
-#: includes/class-telemetry.php:160
+#: includes/class-telemetry.php:164
 msgid "Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time under Settings › Wetterwarner; the stored information will then be deleted."
 msgstr ""
 
-#: includes/class-telemetry.php:162
+#: includes/class-telemetry.php:166
 msgid "Yes, share usage data"
 msgstr ""
 
-#: includes/class-telemetry.php:164
+#: includes/class-telemetry.php:168
 msgid "No, thanks"
 msgstr ""
 

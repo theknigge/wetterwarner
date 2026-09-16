@@ -19,6 +19,8 @@ class Telemetry {
 	/** "yes" = zugestimmt, "no" = abgelehnt, nicht vorhanden = noch nicht gefragt. */
 	const OPTION = 'wetterwarner_telemetry';
 
+	const PRIVACY_URL = 'https://wetterwarner.de/datenschutz';
+
 	const DONATE_URL = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=paypal%40tknigge%2ede&lc=DE&item_name=Wetterwarner%20Spende&no_note=0&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest';
 
 	public static function init() {
@@ -121,11 +123,13 @@ class Telemetry {
 
 	public static function field() {
 		printf(
-			'<label><input type="checkbox" id="%1$s" name="%1$s" value="yes" %2$s> %3$s</label><p class="description">%4$s</p>',
+			'<label><input type="checkbox" id="%1$s" name="%1$s" value="yes" %2$s> %3$s</label><p class="description">%4$s <a href="%5$s" target="_blank" rel="noopener">%6$s</a></p>',
 			esc_attr( self::OPTION ),
 			checked( self::enabled(), true, false ),
 			esc_html__( 'Support development and share usage data', 'wetterwarner' ),
-			esc_html__( 'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted.', 'wetterwarner' )
+			esc_html__( 'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted.', 'wetterwarner' ),
+			esc_url( self::PRIVACY_URL ),
+			esc_html__( 'Privacy policy', 'wetterwarner' )
 		);
 	}
 
@@ -155,13 +159,15 @@ class Telemetry {
 		};
 
 		printf(
-			'<div class="notice notice-info"><p><strong>%1$s</strong></p><p>%2$s</p><p><a class="button button-primary" href="%3$s">%4$s</a> <a class="button" href="%5$s">%6$s</a></p></div>',
+			'<div class="notice notice-info"><p><strong>%1$s</strong></p><p>%2$s <a href="%7$s" target="_blank" rel="noopener">%8$s</a></p><p><a class="button button-primary" href="%3$s">%4$s</a> <a class="button" href="%5$s">%6$s</a></p></div>',
 			esc_html__( 'Support the development of Wetterwarner?', 'wetterwarner' ),
 			esc_html__( 'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time under Settings › Wetterwarner; the stored information will then be deleted.', 'wetterwarner' ),
 			esc_url( $link( 'yes' ) ),
 			esc_html__( 'Yes, share usage data', 'wetterwarner' ),
 			esc_url( $link( 'no' ) ),
-			esc_html__( 'No, thanks', 'wetterwarner' )
+			esc_html__( 'No, thanks', 'wetterwarner' ),
+			esc_url( self::PRIVACY_URL ),
+			esc_html__( 'Privacy policy', 'wetterwarner' )
 		);
 	}
 

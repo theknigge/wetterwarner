@@ -121,6 +121,7 @@ const de = {
 		'Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit unter Einstellungen › Wetterwarner widerrufen; die gespeicherten Angaben werden dann gelöscht.',
 	'Yes, share usage data': 'Ja, Nutzungsdaten teilen',
 	'No, thanks': 'Nein, danke',
+	'Privacy policy': 'Datenschutzerklärung',
 	'Would you like the development of Wetterwarner to continue?': 'Du möchtest, dass die Entwicklung von Wetterwarner weitergeht?',
 	'Support me as the developer with the costs for software, hosting and more.': 'Unterstütze mich als Entwickler bei den Kosten für Software, Hosting & Co.',
 	'Donate with PayPal': 'Mit PayPal spenden',

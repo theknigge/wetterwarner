@@ -51,7 +51,7 @@ Die Warncell-ID findest Du über die Regionssuche im Block oder Widget.
 Die Abrufe erfolgen ausschließlich serverseitig durch Deine WordPress-Installation – höchstens alle 5 Minuten, alle genutzten Regionen gemeinsam in einer Anfrage. Besucher Deiner Webseite bauen keine Verbindung zu externen Servern auf.
 
 **Wetterwarner-API (api.wetterwarner.de)** – Primäre Datenquelle. Die API speichert die Warnungen des Deutschen Wetterdienstes zentral zwischen, damit nicht jede Webseite die teils mehrere Megabyte großen DWD-Daten laden muss. Übertragen werden die Warncell-IDs der genutzten Regionen sowie technisch bedingt die IP-Adresse Deines Webservers; es werden keine Daten Deiner Besucher übertragen.
-Anbieter: Tim Knigge, IT93. [Datenschutz](https://it93.de/datenschutz/)
+Anbieter: Tim Knigge, IT93. [Datenschutz](https://wetterwarner.de/datenschutz)
 
 * `https://api.wetterwarner.de/v3/warnings` – Warnungen der genutzten Regionen
 * `https://api.wetterwarner.de/v3/regions` – Regionssuche im Block- und Widget-Editor (übertragen wird nur der Suchbegriff)
