@@ -176,6 +176,37 @@ class Source {
 	}
 
 	/**
+	 * Dashboard-Daten: System-Status und Site-Statistiken von der API.
+	 *
+	 * @return array|false|WP_Error
+	 */
+	public static function dashboard() {
+		$base = self::api_url();
+		if ( '' === $base ) {
+			return false;
+		}
+
+		$response = wp_remote_get(
+			trailingslashit( $base ) . 'dashboard',
+			array(
+				'timeout'    => 5,
+				'user-agent' => 'Wetterwarner/' . WETTERWARNER_VERSION . ' (WordPress; +https://wordpress.org/plugins/wetterwarner/)',
+				'headers'    => Telemetry::headers(),
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return false;
+		}
+
+		return json_decode( wp_remote_retrieve_body( $response ), true );
+	}
+
+	/**
 	 * @return array{cells: array<string, array[]>, fetched: array<string, int>, last_request: int}
 	 */
 	public static function store() {
