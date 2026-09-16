@@ -5,7 +5,7 @@
  * Description:       Zeigt amtliche Wetterwarnungen des Deutschen Wetterdienstes als Block, Shortcode oder Widget an.
  * Version:           3.0.0
  * Author:            Tim Knigge
- * Author URI:        https://www.linkedin.com/in/tim-knigge-a1238912b/
+ * Author URI:        https://wetterwarner.de/
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Tested up to:      7.0
