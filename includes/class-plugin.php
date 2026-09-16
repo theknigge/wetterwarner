@@ -156,8 +156,8 @@ class Plugin {
 	}
 
 	public static function deactivate() {
-		wp_clear_scheduled_hook( self::CRON_HOOK );
-		wp_clear_scheduled_hook( 'wetterwarner_data_update' );
+		wp_unschedule_hook( self::CRON_HOOK );
+		wp_unschedule_hook( 'wetterwarner_data_update' );
 		Source::clear_cache();
 		Map::clear_cache();
 	}
@@ -192,7 +192,7 @@ class Plugin {
 	 * Übernimmt die Widget-Einstellungen aus Version 2.x (wettwarn.de Feed-IDs).
 	 */
 	private static function migrate_from_2x() {
-		wp_clear_scheduled_hook( 'wetterwarner_data_update' );
+		wp_unschedule_hook( 'wetterwarner_data_update' );
 
 		$instances = get_option( 'widget_wetterwarner_widget' );
 		if ( ! is_array( $instances ) ) {

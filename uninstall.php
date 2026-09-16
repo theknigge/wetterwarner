@@ -16,8 +16,8 @@ foreach ( array( 'wetterwarner_settings', 'wetterwarner_version', 'wetterwarner_
 $wetterwarner_like = $wpdb->esc_like( '_transient_wetterwarner_' ) . '%';
 $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s", $wetterwarner_like, str_replace( '_transient_', '_transient_timeout_', $wetterwarner_like ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
-wp_clear_scheduled_hook( 'wetterwarner_refresh' );
-wp_clear_scheduled_hook( 'wetterwarner_data_update' );
+wp_unschedule_hook( 'wetterwarner_refresh' );
+wp_unschedule_hook( 'wetterwarner_data_update' );
 
 $wetterwarner_uploads = wp_upload_dir( null, false );
 $wetterwarner_dir     = $wetterwarner_uploads['basedir'] . '/wetterwarner';
