@@ -19,6 +19,8 @@ class Telemetry {
 	/** "yes" = zugestimmt, "no" = abgelehnt, nicht vorhanden = noch nicht gefragt. */
 	const OPTION = 'wetterwarner_telemetry';
 
+	const DONATE_URL = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=paypal%40tknigge%2ede&lc=DE&item_name=Wetterwarner%20Spende&no_note=0&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest';
+
 	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'register_setting' ) );
 		add_action( 'admin_notices', array( __CLASS__, 'notice' ) );
@@ -70,7 +72,7 @@ class Telemetry {
 			)
 		);
 
-		add_settings_section( 'wetterwarner_telemetry', __( 'Support development', 'wetterwarner' ), '__return_false', Admin::PAGE );
+		add_settings_section( 'wetterwarner_telemetry', __( 'Support development', 'wetterwarner' ), array( __CLASS__, 'section' ), Admin::PAGE );
 		add_settings_field(
 			self::OPTION,
 			__( 'Usage data', 'wetterwarner' ),
@@ -78,6 +80,19 @@ class Telemetry {
 			Admin::PAGE,
 			'wetterwarner_telemetry',
 			array( 'label_for' => self::OPTION )
+		);
+	}
+
+	/**
+	 * Spendenhinweis über der Nutzungsdaten-Einstellung.
+	 */
+	public static function section() {
+		printf(
+			'<div class="card" style="max-width:48rem;margin-top:0"><p><strong>%1$s</strong> %2$s</p><p><a class="button button-primary" href="%3$s" target="_blank" rel="noopener noreferrer">%4$s</a></p></div>',
+			esc_html__( 'Would you like the development of Wetterwarner to continue?', 'wetterwarner' ),
+			esc_html__( 'Support me as the developer with the costs for software, hosting and more.', 'wetterwarner' ),
+			esc_url( self::DONATE_URL ),
+			esc_html__( 'Donate with PayPal', 'wetterwarner' )
 		);
 	}
 
