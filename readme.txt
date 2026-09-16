@@ -4,7 +4,7 @@ Donate link: https://wetterwarner.de/unterstuetzen/
 Tags: weather, weather warnings, dwd, germany, block
 Requires at least: 6.3
 Tested up to: 7.1
-Requires PHP: 8.1
+Requires PHP: 7.4
 Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -118,7 +118,7 @@ Please use the WordPress [support forum](https://wordpress.org/support/plugin/we
 == Upgrade Notice ==
 
 = 3.0.0 =
-Major update: official DWD warnings via the new Wetterwarner API, block and shortcode. Requires WordPress 6.3 and PHP 8.1. Existing widgets are migrated automatically – please check them briefly after the update.
+Major update: official DWD warnings via the new Wetterwarner API, block and shortcode. Requires WordPress 6.3 and PHP 7.4. Existing widgets are migrated automatically – please check them briefly after the update.
 
 == Changelog ==
 
@@ -134,7 +134,7 @@ Major update: official DWD warnings via the new Wetterwarner API, block and shor
 * Improvement: no Font Awesome, icon fonts or jQuery in the frontend
 * Improvement: automatic migration of existing widgets from version 2.x
 * Improvement: more accessible output (headings, screen reader texts, native details element)
-* Requirements: WordPress 6.3 and PHP 8.1
+* Requirements: WordPress 6.3 and PHP 7.4
 
 = 2.8.1 =
 * Bugfix: background colours of warnings
