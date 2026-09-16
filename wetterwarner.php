@@ -7,7 +7,7 @@
  * Author:            Tim Knigge
  * Author URI:        https://wetterwarner.de/
  * Requires at least: 6.3
- * Requires PHP:      7.4
+ * Requires PHP:      8.1
  * Tested up to:      7.0
  * Text Domain:       wetterwarner
  * Domain Path:       /languages
