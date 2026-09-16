@@ -146,6 +146,8 @@ class Admin {
 				<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Cache cleared.', 'wetterwarner' ); ?></p></div>
 			<?php endif; ?>
 
+			<?php Telemetry::render_donation(); ?>
+
 			<h2><?php esc_html_e( 'Usage', 'wetterwarner' ); ?></h2>
 			<p><?php esc_html_e( 'Add the "Wetterwarner" block in the block editor or in a widget area. Alternatively use the shortcode:', 'wetterwarner' ); ?></p>
 			<p><code>[wetterwarner region="103241000" map="60"]</code></p>
@@ -219,6 +221,8 @@ class Admin {
 				<?php wp_nonce_field( 'wetterwarner_clear_cache' ); ?>
 				<?php submit_button( __( 'Clear cache', 'wetterwarner' ), 'secondary' ); ?>
 			</form>
+
+			<?php Telemetry::render(); ?>
 		</div>
 		<?php
 	}

@@ -61,9 +61,16 @@ class Telemetry {
 		);
 	}
 
+	/**
+	 * Eigene Einstellungsgruppe: Der Abschnitt steht in einem eigenen Formular
+	 * oben auf der Seite. In der Gruppe der Farben würde ein Speichern ohne
+	 * Farbfelder sonst die Farben zurücksetzen.
+	 */
+	const GROUP = 'wetterwarner_telemetry';
+
 	public static function register_setting() {
 		register_setting(
-			Admin::PAGE,
+			self::GROUP,
 			self::OPTION,
 			array(
 				'type'              => 'string',
@@ -72,27 +79,39 @@ class Telemetry {
 			)
 		);
 
-		add_settings_section( 'wetterwarner_telemetry', __( 'Support development', 'wetterwarner' ), array( __CLASS__, 'section' ), Admin::PAGE );
+		add_settings_section( 'wetterwarner_telemetry', __( 'Usage data', 'wetterwarner' ), '__return_false', self::GROUP );
 		add_settings_field(
 			self::OPTION,
-			__( 'Usage data', 'wetterwarner' ),
+			__( 'Consent', 'wetterwarner' ),
 			array( __CLASS__, 'field' ),
-			Admin::PAGE,
+			self::GROUP,
 			'wetterwarner_telemetry',
 			array( 'label_for' => self::OPTION )
 		);
 	}
 
 	/**
-	 * Spendenhinweis über der Nutzungsdaten-Einstellung.
+	 * Einwilligung zu den Nutzungsdaten – ganz unten auf der Einstellungsseite.
 	 */
-	public static function section() {
+	public static function render() {
+		echo '<hr><form action="options.php" method="post">';
+		settings_fields( self::GROUP );
+		do_settings_sections( self::GROUP );
+		submit_button( null, 'secondary' );
+		echo '</form>';
+	}
+
+	/**
+	 * Spendenhinweis – ganz oben auf der Einstellungsseite.
+	 */
+	public static function render_donation() {
 		printf(
-			'<div class="card" style="max-width:48rem;margin-top:0"><p><strong>%1$s</strong> %2$s</p><p><a class="button button-primary" href="%3$s" target="_blank" rel="noopener noreferrer">%4$s</a></p></div>',
+			'<h2>%5$s</h2><div class="card" style="max-width:48rem;margin-top:0"><p><strong>%1$s</strong> %2$s</p><p><a class="button button-primary" href="%3$s" target="_blank" rel="noopener noreferrer">%4$s</a></p></div>',
 			esc_html__( 'Would you like the development of Wetterwarner to continue?', 'wetterwarner' ),
 			esc_html__( 'Support me as the developer with the costs for software, hosting and more.', 'wetterwarner' ),
 			esc_url( self::DONATE_URL ),
-			esc_html__( 'Donate with PayPal', 'wetterwarner' )
+			esc_html__( 'Donate with PayPal', 'wetterwarner' ),
+			esc_html__( 'Support development', 'wetterwarner' )
 		);
 	}
 
@@ -106,7 +125,7 @@ class Telemetry {
 			esc_attr( self::OPTION ),
 			checked( self::enabled(), true, false ),
 			esc_html__( 'Support development and share usage data', 'wetterwarner' ),
-			esc_html__( 'Shares the address of this website and the plugin, WordPress and PHP versions with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted.', 'wetterwarner' )
+			esc_html__( 'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted.', 'wetterwarner' )
 		);
 	}
 
@@ -138,7 +157,7 @@ class Telemetry {
 		printf(
 			'<div class="notice notice-info"><p><strong>%1$s</strong></p><p>%2$s</p><p><a class="button button-primary" href="%3$s">%4$s</a> <a class="button" href="%5$s">%6$s</a></p></div>',
 			esc_html__( 'Support the development of Wetterwarner?', 'wetterwarner' ),
-			esc_html__( 'May Wetterwarner share usage data with the developer? This includes the address of this website and the plugin, WordPress and PHP versions – no visitor data. It shows where Wetterwarner is used and which versions still need to be supported. You can revoke your consent at any time under Settings › Wetterwarner.', 'wetterwarner' ),
+			esc_html__( 'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time under Settings › Wetterwarner; the stored information will then be deleted.', 'wetterwarner' ),
 			esc_url( $link( 'yes' ) ),
 			esc_html__( 'Yes, share usage data', 'wetterwarner' ),
 			esc_url( $link( 'no' ) ),

@@ -113,12 +113,13 @@ const de = {
 	'Warning region %s': 'Warnregion %s',
 	'Support development': 'Entwicklung unterstützen',
 	'Usage data': 'Nutzungsdaten',
+	Consent: 'Einwilligung',
 	'Support development and share usage data': 'Entwicklung unterstützen und Nutzungsdaten teilen',
-	'Shares the address of this website and the plugin, WordPress and PHP versions with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted.':
-		'Übermittelt die Adresse dieser Website sowie die Plugin-, WordPress- und PHP-Version an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen; die gespeicherten Angaben werden dann gelöscht.',
+	'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted.':
+		'Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen; die gespeicherten Angaben werden dann gelöscht.',
 	'Support the development of Wetterwarner?': 'Entwicklung von Wetterwarner unterstützen?',
-	'May Wetterwarner share usage data with the developer? This includes the address of this website and the plugin, WordPress and PHP versions – no visitor data. It shows where Wetterwarner is used and which versions still need to be supported. You can revoke your consent at any time under Settings › Wetterwarner.':
-		'Darf Wetterwarner Nutzungsdaten mit dem Entwickler teilen? Übermittelt werden die Adresse dieser Website sowie die Plugin-, WordPress- und PHP-Version – keine Daten Deiner Besucher. So sehen wir, wo Wetterwarner im Einsatz ist und welche Versionen weiter unterstützt werden müssen. Du kannst die Zustimmung jederzeit unter Einstellungen › Wetterwarner widerrufen.',
+	'Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time under Settings › Wetterwarner; the stored information will then be deleted.':
+		'Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit unter Einstellungen › Wetterwarner widerrufen; die gespeicherten Angaben werden dann gelöscht.',
 	'Yes, share usage data': 'Ja, Nutzungsdaten teilen',
 	'No, thanks': 'Nein, danke',
 	'Would you like the development of Wetterwarner to continue?': 'Du möchtest, dass die Entwicklung von Wetterwarner weitergeht?',
