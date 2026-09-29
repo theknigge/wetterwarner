@@ -28,17 +28,17 @@ Wetterwarner displays the official weather warnings of the German Weather Servic
 * Privacy friendly: visitors never connect to external servers, the warning map is served from your own site
 * No jQuery or icon fonts in the frontend
 
-[Website, documentation (including all shortcode attributes) & Demo](https://wetterwarner.de)
+[Website, documentation & Demo](https://wetterwarner.de)
 
 = Wetterwarner Supporter license =
 
-Wetterwarner is and remains free – with all features and the same official DWD data for everyone. If your site depends on up-to-date warnings, for example as a fire brigade, relief organisation or municipality, the optional **Wetterwarner Supporter license** gives you more:
+Wetterwarner is and remains free – with all features and the same official DWD data for everyone. It is developed and maintained in my spare time, and the Wetterwarner API that supplies the data to every installation has real running costs. The optional **Wetterwarner Supporter license** is a way to directly support that ongoing development and operation – and as a thank-you, it also gives your site a few practical extras:
 
 * **Faster updates:** new warnings every 5 instead of 15 minutes
 * **Fallback server:** if the main API is unavailable, your site automatically switches to a separate, independently hosted server
 * **Priority support** via contact form or e-mail
 
-**Launch offer: 19 € per year** (regular price 29 € per year). One-time purchase for 12 months, no subscription, no automatic renewal. The license is tied to your website's address and is activated automatically with the next update – no license key to copy. Your purchase also funds the development and operation of the Wetterwarner API.
+**Launch offer: 19 € per year** (regular price 29 € per year). One-time purchase for 12 months, no subscription, no automatic renewal. The license is tied to your website's address and is activated automatically with the next update – no license key to copy.
 
 [Get your Supporter license](https://wetterwarner.de/unterstuetzen/#supporter) – or directly from "Settings > Wetterwarner" in your WordPress admin.
 
@@ -106,7 +106,7 @@ Please use the WordPress [support forum](https://wordpress.org/support/plugin/we
 == Upgrade Notice ==
 
 = 3.1.0 =
-New: Wetterwarner Supporter license – updates every 5 minutes, automatic fallback server and priority support. Launch offer: 19 € per year (regular price 29 €).
+New: Wetterwarner Supporter license – support the ongoing development and operation of Wetterwarner, and get updates every 5 minutes, an automatic fallback server and priority support in return. Launch offer: 19 € per year (regular price 29 €).
 
 = 3.0.0 =
 Major update: official DWD warnings via the new Wetterwarner API, block and shortcode. Requires WordPress 6.3 and PHP 7.4. Existing widgets are migrated automatically – please check them briefly after the update.
@@ -114,7 +114,7 @@ Major update: official DWD warnings via the new Wetterwarner API, block and shor
 == Changelog ==
 
 = 3.1.0 =
-* New: [Wetterwarner Supporter license](https://wetterwarner.de/unterstuetzen/#supporter) – support the development and get more out of Wetterwarner:
+* New: [Wetterwarner Supporter license](https://wetterwarner.de/unterstuetzen/#supporter) – support the ongoing development and operation of Wetterwarner, and get a few extras as a thank-you:
   * Faster updates: every 5 instead of 15 minutes
   * Automatic fallback server if the main API is unavailable
   * Priority support via contact form or e-mail
