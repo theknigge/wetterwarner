@@ -24,8 +24,14 @@ class Source {
 
 	const API_URL = 'https://api.wetterwarner.de/v3/';
 
-	/** Mindestabstand zwischen zwei regulären Abrufen (Sekunden). */
-	const REFRESH_INTERVAL = 300;
+	/** Zweitserver für Websites mit Supporter-Lizenz, falls der Hauptserver nicht erreichbar ist. */
+	const FALLBACK_API_URL = 'https://fallback-api.wetterwarner.de/v3/';
+
+	/** Mindestabstand zwischen zwei regulären Abrufen ohne Supporter-Lizenz (Sekunden). */
+	const REFRESH_INTERVAL_FREE = 900;
+
+	/** Mindestabstand mit aktiver Supporter-Lizenz (Sekunden). */
+	const REFRESH_INTERVAL_SUPPORTER = 300;
 
 	/** Ab diesem Alter wird auch ohne Cron nachgeladen (Sekunden). */
 	const MAX_AGE = 1800;
@@ -33,9 +39,10 @@ class Source {
 	/** Ist die API länger nicht erreichbar, werden gespeicherte Warnungen danach nicht mehr angezeigt (Sekunden). */
 	const MAX_STALE = 7200;
 
-	const STORE_OPTION  = 'wetterwarner_store';
-	const STATUS_OPTION = 'wetterwarner_status';
-	const LOCK          = 'wetterwarner_refresh_lock';
+	const STORE_OPTION   = 'wetterwarner_store';
+	const STATUS_OPTION  = 'wetterwarner_status';
+	const LICENSE_OPTION = 'wetterwarner_license';
+	const LOCK           = 'wetterwarner_refresh_lock';
 
 	/**
 	 * Aktuelle Warnungen einer Region aus dem lokalen Speicher.
@@ -103,7 +110,7 @@ class Source {
 				return false;
 			}
 			set_transient( $attempt, 1, MINUTE_IN_SECONDS );
-		} elseif ( time() - $store['last_request'] < self::REFRESH_INTERVAL - 30 ) {
+		} elseif ( time() - $store['last_request'] < self::refresh_interval() - 30 ) {
 			// 30 Sekunden Toleranz, damit ein leicht verspäteter Cron-Lauf nicht übersprungen wird.
 			return false;
 		}
@@ -156,6 +163,51 @@ class Source {
 		 * @param string $url URL mit abschließendem Slash oder leer.
 		 */
 		return (string) apply_filters( 'wetterwarner_api_url', $url );
+	}
+
+	/**
+	 * Fallback-Server, den nur Websites mit Supporter-Lizenz nutzen dürfen
+	 * (der Server antwortet allen anderen mit HTTP 503).
+	 */
+	public static function fallback_api_url() {
+		$url = defined( 'WETTERWARNER_FALLBACK_API_URL' ) ? WETTERWARNER_FALLBACK_API_URL : self::FALLBACK_API_URL;
+		return (string) apply_filters( 'wetterwarner_fallback_api_url', $url );
+	}
+
+	/**
+	 * Supporter-Lizenz laut letzter Antwort der API. Ohne Kontakt zur API
+	 * (z. B. direkt nach der Aktivierung) sicherheitshalber "nicht aktiv".
+	 *
+	 * @return array{active: bool, expires: int|null}
+	 */
+	public static function license() {
+		$license = get_option( self::LICENSE_OPTION, array() );
+		return array(
+			'active'  => ! empty( $license['active'] ),
+			'expires' => isset( $license['expires'] ) ? (int) $license['expires'] : null,
+		);
+	}
+
+	private static function set_license( $license ) {
+		if ( ! is_array( $license ) ) {
+			return;
+		}
+		update_option(
+			self::LICENSE_OPTION,
+			array(
+				'active'  => ! empty( $license['active'] ),
+				'expires' => isset( $license['expires'] ) ? (int) $license['expires'] : null,
+			),
+			false
+		);
+	}
+
+	/**
+	 * Erlaubter Mindestabstand zwischen zwei Abrufen: mit Supporter-Lizenz
+	 * häufiger als kostenlos (siehe wetterwarner.de/unterstuetzen).
+	 */
+	public static function refresh_interval() {
+		return self::license()['active'] ? self::REFRESH_INTERVAL_SUPPORTER : self::REFRESH_INTERVAL_FREE;
 	}
 
 	/**
@@ -217,7 +269,25 @@ class Source {
 
 		$result = array();
 		foreach ( array_chunk( $ids, 100 ) as $chunk ) {
-			$body = self::request( add_query_arg( 'cells', implode( ',', $chunk ), trailingslashit( $base ) . 'warnings' ), 'api' );
+			// "license=1" gibt der Anfrage eine eigene Cache-Adresse: Die Antwort enthält den
+			// Lizenzstatus dieser Website und darf nie aus einem gemeinsamen Cache kommen.
+			$path = 'warnings?' . http_build_query(
+				array(
+					'cells'   => implode( ',', $chunk ),
+					'license' => '1',
+				)
+			);
+			$body = self::request( trailingslashit( $base ) . $path, 'api' );
+
+			// Hauptserver nicht erreichbar: mit Supporter-Lizenz beim Fallback-Server versuchen
+			// (der lehnt Websites ohne Lizenz mit HTTP 503 ab, dann bleibt es beim ursprünglichen Fehler).
+			if ( is_wp_error( $body ) && self::license()['active'] ) {
+				$fallback = self::fallback_api_url();
+				if ( '' !== $fallback ) {
+					$body = self::request( trailingslashit( $fallback ) . $path, 'api' );
+				}
+			}
+
 			if ( is_wp_error( $body ) ) {
 				return $body;
 			}
@@ -228,6 +298,8 @@ class Source {
 				self::set_status( 'api', $error );
 				return $error;
 			}
+
+			self::set_license( isset( $json['license'] ) ? $json['license'] : null );
 
 			foreach ( $chunk as $id ) {
 				$list          = isset( $json['cells'][ $id ] ) && is_array( $json['cells'][ $id ] ) ? $json['cells'][ $id ] : array();

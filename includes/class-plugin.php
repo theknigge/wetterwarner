@@ -12,7 +12,10 @@ defined( 'ABSPATH' ) || exit;
 class Plugin {
 
 	const CRON_HOOK        = 'wetterwarner_refresh';
-	const CRON_SCHEDULE    = 'wetterwarner_5min';
+	/** Ohne Supporter-Lizenz. */
+	const CRON_SCHEDULE_FREE = 'wetterwarner_15min';
+	/** Mit aktiver Supporter-Lizenz. */
+	const CRON_SCHEDULE_SUPPORTER = 'wetterwarner_5min';
 	const USAGE_OPTION     = 'wetterwarner_usage';
 	const VERSION_OPTION   = 'wetterwarner_version';
 	const MIGRATION_OPTION = 'wetterwarner_migration';
@@ -132,19 +135,40 @@ class Plugin {
 		}
 		update_option( self::USAGE_OPTION, $usage, false );
 
-		// Alle genutzten Regionen gemeinsam, höchstens alle 5 Minuten.
+		// Alle genutzten Regionen gemeinsam, je nach Lizenz höchstens alle 15 oder 5 Minuten.
 		Source::refresh( array_map( 'strval', array_keys( $usage['regions'] ) ) );
 		foreach ( array_keys( $usage['maps'] ) as $code ) {
 			Map::refresh( (string) $code );
 		}
+		self::ensure_schedule();
 	}
 
 	public static function cron_schedules( $schedules ) {
-		$schedules[ self::CRON_SCHEDULE ] = array(
+		$schedules[ self::CRON_SCHEDULE_FREE ] = array(
+			'interval' => 15 * MINUTE_IN_SECONDS,
+			'display'  => __( 'Every 15 minutes', 'wetterwarner' ),
+		);
+		$schedules[ self::CRON_SCHEDULE_SUPPORTER ] = array(
 			'interval' => 5 * MINUTE_IN_SECONDS,
-			'display'  => __( 'Every 5 minutes', 'wetterwarner' ),
+			'display'  => __( 'Every 5 minutes (Supporter license)', 'wetterwarner' ),
 		);
 		return $schedules;
+	}
+
+	/**
+	 * Stellt sicher, dass der WP-Cron-Zeitplan zum zuletzt bekannten Lizenzstatus passt
+	 * (siehe Source::license()). Wird nach jedem Abruf sowie bei Aktivierung/Update geprüft.
+	 */
+	public static function ensure_schedule() {
+		$desired = Source::license()['active'] ? self::CRON_SCHEDULE_SUPPORTER : self::CRON_SCHEDULE_FREE;
+		$event   = wp_get_scheduled_event( self::CRON_HOOK );
+
+		if ( $event && $desired === $event->schedule ) {
+			return;
+		}
+
+		wp_unschedule_hook( self::CRON_HOOK );
+		wp_schedule_event( time() + 10, $desired, self::CRON_HOOK );
 	}
 
 	public static function activate() {
@@ -162,8 +186,10 @@ class Plugin {
 	private static function schedule() {
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
 			// Kurz nach Aktivierung oder Update laufen lassen, damit Warnungen und
-			// Regionsnamen schon vor dem ersten Besucher im Speicher liegen.
-			wp_schedule_event( time() + 10, self::CRON_SCHEDULE, self::CRON_HOOK );
+			// Regionsnamen schon vor dem ersten Besucher im Speicher liegen. Zeitplan
+			// je nach zuletzt bekannter Lizenz (Standard bei Erstinstallation: kostenlos).
+			$schedule = Source::license()['active'] ? self::CRON_SCHEDULE_SUPPORTER : self::CRON_SCHEDULE_FREE;
+			wp_schedule_event( time() + 10, $schedule, self::CRON_HOOK );
 		}
 	}
 

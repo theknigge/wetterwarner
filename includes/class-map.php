@@ -2,7 +2,8 @@
 /**
  * Warnkarten des DWD. Die Bilder werden lokal im Upload-Verzeichnis
  * zwischengespeichert, damit Besucher keine externe Verbindung aufbauen.
- * Quelle ist ausschließlich die Wetterwarner-API.
+ * Quelle ist ausschließlich die Wetterwarner-API (mit Supporter-Lizenz bei
+ * Ausfall des Hauptservers der Fallback-Server).
  *
  * @package Wetterwarner
  */
@@ -168,21 +169,34 @@ class Map {
 			return false;
 		}
 
+		$path = 'maps/' . $code . '.webp';
 		$base = Source::api_url();
-		if ( '' !== $base ) {
-			$body = self::fetch( trailingslashit( $base ) . 'maps/' . $code . '.webp' );
-			if ( $body && 'RIFF' === substr( $body, 0, 4 ) && 'WEBP' === substr( $body, 8, 4 ) ) {
-				return self::store( $dir['path'] . '/map-' . $code . '.webp', $body, $dir['path'] . '/map-' . $code . '.png' );
+		$body = '' !== $base ? self::fetch( trailingslashit( $base ) . $path ) : '';
+
+		// Hauptserver nicht erreichbar: mit Supporter-Lizenz beim Fallback-Server versuchen
+		// (der erkennt die Lizenz am Header und lehnt Websites ohne Lizenz mit HTTP 503 ab).
+		if ( ! self::is_webp( $body ) && '' !== $base && Source::license()['active'] ) {
+			$fallback = Source::fallback_api_url();
+			if ( '' !== $fallback ) {
+				$body = self::fetch( trailingslashit( $fallback ) . $path, array( 'X-Wetterwarner-License-Site' => Telemetry::site() ) );
 			}
 		}
 
+		if ( self::is_webp( $body ) ) {
+			return self::store( $dir['path'] . '/map-' . $code . '.webp', $body, $dir['path'] . '/map-' . $code . '.png' );
+		}
 		return false;
 	}
 
-	private static function fetch( $url ) {
+	private static function is_webp( $body ) {
+		return $body && 'RIFF' === substr( $body, 0, 4 ) && 'WEBP' === substr( $body, 8, 4 );
+	}
+
+	private static function fetch( $url, $headers = array() ) {
 		$response = wp_remote_get(
 			$url,
 			array(
+				'headers'    => $headers,
 				'timeout'    => 15,
 				'user-agent' => 'Wetterwarner/' . WETTERWARNER_VERSION . ' (WordPress; +https://wordpress.org/plugins/wetterwarner/)',
 			)

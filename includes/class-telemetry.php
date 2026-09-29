@@ -1,11 +1,14 @@
 <?php
 /**
- * "Entwicklung unterstützen": freiwillige Nutzungsdaten.
+ * "Entwicklung unterstützen": freiwillige Nutzungsdaten – und, unabhängig
+ * davon, die Zuordnung einer gekauften Supporter-Lizenz zur Website.
  *
- * Nur nach ausdrücklicher Zustimmung (Opt-in) und jederzeit widerrufbar.
- * Übermittelt werden die Adresse der Website sowie Plugin-, WordPress- und
- * PHP-Version – im ohnehin stattfindenden Abruf, ohne zusätzliche Anfragen.
- * Beim Widerruf wird die API gebeten, den Eintrag zu löschen.
+ * Plugin-, WordPress- und PHP-Version sowie die Speicherung der Website in der
+ * Statistik-Übersicht der API erfolgen nur nach ausdrücklicher Zustimmung
+ * (Opt-in) und sind jederzeit widerrufbar. Die Adresse der Website wird davon
+ * unabhängig bei jedem Abruf mitgeschickt (X-Wetterwarner-License-Site) –
+ * ohne sie könnte die API eine gekaufte Lizenz nie zuordnen. Beim Widerruf der
+ * Nutzungsdaten wird die API gebeten, den Statistik-Eintrag zu löschen.
  *
  * @package Wetterwarner
  */
@@ -20,8 +23,6 @@ class Telemetry {
 	const OPTION = 'wetterwarner_telemetry';
 
 	const PRIVACY_URL = 'https://wetterwarner.de/datenschutz';
-
-	const DONATE_URL = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=paypal%40tknigge%2ede&lc=DE&item_name=Wetterwarner%20Spende&no_note=0&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest';
 
 	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'register_setting' ) );
@@ -49,18 +50,24 @@ class Telemetry {
 	}
 
 	/**
-	 * Zusätzliche Header für API-Anfragen – leer ohne Zustimmung.
+	 * Zusätzliche Header für API-Anfragen.
+	 *
+	 * X-Wetterwarner-License-Site wird immer gesendet, unabhängig von der
+	 * Einwilligung unten – sonst könnte die API eine gekaufte Supporter-Lizenz
+	 * nie zuordnen. Enthält nur die ohnehin öffentliche Adresse der Website,
+	 * keine Versions- oder sonstigen Daten. X-Wetterwarner-Site/-Env (für die
+	 * freiwillige Statistik in Plugin::usage()) bleiben an die Zustimmung
+	 * gebunden.
 	 *
 	 * @return array<string, string>
 	 */
 	public static function headers() {
-		if ( ! self::enabled() ) {
-			return array();
+		$headers = array( 'X-Wetterwarner-License-Site' => self::site() );
+		if ( self::enabled() ) {
+			$headers['X-Wetterwarner-Site'] = self::site();
+			$headers['X-Wetterwarner-Env']  = 'wp=' . get_bloginfo( 'version' ) . ';php=' . PHP_VERSION;
 		}
-		return array(
-			'X-Wetterwarner-Site' => self::site(),
-			'X-Wetterwarner-Env'  => 'wp=' . get_bloginfo( 'version' ) . ';php=' . PHP_VERSION,
-		);
+		return $headers;
 	}
 
 	/**
@@ -101,20 +108,6 @@ class Telemetry {
 		do_settings_sections( self::GROUP );
 		submit_button( null, 'secondary' );
 		echo '</form>';
-	}
-
-	/**
-	 * Spendenhinweis – ganz oben auf der Einstellungsseite.
-	 */
-	public static function render_donation() {
-		printf(
-			'<h2>%5$s</h2><div class="card" style="max-width:48rem;margin-top:0"><p><strong>%1$s</strong> %2$s</p><p><a class="button button-primary" href="%3$s" target="_blank" rel="noopener noreferrer">%4$s</a></p></div>',
-			esc_html__( 'Would you like the development of Wetterwarner to continue?', 'wetterwarner' ),
-			esc_html__( 'Support me as the developer with the costs for software, hosting and more.', 'wetterwarner' ),
-			esc_url( self::DONATE_URL ),
-			esc_html__( 'Donate with PayPal', 'wetterwarner' ),
-			esc_html__( 'Support development', 'wetterwarner' )
-		);
 	}
 
 	public static function sanitize( $value ) {

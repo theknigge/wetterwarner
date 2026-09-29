@@ -5,7 +5,7 @@ Tags: weather, weather warnings, dwd, germany, block
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.0.0
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,41 +28,29 @@ Wetterwarner displays the official weather warnings of the German Weather Servic
 * Privacy friendly: visitors never connect to external servers, the warning map is served from your own site
 * No jQuery or icon fonts in the frontend
 
-[Website & documentation](https://wetterwarner.de/dokumentation/)
+[Website, documentation (including all shortcode attributes) & Demo](https://wetterwarner.de)
 
-= Shortcode =
+= Wetterwarner Supporter license =
 
-`[wetterwarner region="103241000" map="60"]`
+Wetterwarner is and remains free – with all features and the same official DWD data for everyone. If your site depends on up-to-date warnings, for example as a fire brigade, relief organisation or municipality, the optional **Wetterwarner Supporter license** gives you more:
 
-Available attributes:
+* **Faster updates:** new warnings every 5 instead of 15 minutes
+* **Fallback server:** if the main API is unavailable, your site automatically switches to a separate, independently hosted server
+* **Priority support** via contact form or e-mail
 
-* `region` – warncell ID of the region (required) or `demo` for sample warnings
-* `title`, `intro`, `no_warnings` – texts, `%region%` is replaced by the name of the region
-* `max` – maximum number of warnings (default 3, 0 = all)
-* `show_always` – show the output even without warnings (1/0)
-* `validity`, `details`, `icons`, `colors`, `link`, `hide_duplicates` – display options (1/0)
-* `map` – width of the warning map in percent (0 = no map)
-* `map_region` – `auto`, `de`, `baw`, `bay`, `bbb`, `hes`, `mvp`, `nib`, `nrw`, `rps`, `sac`, `saa`, `shh`, `thu`
+**Launch offer: 19 € per year** (regular price 29 € per year). One-time purchase for 12 months, no subscription, no automatic renewal. The license is tied to your website's address and is activated automatically with the next update – no license key to copy. Your purchase also funds the development and operation of the Wetterwarner API.
 
-You can find the warncell ID with the region search in the block or widget.
+[Get your Supporter license](https://wetterwarner.de/unterstuetzen/#supporter) – or directly from "Settings > Wetterwarner" in your WordPress admin.
 
 = External services =
 
 This plugin relies on the **Wetterwarner API** (`api.wetterwarner.de`), a service operated by the plugin author. The API caches the official warnings of the German Weather Service centrally, so that not every website has to download the DWD data, which can be several megabytes in size.
 
-All requests are made server-side by your WordPress installation – at most every 5 minutes, with all regions in use combined into a single request. Visitors of your website never connect to external servers.
-
-* `https://api.wetterwarner.de/v3/warnings` – warnings for the regions in use. Transmitted: the warncell IDs of these regions and, for technical reasons, the IP address of your web server.
-* `https://api.wetterwarner.de/v3/regions` – region search in the block and widget editor. Transmitted: the search term.
-* `https://api.wetterwarner.de/v3/maps/` – warning maps, only if a map is displayed.
-
-No data about the visitors of your website is transmitted.
+All requests are made server-side by your WordPress installation – every 15 minutes (every 5 minutes with a Supporter license), with all regions in use combined into a single request. Visitors of your website never connect to external servers. No data about the visitors of your website is transmitted.
 
 **Optional: support development** – Only if you explicitly agree (notice in the admin area or "Settings > Wetterwarner"), the address of your website as well as the plugin, WordPress and PHP versions are additionally sent with the regular request. You can revoke your consent at any time; the stored information is then deleted. Entries without contact are removed automatically after 90 days.
 
 Provider: Tim Knigge, IT93 – [Privacy policy](https://wetterwarner.de/datenschutz)
-
-The API address can be changed with the constant `WETTERWARNER_API_URL` or the filter `wetterwarner_api_url`, e.g. for a self-hosted instance.
 
 Weather data: Deutscher Wetterdienst, Frankfurter Straße 135, 63067 Offenbach, Germany – [Terms of use](https://www.dwd.de/EN/service/copyright/copyright_node.html), [Privacy policy](https://www.dwd.de/EN/service/dataprotection/dataprotection_node.html).
 
@@ -107,7 +95,7 @@ If you use a caching plugin, pages may be cached for longer. Under "Settings > W
 The last loaded warnings remain visible for up to two hours. After that, a notice with a link to the current warnings on dwd.de is shown instead of outdated warnings. "Tools > Site Health" reports the outage as critical.
 
 = How can I contact the developer or report a bug? =
-Please use the WordPress [support forum](https://wordpress.org/support/plugin/wetterwarner/) or the [contact form](https://it93.de/kontakt/).
+Please use the WordPress [support forum](https://wordpress.org/support/plugin/wetterwarner/). With a [Wetterwarner Supporter license](https://wetterwarner.de/unterstuetzen/#supporter) you get priority support via the [contact form](https://it93.de/support/?betreff=wetterwarner) or support@it93.de.
 
 == Screenshots ==
 
@@ -117,10 +105,22 @@ Please use the WordPress [support forum](https://wordpress.org/support/plugin/we
 
 == Upgrade Notice ==
 
+= 3.1.0 =
+New: Wetterwarner Supporter license – updates every 5 minutes, automatic fallback server and priority support. Launch offer: 19 € per year (regular price 29 €).
+
 = 3.0.0 =
 Major update: official DWD warnings via the new Wetterwarner API, block and shortcode. Requires WordPress 6.3 and PHP 7.4. Existing widgets are migrated automatically – please check them briefly after the update.
 
 == Changelog ==
+
+= 3.1.0 =
+* New: [Wetterwarner Supporter license](https://wetterwarner.de/unterstuetzen/#supporter) – support the development and get more out of Wetterwarner:
+  * Faster updates: every 5 instead of 15 minutes
+  * Automatic fallback server if the main API is unavailable
+  * Priority support via contact form or e-mail
+  * Launch offer: 19 € per year (regular price 29 € per year), one-time purchase, no subscription, activated automatically for your website
+* New: license status and purchase link under "Settings > Wetterwarner"
+* Change: without a Supporter license, background updates now run every 15 instead of 5 minutes to keep the free API sustainable
 
 = 3.0.0 =
 * New: "Wetterwarner" block with live preview in the editor

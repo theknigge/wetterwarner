@@ -148,7 +148,7 @@ class Admin {
 				<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Cache cleared.', 'wetterwarner' ); ?></p></div>
 			<?php endif; ?>
 
-			<?php Telemetry::render_donation(); ?>
+			<?php self::render_license(); ?>
 
 			<h2><?php esc_html_e( 'Usage', 'wetterwarner' ); ?></h2>
 			<p><?php esc_html_e( 'Add the "Wetterwarner" block in the block editor or in a widget area. Alternatively use the shortcode:', 'wetterwarner' ); ?></p>
@@ -234,6 +234,38 @@ class Admin {
 			<?php Telemetry::render(); ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Supporter-Status bzw. Werbung dafür, ganz oben auf der Einstellungsseite.
+	 */
+	public static function render_license() {
+		$license = Source::license();
+
+		if ( $license['active'] ) {
+			printf(
+				'<div class="notice notice-success inline" style="max-width:48rem"><p><strong>%1$s</strong> %2$s</p></div>',
+				esc_html__( 'You are a Wetterwarner Supporter.', 'wetterwarner' ),
+				esc_html(
+					$license['expires']
+						? sprintf(
+							/* translators: %s: date the license expires */
+							__( 'Faster updates, fallback server and priority support are active until %s.', 'wetterwarner' ),
+							wp_date( get_option( 'date_format' ), $license['expires'] )
+						)
+						: __( 'Faster updates, fallback server and priority support are active.', 'wetterwarner' )
+				)
+			);
+			return;
+		}
+
+		printf(
+			'<div class="card" style="max-width:48rem;margin-top:0"><p><strong>%1$s</strong> %2$s</p><p><a class="button button-primary" href="%3$s" target="_blank" rel="noopener noreferrer">%4$s</a></p></div>',
+			esc_html__( 'Get the Wetterwarner Supporter license.', 'wetterwarner' ),
+			esc_html__( 'Updates every 5 instead of 15 minutes, an automatic fallback server and priority support – launch offer: 19 € per year (regular price 29 € per year), one-time purchase, no subscription.', 'wetterwarner' ),
+			esc_url( add_query_arg( 'site', rawurlencode( Telemetry::site() ), 'https://wetterwarner.de/unterstuetzen/#supporter' ) ),
+			esc_html__( 'Become a Supporter', 'wetterwarner' )
+		);
 	}
 
 	public static function clear_cache() {
@@ -334,6 +366,10 @@ class Admin {
 			'version'   => array(
 				'label' => __( 'Version', 'wetterwarner' ),
 				'value' => WETTERWARNER_VERSION,
+			),
+			'license'   => array(
+				'label' => __( 'Supporter license', 'wetterwarner' ),
+				'value' => Source::license()['active'] ? 'active' : 'inactive',
 			),
 			'map_dir'   => array(
 				'label' => __( 'Map directory writable', 'wetterwarner' ),
