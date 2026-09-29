@@ -176,9 +176,38 @@ msgstr "Das Upload-Verzeichnis ist nicht beschreibbar. Warnkarten können nicht 
 msgid "Wetterwarner cannot reach the Wetterwarner API"
 msgstr "Wetterwarner erreicht die Wetterwarner-API nicht"
 
+#: includes/class-admin.php:248
+msgid "You are a Wetterwarner Supporter."
+msgstr "Du bist Wetterwarner-Supporter."
+
+#: includes/class-admin.php:253
+#, php-format
+msgid "Faster updates, fallback server and priority support are active until %s."
+msgstr "Schnellere Updates, Fallback-Server und bevorzugter Support sind aktiv bis %s."
+
+#: includes/class-admin.php:255
+msgid "Faster updates, fallback server and priority support are active."
+msgstr "Schnellere Updates, Fallback-Server und bevorzugter Support sind aktiv."
+
+#: includes/class-admin.php:264
+msgid "Get the Wetterwarner Supporter license."
+msgstr "Hol Dir die Wetterwarner Supporter-Lizenz."
+
+#: includes/class-admin.php:265
+msgid "Updates every 5 instead of 15 minutes, an automatic fallback server and priority support – launch offer: 19 € per year (regular price 29 € per year), one-time purchase, no subscription."
+msgstr "Updates alle 5 statt 15 Minuten, ein automatischer Fallback-Server und bevorzugter Support – Startangebot: 19 € pro Jahr (regulär 29 € pro Jahr), einmaliger Kauf, kein Abo."
+
+#: includes/class-admin.php:267
+msgid "Become a Supporter"
+msgstr "Jetzt Supporter werden"
+
 #: includes/class-admin.php:335
 msgid "Version"
 msgstr ""
+
+#: includes/class-admin.php:371
+msgid "Supporter license"
+msgstr "Supporter-Lizenz"
 
 #: includes/class-admin.php:339
 msgid "Map directory writable"
