@@ -51,7 +51,9 @@ This plugin relies on the **Wetterwarner API** (`api.wetterwarner.de`), a servic
 
 All requests are made server-side by your WordPress installation – at the interval specified by the API (currently every 15 minutes, with a Supporter license every 5 minutes), with all regions in use combined into a single request. Visitors of your website never connect to external servers. No data about the visitors of your website is transmitted.
 
-**Optional: support development** – Only if you explicitly agree (notice in the admin area or "Settings > Wetterwarner"), the address of your website as well as the plugin, WordPress and PHP versions are additionally sent with the regular request. You can revoke your consent at any time; the stored information is then deleted. Entries without contact are removed automatically after 90 days.
+With every request for warnings and warning maps from the fallback server, and with every request for warnings from the main server, the address of your website (host name and path) is sent so that a Supporter license can be assigned to it. Without a license or your consent (see below), this address is not stored by the API.
+
+**Optional: support development** – Only if you explicitly agree (notice in the admin area or "Settings > Wetterwarner"), the address of your website as well as the plugin, WordPress and PHP versions are additionally sent with the regular request and stored for the usage statistics. You can revoke your consent at any time; the stored information is then deleted. Entries without contact are removed automatically after 90 days.
 
 Provider: Tim Knigge, IT93 – [Privacy policy](https://wetterwarner.de/datenschutz)
 
@@ -116,7 +118,7 @@ Please use the WordPress [support forum](https://wordpress.org/support/plugin/we
 == Upgrade Notice ==
 
 = 3.2.0 =
-New: warning banner, filters by level and type, and current warnings even with page caching.
+New: warning banner for every page, filters by warning level and type, and current warnings even with page caching. Tested with WordPress 7.2.
 
 = 3.1.0 =
 New: Wetterwarner Supporter license – support the ongoing development and operation of Wetterwarner, and get updates every 5 minutes, an automatic fallback server and priority support in return. Launch offer: 19 € per year (regular price 29 €).
@@ -127,10 +129,16 @@ Major update: official DWD warnings via the new Wetterwarner API, block and shor
 == Changelog ==
 
 = 3.2.0 =
-* New: warning banner for every page
-* New: filters for minimum warning level, types of warnings and prior information
-* New: warnings are refreshed in the browser, so page caches no longer show outdated warnings
-* Change: the update interval is now specified by the Wetterwarner API
+* New: **warning banner** – shows current warnings of one region at the top or bottom of every page
+  * Minimum warning level, position and your own "Details" link
+  * Visitors can close it; it reappears when the warnings change
+* New: **filters** for block, shortcode and classic widget: minimum warning level, types of warnings and prior information
+  * New shortcode attributes: `min_stage`, `types`, `prior`
+  * If warnings are hidden by a filter, the text says so instead of claiming there are none
+* New: **current despite page caching** – warnings are refreshed in the browser from your own website (can be turned off in the settings)
+  * If the refresh fails, warnings older than two hours are replaced by a link to dwd.de
+* New: update interval and fallback server notes in the settings, clearer Supporter overview and a renewal hint 30 days before a license expires
+* Change: the update interval is now specified by the Wetterwarner API (currently every 15 minutes, with a Supporter license every 5 minutes)
 * Compatibility with WordPress 7.2
 * Bugfix: the stored license status is now removed on uninstall
 
