@@ -23,7 +23,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: wetterwarner.php
-msgid "https://it93.de/projekte/wetterwarner/"
+msgid "https://wetterwarner.de"
 msgstr ""
 
 #. Description of the plugin
@@ -41,195 +41,394 @@ msgstr ""
 msgid "https://it93.systems/"
 msgstr ""
 
-#: includes/class-admin.php:76
+#: includes/class-admin.php:80
+#: build/wetterwarner/index.js:1
+msgid "Display"
+msgstr "Anzeige"
+
+#: includes/class-admin.php:81
+msgid "Page cache"
+msgstr "Seiten-Cache"
+
+#: includes/class-admin.php:83
 msgid "Colors"
 msgstr "Farben"
 
 #. translators: %d: warning level
-#: includes/class-admin.php:82
-#: includes/class-admin.php:360
+#: includes/class-admin.php:89
+#: includes/class-admin.php:475
 #, php-format
 msgid "Background color level %d"
 msgstr "Hintergrundfarbe Warnstufe %d"
 
-#: includes/class-admin.php:107
+#: includes/class-admin.php:115
+msgid "Refresh warnings in the browser"
+msgstr "Warnungen im Browser aktualisieren"
+
+#: includes/class-admin.php:116
+msgid "Keeps warnings current even if a caching plugin delivers an older page. The browser only contacts your own website."
+msgstr "Hält Warnungen aktuell, auch wenn ein Caching-Plugin eine ältere Seite ausliefert. Der Browser kontaktiert nur Deine eigene Website."
+
+#: includes/class-admin.php:125
 msgid "These colors apply to all blocks, shortcodes and widgets when \"Color by warning level\" is enabled."
 msgstr "Diese Farben gelten für alle Blöcke, Shortcodes und Widgets, bei denen „Nach Warnstufe einfärben“ aktiviert ist."
 
-#: includes/class-admin.php:148
+#: includes/class-admin.php:167
 msgid "Cache cleared."
 msgstr "Cache geleert."
 
-#: includes/class-admin.php:153
+#: includes/class-admin.php:172
 msgid "Usage"
 msgstr "Verwendung"
 
-#: includes/class-admin.php:154
+#: includes/class-admin.php:173
 msgid "Add the \"Wetterwarner\" block in the block editor or in a widget area. Alternatively use the shortcode:"
 msgstr "Füge den Block „Wetterwarner“ im Block-Editor oder in einem Widget-Bereich ein. Alternativ kannst Du den Shortcode verwenden:"
 
-#: includes/class-admin.php:157
+#: includes/class-admin.php:176
 msgid "All shortcode attributes"
 msgstr "Alle Shortcode-Attribute"
 
-#: includes/class-admin.php:160
+#: includes/class-admin.php:179
 msgid "Warncell ID of the region (required), or \"demo\""
 msgstr "Warncell-ID der Region (Pflicht) oder „demo“"
 
-#: includes/class-admin.php:161
+#: includes/class-admin.php:180
 msgid "Texts, %region% is replaced"
 msgstr "Texte, %region% wird ersetzt"
 
-#: includes/class-admin.php:162
+#: includes/class-admin.php:181
 msgid "Maximum number of alerts (default 3, 0 = all)"
 msgstr "Maximale Anzahl Warnungen (Standard 3, 0 = alle)"
 
-#: includes/class-admin.php:163
+#: includes/class-admin.php:182
 msgid "Options: 1 or 0"
 msgstr "Optionen: 1 oder 0"
 
-#: includes/class-admin.php:164
+#: includes/class-admin.php:183
+msgid "Minimum warning level 1–4"
+msgstr "Mindest-Warnstufe 1–4"
+
+#: includes/class-admin.php:184
+msgid "Types of warnings, comma separated:"
+msgstr "Warnarten, durch Komma getrennt:"
+
+#: includes/class-admin.php:185
+msgid "Show prior information: 1 or 0"
+msgstr "Vorabinformationen anzeigen: 1 oder 0"
+
+#: includes/class-admin.php:186
 msgid "Map width in percent (0 = no map)"
 msgstr "Kartenbreite in Prozent (0 = keine Karte)"
 
 #. translators: %s: link to the documentation
-#: includes/class-admin.php:173
+#: includes/class-admin.php:195
 #, php-format
 msgid "Detailed instructions and examples can be found in the %s."
 msgstr "Ausführliche Anleitungen und Beispiele findest Du in der %s."
 
-#: includes/class-admin.php:174
+#: includes/class-admin.php:196
 msgid "documentation"
 msgstr "Dokumentation"
 
-#: includes/class-admin.php:187
+#: includes/class-admin.php:211
 msgid "Data status"
 msgstr "Datenstatus"
 
-#: includes/class-admin.php:192
+#: includes/class-admin.php:216
 msgid "Wetterwarner API (api.wetterwarner.de)"
 msgstr "Wetterwarner-API (api.wetterwarner.de)"
 
 #. translators: %s: human readable time difference
-#: includes/class-admin.php:203
+#: includes/class-admin.php:227
 #, php-format
 msgid "Last update %s ago"
 msgstr "Zuletzt aktualisiert vor %s"
 
-#: includes/class-admin.php:204
+#: includes/class-admin.php:228
 msgid "Not loaded yet"
 msgstr "Noch nicht geladen"
 
-#: includes/class-admin.php:214
-#: includes/class-admin.php:347
+#: includes/class-admin.php:238
+msgid "Update interval"
+msgstr "Abrufintervall"
+
+#. translators: %d: minutes
+#: includes/class-admin.php:242
+#, php-format
+msgid "Every %d minutes"
+msgstr "Alle %d Minuten"
+
+#: includes/class-admin.php:244
+msgid "every 5 minutes with a Supporter license"
+msgstr "mit Supporter-Lizenz alle 5 Minuten"
+
+#: includes/class-admin.php:251
+msgid "Fallback server"
+msgstr "Fallback-Server"
+
+#: includes/class-admin.php:252
+msgid "Supporter websites switch to a separate server when the main API is unavailable."
+msgstr "Websites von Supportern wechseln auf einen separaten Server, wenn die Haupt-API nicht erreichbar ist."
+
+#: includes/class-admin.php:256
+#: includes/class-admin.php:462
 msgid "Regions in use"
 msgstr "Genutzte Regionen"
 
-#: includes/class-admin.php:231
+#: includes/class-admin.php:273
 msgid "Clear cache"
 msgstr "Cache leeren"
 
-#: includes/class-admin.php:241
-#: includes/class-telemetry.php:176
-msgid "Sorry, you are not allowed to do that."
-msgstr "Du bist leider nicht berechtigt, das zu tun."
-
-#. translators: %s: list of old feed IDs
-#: includes/class-admin.php:264
-#, php-format
-msgid "Wetterwarner 3.0 uses the official warning regions of the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings."
-msgstr "Wetterwarner 3.0 nutzt die amtlichen Warnregionen des Deutschen Wetterdienstes. Folgende alte Feed-IDs konnten nicht automatisch einer Warnregion zugeordnet werden: %s. Bitte wähle die Region in den Widget-Einstellungen neu aus."
-
-#: includes/class-admin.php:269
-msgid "Open widgets"
-msgstr "Widgets öffnen"
-
-#: includes/class-admin.php:271
-msgid "Dismiss"
-msgstr "Ausblenden"
-
-#: includes/class-admin.php:278
-msgid "Settings"
-msgstr "Einstellungen"
-
-#: includes/class-admin.php:279
-msgid "Documentation"
-msgstr "Dokumentation"
-
-#: includes/class-admin.php:294
-msgid "Wetterwarner receives current weather alerts"
-msgstr "Wetterwarner empfängt aktuelle Wetterwarnungen"
-
 #: includes/class-admin.php:300
-msgid "The alerts of the Deutscher Wetterdienst are loaded and cached successfully."
-msgstr "Die Warnungen des Deutschen Wetterdienstes werden erfolgreich geladen und zwischengespeichert."
-
-#: includes/class-admin.php:308
-msgid "Wetterwarner cannot store warning maps"
-msgstr "Wetterwarner kann keine Warnkarten speichern"
-
-#: includes/class-admin.php:309
-msgid "The uploads directory is not writable. Warning maps cannot be displayed."
-msgstr "Das Upload-Verzeichnis ist nicht beschreibbar. Warnkarten können nicht angezeigt werden."
-
-#: includes/class-admin.php:320
-msgid "Wetterwarner cannot reach the Wetterwarner API"
-msgstr "Wetterwarner erreicht die Wetterwarner-API nicht"
-
-#: includes/class-admin.php:248
 msgid "You are a Wetterwarner Supporter."
 msgstr "Du bist Wetterwarner-Supporter."
 
-#: includes/class-admin.php:253
+#. translators: %s: date the license expires
+#: includes/class-admin.php:305
 #, php-format
 msgid "Faster updates, fallback server and priority support are active until %s."
 msgstr "Schnellere Updates, Fallback-Server und bevorzugter Support sind aktiv bis %s."
 
-#: includes/class-admin.php:255
+#: includes/class-admin.php:308
 msgid "Faster updates, fallback server and priority support are active."
 msgstr "Schnellere Updates, Fallback-Server und bevorzugter Support sind aktiv."
 
-#: includes/class-admin.php:264
-msgid "Get the Wetterwarner Supporter license."
-msgstr "Hol Dir die Wetterwarner Supporter-Lizenz."
+#: includes/class-admin.php:310
+msgid "Renew license"
+msgstr "Lizenz verlängern"
 
-#: includes/class-admin.php:265
-msgid "Updates every 5 instead of 15 minutes, an automatic fallback server and priority support – launch offer: 19 € per year (regular price 29 € per year), one-time purchase, no subscription."
-msgstr "Updates alle 5 statt 15 Minuten, ein automatischer Fallback-Server und bevorzugter Support – Startangebot: 19 € pro Jahr (regulär 29 € pro Jahr), einmaliger Kauf, kein Abo."
+#: includes/class-admin.php:316
+msgid "All features, including the warning banner"
+msgstr "Alle Funktionen, inklusive Warnbanner"
 
-#: includes/class-admin.php:267
+#: includes/class-admin.php:317
+msgid "New warnings"
+msgstr "Neue Warnungen"
+
+#: includes/class-admin.php:317
+msgid "every 15 minutes"
+msgstr "alle 15 Minuten"
+
+#: includes/class-admin.php:317
+msgid "every 5 minutes"
+msgstr "alle 5 Minuten"
+
+#: includes/class-admin.php:318
+msgid "Automatic fallback server"
+msgstr "Automatischer Fallback-Server"
+
+#: includes/class-admin.php:319
+msgid "Priority support"
+msgstr "Bevorzugter Support"
+
+#: includes/class-admin.php:323
+msgid "Become a Wetterwarner Supporter"
+msgstr "Werde Wetterwarner-Supporter"
+
+#: includes/class-admin.php:324
+msgid "Wetterwarner is developed in my spare time, and the API behind it has running costs. With a Supporter license you keep it going."
+msgstr "Wetterwarner entsteht in meiner Freizeit, und die API dahinter verursacht laufende Kosten. Mit einer Supporter-Lizenz hältst Du das Projekt am Laufen."
+
+#: includes/class-admin.php:326
+msgid "Free"
+msgstr "Kostenlos"
+
+#: includes/class-admin.php:326
+msgid "Supporter"
+msgstr "Supporter"
+
+#: includes/class-admin.php:333
+msgid "Launch offer: 19 € per year (regular price 29 € per year). One-time purchase, no subscription."
+msgstr "Startangebot: 19 € pro Jahr (regulär 29 € pro Jahr). Einmaliger Kauf, kein Abo."
+
+#: includes/class-admin.php:334
+#: includes/class-admin.php:342
+#: includes/class-admin.php:385
 msgid "Become a Supporter"
 msgstr "Jetzt Supporter werden"
 
-#: includes/class-admin.php:335
+#: includes/class-admin.php:349
+#: includes/class-telemetry.php:169
+msgid "Sorry, you are not allowed to do that."
+msgstr "Du bist leider nicht berechtigt, das zu tun."
+
+#. translators: %s: list of old feed IDs
+#: includes/class-admin.php:372
+#, php-format
+msgid "Wetterwarner 3.0 uses the official warning regions of the Deutscher Wetterdienst. The following old feed IDs could not be assigned to a warning region automatically: %s. Please select the region again in the widget settings."
+msgstr "Wetterwarner 3.0 nutzt die amtlichen Warnregionen des Deutschen Wetterdienstes. Folgende alte Feed-IDs konnten nicht automatisch einer Warnregion zugeordnet werden: %s. Bitte wähle die Region in den Widget-Einstellungen neu aus."
+
+#: includes/class-admin.php:377
+msgid "Open widgets"
+msgstr "Widgets öffnen"
+
+#: includes/class-admin.php:379
+msgid "Dismiss"
+msgstr "Ausblenden"
+
+#: includes/class-admin.php:389
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: includes/class-admin.php:390
+msgid "Documentation"
+msgstr "Dokumentation"
+
+#: includes/class-admin.php:405
+msgid "Wetterwarner receives current weather alerts"
+msgstr "Wetterwarner empfängt aktuelle Wetterwarnungen"
+
+#: includes/class-admin.php:411
+msgid "The alerts of the Deutscher Wetterdienst are loaded and cached successfully."
+msgstr "Die Warnungen des Deutschen Wetterdienstes werden erfolgreich geladen und zwischengespeichert."
+
+#: includes/class-admin.php:419
+msgid "Wetterwarner cannot store warning maps"
+msgstr "Wetterwarner kann keine Warnkarten speichern"
+
+#: includes/class-admin.php:420
+msgid "The uploads directory is not writable. Warning maps cannot be displayed."
+msgstr "Das Upload-Verzeichnis ist nicht beschreibbar. Warnkarten können nicht angezeigt werden."
+
+#: includes/class-admin.php:431
+msgid "Wetterwarner cannot reach the Wetterwarner API"
+msgstr "Wetterwarner erreicht die Wetterwarner-API nicht"
+
+#: includes/class-admin.php:446
 msgid "Version"
 msgstr ""
 
-#: includes/class-admin.php:371
+#: includes/class-admin.php:450
 msgid "Supporter license"
 msgstr "Supporter-Lizenz"
 
-#: includes/class-admin.php:339
+#: includes/class-admin.php:454
 msgid "Map directory writable"
 msgstr "Kartenverzeichnis beschreibbar"
 
-#: includes/class-admin.php:343
+#: includes/class-admin.php:458
 msgid "Next background update"
 msgstr "Nächste Hintergrundaktualisierung"
 
-#: includes/class-map.php:49
+#. translators: %d: number of further warnings
+#: includes/class-banner.php:172
+#, php-format
+msgid "+%d more"
+msgstr "+%d weitere"
+
+#: includes/class-banner.php:174
+#: includes/class-renderer.php:278
+msgid "Details"
+msgstr "Details"
+
+#. translators: %s: link to Deutscher Wetterdienst
+#: includes/class-banner.php:177
+#: includes/class-renderer.php:216
+#, php-format
+msgid "Source: %s"
+msgstr "Quelle: %s"
+
+#: includes/class-banner.php:180
+msgid "Close banner"
+msgstr "Banner schließen"
+
+#: includes/class-banner.php:183
+#: includes/class-renderer.php:22
+#: build/wetterwarner/index.js:1
+msgid "Weather alerts"
+msgstr "Wetterwarnungen"
+
+#: includes/class-banner.php:195
+msgid "Warning banner"
+msgstr "Warnbanner"
+
+#: includes/class-banner.php:196
+msgid "Shows current warnings for one region at the top or bottom of every page. Without a warning, nothing is displayed."
+msgstr "Zeigt aktuelle Warnungen einer Region oben oder unten auf jeder Seite. Ohne Warnung wird nichts angezeigt."
+
+#: includes/class-banner.php:201
+msgid "Banner"
+msgstr "Banner"
+
+#: includes/class-banner.php:202
+msgid "Show warning banner"
+msgstr "Warnbanner anzeigen"
+
+#: includes/class-banner.php:205
+#: includes/class-widget.php:76
+#: build/wetterwarner/index.js:1
+msgid "Warning region"
+msgstr "Warnregion"
+
+#: includes/class-banner.php:208
+#: includes/class-widget.php:82
+msgid "Search town or district …"
+msgstr "Ort oder Landkreis suchen …"
+
+#: includes/class-banner.php:215
+#: includes/class-widget.php:117
+#: build/wetterwarner/index.js:1
+msgid "Minimum warning level"
+msgstr "Mindest-Warnstufe"
+
+#: includes/class-banner.php:225
+msgid "Position"
+msgstr "Position"
+
+#: includes/class-banner.php:228
+msgid "Top"
+msgstr "Oben"
+
+#: includes/class-banner.php:229
+msgid "Bottom"
+msgstr "Unten"
+
+#: includes/class-banner.php:234
+msgid "Closing"
+msgstr "Schließen"
+
+#: includes/class-banner.php:235
+msgid "Visitors can close the banner until the warnings change"
+msgstr "Besucher können das Banner schließen, bis sich die Warnungen ändern"
+
+#: includes/class-banner.php:238
+msgid "Link for \"Details\""
+msgstr "Link für „Details“"
+
+#: includes/class-banner.php:241
+msgid "For example your own page with the Wetterwarner block. Empty: dwd.de"
+msgstr "Zum Beispiel Deine eigene Seite mit dem Wetterwarner-Block. Leer: dwd.de"
+
+#: includes/class-banner.php:245
+msgid "Save banner"
+msgstr "Banner speichern"
+
+#: includes/class-live.php:51
+#: includes/class-renderer.php:189
+msgid "Weather alerts are currently unavailable."
+msgstr "Wetterwarnungen sind derzeit nicht verfügbar."
+
+#: includes/class-live.php:52
+#: includes/class-renderer.php:190
+msgid "View alerts at dwd.de"
+msgstr "Warnungen auf dwd.de ansehen"
+
+#: includes/class-map.php:50
 #: build/wetterwarner/index.js:1
 msgid "Federal state of the region"
 msgstr "Bundesland der Region"
 
-#: includes/class-map.php:50
+#: includes/class-map.php:51
 #: build/wetterwarner/index.js:1
 msgid "Germany"
 msgstr "Deutschland"
 
-#: includes/class-plugin.php:145
-msgid "Every 5 minutes"
-msgstr "Alle 5 Minuten"
+#. translators: %d: minutes
+#: includes/class-plugin.php:167
+#, php-format
+msgid "Every %d minutes (Wetterwarner)"
+msgstr "Alle %d Minuten (Wetterwarner)"
 
 #: includes/class-regions.php:37
 msgid "Sample town (demo)"
@@ -243,7 +442,7 @@ msgstr "Warnregion %s"
 
 #: includes/class-regions.php:149
 #: includes/class-regions.php:246
-#: includes/class-source.php:227
+#: includes/class-source.php:317
 msgid "The API response could not be read."
 msgstr "Die Antwort der API konnte nicht gelesen werden."
 
@@ -268,21 +467,16 @@ msgid "Coast"
 msgstr "Küste"
 
 #: includes/class-regions.php:226
-#: includes/class-source.php:201
+#: includes/class-source.php:273
 msgid "Weather alerts could not be loaded."
 msgstr "Wetterwarnungen konnten nicht geladen werden."
 
 #. translators: %d: HTTP status code
 #: includes/class-regions.php:242
-#: includes/class-source.php:359
+#: includes/class-source.php:451
 #, php-format
 msgid "Data source responded with HTTP status %d."
 msgstr "Die Datenquelle antwortete mit HTTP-Status %d."
-
-#: includes/class-renderer.php:22
-#: build/wetterwarner/index.js:1
-msgid "Weather alerts"
-msgstr "Wetterwarnungen"
 
 #: includes/class-renderer.php:23
 #: build/wetterwarner/index.js:1
@@ -294,88 +488,153 @@ msgstr "Wetterwarnungen für %region%"
 msgid "No weather alerts for %region%"
 msgstr "Keine Wetterwarnungen für %region%"
 
-#: includes/class-renderer.php:88
+#: includes/class-renderer.php:44
+#: build/wetterwarner/index.js:1
+msgid "All warnings"
+msgstr "Alle Warnungen"
+
+#: includes/class-renderer.php:45
+#: build/wetterwarner/index.js:1
+msgid "From level 2 (significant weather)"
+msgstr "Ab Stufe 2 (markantes Wetter)"
+
+#: includes/class-renderer.php:46
+#: build/wetterwarner/index.js:1
+msgid "From level 3 (severe weather)"
+msgstr "Ab Stufe 3 (Unwetter)"
+
+#: includes/class-renderer.php:47
+#: build/wetterwarner/index.js:1
+msgid "Only level 4 (extreme weather)"
+msgstr "Nur Stufe 4 (extremes Unwetter)"
+
+#: includes/class-renderer.php:54
+#: build/wetterwarner/index.js:1
+msgid "Thunderstorm"
+msgstr "Gewitter"
+
+#: includes/class-renderer.php:55
+#: build/wetterwarner/index.js:1
+msgid "Wind and storm"
+msgstr "Wind und Sturm"
+
+#: includes/class-renderer.php:56
+#: build/wetterwarner/index.js:1
+msgid "Rain"
+msgstr "Regen"
+
+#: includes/class-renderer.php:57
+#: build/wetterwarner/index.js:1
+msgid "Snow"
+msgstr "Schnee"
+
+#: includes/class-renderer.php:58
+#: build/wetterwarner/index.js:1
+msgid "Fog"
+msgstr "Nebel"
+
+#: includes/class-renderer.php:59
+#: build/wetterwarner/index.js:1
+msgid "Frost"
+msgstr "Frost"
+
+#: includes/class-renderer.php:60
+#: build/wetterwarner/index.js:1
+msgid "Black ice"
+msgstr "Glätte und Glatteis"
+
+#: includes/class-renderer.php:61
+#: build/wetterwarner/index.js:1
+msgid "Thaw"
+msgstr "Tauwetter"
+
+#: includes/class-renderer.php:62
+#: build/wetterwarner/index.js:1
+msgid "Heat"
+msgstr "Hitze"
+
+#: includes/class-renderer.php:63
+#: build/wetterwarner/index.js:1
+msgid "UV radiation"
+msgstr "UV-Strahlung"
+
+#: includes/class-renderer.php:64
+#: build/wetterwarner/index.js:1
+msgid "Other"
+msgstr "Sonstige"
+
+#: includes/class-renderer.php:149
 msgid "Please select a warning region in the Wetterwarner settings."
 msgstr "Bitte wähle in den Wetterwarner-Einstellungen eine Warnregion aus."
 
-#: includes/class-renderer.php:100
+#: includes/class-renderer.php:170
+msgid "There are warnings, but none matches the filter. The block is hidden on the website (option \"Show always\")."
+msgstr "Es liegen Warnungen vor, aber keine passt zum Filter. Auf der Webseite bleibt der Block ausgeblendet (Option „Auch ohne Warnungen anzeigen“)."
+
+#: includes/class-renderer.php:171
 msgid "There are currently no warnings. The block is hidden on the website until a warning is issued (option \"Show always\")."
 msgstr "Aktuell liegen keine Warnungen vor. Auf der Webseite bleibt der Block ausgeblendet, bis eine Warnung vorliegt (Option „Auch ohne Warnungen anzeigen“)."
 
-#: includes/class-renderer.php:115
-msgid "Weather alerts are currently unavailable."
-msgstr "Wetterwarnungen sind derzeit nicht verfügbar."
-
-#: includes/class-renderer.php:116
-msgid "View alerts at dwd.de"
-msgstr "Warnungen auf dwd.de ansehen"
-
-#. translators: %s: link to Deutscher Wetterdienst
-#: includes/class-renderer.php:141
-#, php-format
-msgid "Source: %s"
-msgstr "Quelle: %s"
+#: includes/class-renderer.php:205
+msgid "No alerts matching the selection for %region%"
+msgstr "Keine Warnungen der gewählten Auswahl für %region%"
 
 #. translators: %d: warning level 1-4
-#: includes/class-renderer.php:191
+#: includes/class-renderer.php:266
 #, php-format
 msgid "Warning level %d"
 msgstr "Warnstufe %d"
 
-#: includes/class-renderer.php:195
+#: includes/class-renderer.php:270
 msgid "Prior information"
 msgstr "Vorabinformation"
 
-#: includes/class-renderer.php:203
-msgid "Details"
-msgstr ""
-
-#: includes/class-renderer.php:221
-#: includes/class-renderer.php:228
+#: includes/class-renderer.php:296
+#: includes/class-renderer.php:303
 msgid "D, m/d, g:i a"
 msgstr "D, d.m., H:i"
 
 #. translators: %s: start date and time
-#: includes/class-renderer.php:225
+#: includes/class-renderer.php:300
 #, php-format
 msgid "From %s until further notice"
 msgstr "Ab %s bis auf Weiteres"
 
 #. translators: %s: start date and time
-#: includes/class-renderer.php:225
+#: includes/class-renderer.php:300
 msgid "Until further notice"
 msgstr "Bis auf Weiteres"
 
-#: includes/class-renderer.php:228
+#: includes/class-renderer.php:303
 msgid "g:i a"
 msgstr "H:i \\U\\h\\r"
 
 #. translators: 1: start date and time, 2: end date or time
-#: includes/class-renderer.php:230
+#: includes/class-renderer.php:305
 #, php-format
 msgid "%1$s – %2$s"
 msgstr ""
 
 #. translators: 1: lower altitude, 2: upper altitude in meters
-#: includes/class-renderer.php:235
+#: includes/class-renderer.php:310
 #, php-format
 msgid "between %1$d m and %2$d m"
 msgstr "zwischen %1$d m und %2$d m"
 
 #. translators: %d: altitude in meters
-#: includes/class-renderer.php:238
+#: includes/class-renderer.php:313
 #, php-format
 msgid "above %d m"
 msgstr "oberhalb %d m"
 
 #. translators: %d: altitude in meters
-#: includes/class-renderer.php:241
+#: includes/class-renderer.php:316
 #, php-format
 msgid "below %d m"
 msgstr "unterhalb %d m"
 
 #. translators: %s: map area
-#: includes/class-renderer.php:259
+#: includes/class-renderer.php:334
 #, php-format
 msgid "Current weather warning map: %s"
 msgstr "Aktuelle Warnkarte: %s"
@@ -384,66 +643,50 @@ msgstr "Aktuelle Warnkarte: %s"
 msgid "Warning region not found."
 msgstr "Warnregion nicht gefunden."
 
-#: includes/class-source.php:52
+#: includes/class-source.php:64
 msgid "Invalid warning region."
 msgstr "Ungültige Warnregion."
 
 #. translators: %s: error message
-#: includes/class-source.php:353
+#: includes/class-source.php:445
 #, php-format
 msgid "Data source could not be reached: %s"
 msgstr "Datenquelle nicht erreichbar: %s"
 
-#: includes/class-telemetry.php:84
+#: includes/class-telemetry.php:91
 msgid "Usage data"
 msgstr "Nutzungsdaten"
 
-#: includes/class-telemetry.php:87
+#: includes/class-telemetry.php:94
 msgid "Consent"
 msgstr "Einwilligung"
 
-#: includes/class-telemetry.php:112
-msgid "Would you like the development of Wetterwarner to continue?"
-msgstr "Du möchtest, dass die Entwicklung von Wetterwarner weitergeht?"
-
-#: includes/class-telemetry.php:113
-msgid "Support me as the developer with the costs for software, hosting and more."
-msgstr "Unterstütze mich als Entwickler bei den Kosten für Software, Hosting & Co."
-
-#: includes/class-telemetry.php:115
-msgid "Donate with PayPal"
-msgstr "Mit PayPal spenden"
-
-#: includes/class-telemetry.php:116
-msgid "Support development"
-msgstr "Entwicklung unterstützen"
-
-#: includes/class-telemetry.php:129
+#: includes/class-telemetry.php:122
 msgid "Support development and share usage data"
 msgstr "Entwicklung unterstützen und Nutzungsdaten teilen"
 
-#: includes/class-telemetry.php:130
+#: includes/class-telemetry.php:123
 msgid "Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time; the stored information will then be deleted."
 msgstr "Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen; die gespeicherten Angaben werden dann gelöscht."
 
-#: includes/class-telemetry.php:132
-#: includes/class-telemetry.php:170
+#: includes/class-telemetry.php:125
+#: includes/class-telemetry.php:163
 msgid "Privacy policy"
 msgstr "Datenschutzerklärung"
 
-#: includes/class-telemetry.php:163
+#: includes/class-telemetry.php:156
 msgid "Support the development of Wetterwarner?"
 msgstr "Entwicklung von Wetterwarner unterstützen?"
 
-#: includes/class-telemetry.php:164
+#: includes/class-telemetry.php:157
 msgid "Shares technical data with the Wetterwarner API – no visitor data. You can revoke your consent at any time."
 msgstr "Übermittelt technische Daten an die Wetterwarner-API – keine Daten Deiner Besucher. Du kannst die Zustimmung jederzeit widerrufen."
 
-#: includes/class-telemetry.php:166
+#: includes/class-telemetry.php:159
 msgid "Yes, share usage data"
 msgstr "Ja, Nutzungsdaten teilen"
 
-#: includes/class-telemetry.php:168
+#: includes/class-telemetry.php:161
 msgid "No, thanks"
 msgstr "Nein, danke"
 
@@ -451,84 +694,85 @@ msgstr "Nein, danke"
 msgid "Displays official weather alerts of the Deutscher Wetterdienst and, if desired, a warning map."
 msgstr "Zeigt amtliche Wetterwarnungen des Deutschen Wetterdienstes und auf Wunsch eine Warnkarte an."
 
-#: includes/class-widget.php:64
-#: build/wetterwarner/index.js:1
-msgid "Warning region"
-msgstr "Warnregion"
-
-#: includes/class-widget.php:70
-msgid "Search town or district …"
-msgstr "Ort oder Landkreis suchen …"
-
-#: includes/class-widget.php:78
+#: includes/class-widget.php:90
 msgid "Enter at least 2 characters. Search \"demo\" for sample warnings."
 msgstr "Mindestens 2 Zeichen eingeben. Mit „demo“ erhältst Du Beispielmeldungen."
 
-#: includes/class-widget.php:82
+#: includes/class-widget.php:94
 #: build/wetterwarner/index.js:1
 msgid "Title"
 msgstr "Titel"
 
-#: includes/class-widget.php:83
+#: includes/class-widget.php:95
 #: build/wetterwarner/index.js:1
 msgid "Introduction text"
 msgstr "Einleitungstext"
 
-#: includes/class-widget.php:84
+#: includes/class-widget.php:96
 #: build/wetterwarner/index.js:1
 msgid "Text when there are no alerts"
 msgstr "Text ohne Warnungen"
 
-#: includes/class-widget.php:86
+#: includes/class-widget.php:98
 msgid "%region% is replaced by the name of the region."
 msgstr "%region% wird durch den Namen der Region ersetzt."
 
-#: includes/class-widget.php:89
+#: includes/class-widget.php:101
 #: build/wetterwarner/index.js:1
 msgid "Maximum number of alerts (0 = all)"
 msgstr "Maximale Anzahl Warnungen (0 = alle)"
 
-#: includes/class-widget.php:94
+#: includes/class-widget.php:106
 #: build/wetterwarner/index.js:1
 msgid "Show even without alerts"
 msgstr "Auch ohne Warnungen anzeigen"
 
-#: includes/class-widget.php:95
+#: includes/class-widget.php:107
 #: build/wetterwarner/index.js:1
 msgid "Show validity period"
 msgstr "Gültigkeitszeitraum anzeigen"
 
-#: includes/class-widget.php:96
+#: includes/class-widget.php:108
 #: build/wetterwarner/index.js:1
 msgid "Show expandable details"
 msgstr "Aufklappbare Details anzeigen"
 
-#: includes/class-widget.php:97
+#: includes/class-widget.php:109
 #: build/wetterwarner/index.js:1
 msgid "Show icons"
 msgstr "Icons anzeigen"
 
-#: includes/class-widget.php:98
+#: includes/class-widget.php:110
 #: build/wetterwarner/index.js:1
 msgid "Color by warning level"
 msgstr "Nach Warnstufe einfärben"
 
-#: includes/class-widget.php:99
+#: includes/class-widget.php:111
 #: build/wetterwarner/index.js:1
 msgid "Hide duplicate alerts"
 msgstr "Doppelte Warnungen ausblenden"
 
-#: includes/class-widget.php:100
+#: includes/class-widget.php:112
 #: build/wetterwarner/index.js:1
 msgid "Link alerts to dwd.de"
 msgstr "Warnungen mit dwd.de verlinken"
 
-#: includes/class-widget.php:104
+#: includes/class-widget.php:113
+#: build/wetterwarner/index.js:1
+msgid "Show prior information"
+msgstr "Vorabinformationen anzeigen"
+
+#: includes/class-widget.php:125
+#: build/wetterwarner/index.js:1
+msgid "Types of warnings (none selected = all)"
+msgstr "Warnarten (keine ausgewählt = alle)"
+
+#: includes/class-widget.php:134
 #: build/wetterwarner/index.js:1
 msgid "Map width in % (0 = no map)"
 msgstr "Kartenbreite in % (0 = keine Karte)"
 
-#: includes/class-widget.php:108
+#: includes/class-widget.php:138
 #: build/wetterwarner/index.js:1
 msgid "Map area"
 msgstr "Kartenausschnitt"
@@ -554,12 +798,16 @@ msgid "%region% is replaced by the name of the region. Empty fields are hidden."
 msgstr "%region% wird durch den Namen der Region ersetzt. Leere Felder werden ausgeblendet."
 
 #: build/wetterwarner/index.js:1
-msgid "Display"
-msgstr "Anzeige"
+msgid "Filter"
+msgstr "Filter"
 
 #: build/wetterwarner/index.js:1
 msgid "Warning map"
 msgstr "Warnkarte"
+
+#: build/wetterwarner/index.js:1
+msgid "The warning map always shows all warnings."
+msgstr "Die Warnkarte zeigt immer alle Warnungen."
 
 #: build/wetterwarner/index.js:1
 msgid "Select the warning region for which official alerts of the Deutscher Wetterdienst should be displayed."

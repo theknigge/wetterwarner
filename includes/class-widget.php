@@ -26,22 +26,34 @@ class Widget extends WP_Widget {
 	}
 
 	public function widget( $args, $instance ) {
-		$html = Renderer::render(
-			(array) $instance,
-			array(
-				'wrapper'      => 'class="wetterwarner wetterwarner--widget"',
-				'before_title' => $args['before_title'],
-				'after_title'  => $args['after_title'],
-			)
+		$context = array(
+			'wrapper'      => 'class="wetterwarner wetterwarner--widget"',
+			'before_title' => $args['before_title'],
+			'after_title'  => $args['after_title'],
 		);
+		// Im Customizer nicht nachladen, sonst wird die Vorschau überschrieben.
+		$live = is_customize_preview() ? null : array(
+			'a' => (array) $instance,
+			'c' => $context,
+			'b' => $args['before_widget'],
+			'e' => $args['after_widget'],
+		);
+		$html = Renderer::render( (array) $instance, $context + array( 'live' => $live ) );
 
-		if ( '' !== $html ) {
-			echo $args['before_widget'] . $html . $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Renderer escapes, Theme liefert before/after.
+		if ( '' === $html ) {
+			return;
 		}
+		// Der Platzhalter ohne Warnungen bekommt keinen Widget-Rahmen.
+		if ( 0 === strpos( $html, '<div hidden' ) ) {
+			echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			return;
+		}
+		echo $args['before_widget'] . $html . $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Renderer escapes, Theme liefert before/after.
 	}
 
 	public function update( $new_instance, $old_instance ) {
-		$values = array();
+		// Ohne angehakte Warnart sendet das Formular nichts.
+		$values = array( 'eventTypes' => '' );
 		foreach ( Renderer::defaults() as $key => $default ) {
 			if ( is_bool( $default ) ) {
 				$values[ $key ] = ! empty( $new_instance[ $key ] );
@@ -98,6 +110,24 @@ class Widget extends WP_Widget {
 			$this->checkbox( 'showColors', __( 'Color by warning level', 'wetterwarner' ), $atts );
 			$this->checkbox( 'hideDuplicates', __( 'Hide duplicate alerts', 'wetterwarner' ), $atts );
 			$this->checkbox( 'linkWarnings', __( 'Link alerts to dwd.de', 'wetterwarner' ), $atts );
+			$this->checkbox( 'showPrior', __( 'Show prior information', 'wetterwarner' ), $atts );
+			?>
+
+			<p>
+				<label for="<?php echo esc_attr( $this->get_field_id( 'minStage' ) ); ?>"><?php esc_html_e( 'Minimum warning level', 'wetterwarner' ); ?></label>
+				<select class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'minStage' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'minStage' ) ); ?>">
+					<?php foreach ( Renderer::stage_labels() as $value => $name ) : ?>
+						<option value="<?php echo (int) $value; ?>" <?php selected( $atts['minStage'], $value ); ?>><?php echo esc_html( $name ); ?></option>
+					<?php endforeach; ?>
+				</select>
+			</p>
+			<fieldset>
+				<legend><?php esc_html_e( 'Types of warnings (none selected = all)', 'wetterwarner' ); ?></legend>
+				<?php foreach ( Renderer::type_labels() as $value => $name ) : ?>
+					<label style="display:inline-block;margin:0 8px 4px 0"><input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'eventTypes' ) ); ?>[]" value="<?php echo esc_attr( $value ); ?>" <?php checked( in_array( $value, explode( ',', $atts['eventTypes'] ), true ) ); ?>> <?php echo esc_html( $name ); ?></label>
+				<?php endforeach; ?>
+			</fieldset>
+			<?php
 			?>
 
 			<p>

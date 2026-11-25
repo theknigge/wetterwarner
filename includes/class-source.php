@@ -7,7 +7,7 @@
  * geladenen Warnungen höchstens MAX_STALE Sekunden sichtbar.
  *
  * Lastbegrenzung: Alle genutzten Regionen werden gemeinsam in einer Anfrage
- * geladen, regulär höchstens alle 5 Minuten (WP-Cron). Seitenaufrufe lesen
+ * geladen, im von der API vorgegebenen Abstand (WP-Cron). Seitenaufrufe lesen
  * nur den lokalen Speicher. Ausnahme: eine neu gewählte Region wird einmalig
  * sofort geladen (höchstens einmal pro Minute).
  *
@@ -27,11 +27,18 @@ class Source {
 	/** Zweitserver für Websites mit Supporter-Lizenz, falls der Hauptserver nicht erreichbar ist. */
 	const FALLBACK_API_URL = 'https://fallback-api.wetterwarner.de/v3/';
 
-	/** Mindestabstand zwischen zwei regulären Abrufen ohne Supporter-Lizenz (Sekunden). */
-	const REFRESH_INTERVAL_FREE = 900;
+	/** Abstand zwischen zwei Abrufen, solange die API nichts anderes vorgibt (Sekunden). */
+	const DEFAULT_INTERVAL = 900;
 
-	/** Mindestabstand mit aktiver Supporter-Lizenz (Sekunden). */
-	const REFRESH_INTERVAL_SUPPORTER = 300;
+	/** So oft wird die Vorgabe bei der API abgefragt (Sekunden). */
+	const INTERVAL_CHECK = DAY_IN_SECONDS;
+
+	/** Grenzen für die Vorgabe der API (Sekunden). */
+	const MIN_INTERVAL = 300;
+	const MAX_INTERVAL = 3600;
+
+	/** Warnarten, die die API liefert. */
+	const TYPES = array( 'thunderstorm', 'wind', 'rain', 'snow', 'fog', 'frost', 'ice', 'thaw', 'heat', 'uv', 'other' );
 
 	/** Ab diesem Alter wird auch ohne Cron nachgeladen (Sekunden). */
 	const MAX_AGE = 1800;
@@ -42,6 +49,9 @@ class Source {
 	const STORE_OPTION   = 'wetterwarner_store';
 	const STATUS_OPTION  = 'wetterwarner_status';
 	const LICENSE_OPTION = 'wetterwarner_license';
+	const INTERVAL_OPTION = 'wetterwarner_interval';
+	/** Solange gesetzt, wird das Intervall nicht erneut abgefragt. */
+	const INTERVAL_FRESH = 'wetterwarner_interval_fresh';
 	const LOCK           = 'wetterwarner_refresh_lock';
 
 	/**
@@ -203,11 +213,27 @@ class Source {
 	}
 
 	/**
-	 * Erlaubter Mindestabstand zwischen zwei Abrufen: mit Supporter-Lizenz
-	 * häufiger als kostenlos (siehe wetterwarner.de/unterstuetzen).
+	 * Abstand zwischen zwei Abrufen. Den gibt der Dienst vor (Feld "interval" der
+	 * API-Antwort, einmal am Tag abgefragt), das Plugin selbst unterscheidet nicht
+	 * nach Lizenz.
 	 */
 	public static function refresh_interval() {
-		return self::license()['active'] ? self::REFRESH_INTERVAL_SUPPORTER : self::REFRESH_INTERVAL_FREE;
+		$interval = (int) get_option( self::INTERVAL_OPTION, self::DEFAULT_INTERVAL );
+		return max( self::MIN_INTERVAL, min( self::MAX_INTERVAL, $interval ) );
+	}
+
+	/**
+	 * Zeitpunkt, zu dem die Warnungen einer Region geladen wurden.
+	 *
+	 * @param string $region_id Warncell-ID oder "demo".
+	 * @return int Unix-Sekunden, 0 = nie.
+	 */
+	public static function fetched_at( $region_id ) {
+		if ( Regions::DEMO === $region_id ) {
+			return time();
+		}
+		$store = self::store();
+		return isset( $store['fetched'][ $region_id ] ) ? (int) $store['fetched'][ $region_id ] : 0;
 	}
 
 	/**
@@ -267,16 +293,20 @@ class Source {
 			return new WP_Error( 'wetterwarner_api_disabled', 'API disabled' );
 		}
 
+		$ask_interval = ! get_transient( self::INTERVAL_FRESH );
+
 		$result = array();
 		foreach ( array_chunk( $ids, 100 ) as $chunk ) {
 			// "license=1" gibt der Anfrage eine eigene Cache-Adresse: Die Antwort enthält den
 			// Lizenzstatus dieser Website und darf nie aus einem gemeinsamen Cache kommen.
-			$path = 'warnings?' . http_build_query(
-				array(
-					'cells'   => implode( ',', $chunk ),
-					'license' => '1',
-				)
+			$query = array(
+				'cells'   => implode( ',', $chunk ),
+				'license' => '1',
 			);
+			if ( $ask_interval ) {
+				$query['interval'] = '1';
+			}
+			$path = 'warnings?' . http_build_query( $query );
 			$body = self::request( trailingslashit( $base ) . $path, 'api' );
 
 			// Hauptserver nicht erreichbar: mit Supporter-Lizenz beim Fallback-Server versuchen
@@ -299,7 +329,17 @@ class Source {
 				return $error;
 			}
 
+			$was_active = self::license()['active'];
 			self::set_license( isset( $json['license'] ) ? $json['license'] : null );
+
+			if ( $ask_interval ) {
+				update_option( self::INTERVAL_OPTION, isset( $json['interval'] ) ? (int) $json['interval'] : self::DEFAULT_INTERVAL, false );
+				set_transient( self::INTERVAL_FRESH, 1, self::INTERVAL_CHECK );
+			}
+			// Lizenz gekauft oder abgelaufen: beim nächsten Abruf neu fragen statt erst morgen.
+			if ( self::license()['active'] !== $was_active ) {
+				delete_transient( self::INTERVAL_FRESH );
+			}
 
 			foreach ( $chunk as $id ) {
 				$list          = isset( $json['cells'][ $id ] ) && is_array( $json['cells'][ $id ] ) ? $json['cells'][ $id ] : array();
@@ -319,7 +359,6 @@ class Source {
 	 * Stellt sicher, dass Daten der API dem erwarteten Format entsprechen.
 	 */
 	private static function sanitize_warning( array $w ) {
-		$types = array( 'thunderstorm', 'wind', 'rain', 'snow', 'fog', 'frost', 'ice', 'thaw', 'heat', 'uv', 'other' );
 		$text  = static function ( $key ) use ( $w ) {
 			return isset( $w[ $key ] ) && is_scalar( $w[ $key ] ) ? (string) $w[ $key ] : '';
 		};
@@ -333,7 +372,7 @@ class Source {
 			'description'    => $text( 'description' ),
 			'instruction'    => $text( 'instruction' ),
 			'stage'          => max( 1, min( 4, $int( 'stage' ) ) ),
-			'type'           => in_array( $text( 'type' ), $types, true ) ? $text( 'type' ) : 'other',
+			'type'           => in_array( $text( 'type' ), self::TYPES, true ) ? $text( 'type' ) : 'other',
 			'start'          => $int( 'start' ),
 			'end'            => $int( 'end' ),
 			'prior'          => ! empty( $w['prior'] ),

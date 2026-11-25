@@ -25,7 +25,7 @@ if ( 'yes' === get_option( 'wetterwarner_telemetry' ) ) {
 	}
 }
 
-foreach ( array( 'wetterwarner_settings', 'wetterwarner_version', 'wetterwarner_usage', 'wetterwarner_status', 'wetterwarner_store', 'wetterwarner_regions', 'wetterwarner_migration', 'wetterwarner_telemetry', 'widget_wetterwarner_widget' ) as $wetterwarner_option ) {
+foreach ( array( 'wetterwarner_settings', 'wetterwarner_version', 'wetterwarner_usage', 'wetterwarner_status', 'wetterwarner_store', 'wetterwarner_regions', 'wetterwarner_migration', 'wetterwarner_telemetry', 'wetterwarner_license', 'wetterwarner_interval', 'wetterwarner_banner', 'widget_wetterwarner_widget' ) as $wetterwarner_option ) {
 	delete_option( $wetterwarner_option );
 }
 

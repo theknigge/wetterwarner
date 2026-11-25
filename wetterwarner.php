@@ -3,12 +3,12 @@
  * Plugin Name:       Wetterwarner
  * Plugin URI:        https://wetterwarner.de
  * Description:       Displays official weather warnings from the German Weather Service (DWD) as a block, shortcode or widget.
- * Version:           3.1.0
+ * Version:           3.2.0
  * Author:            Tim Knigge
  * Author URI:        https://it93.systems/
  * Requires at least: 6.3
  * Requires PHP:      7.4
- * Tested up to:      7.1
+ * Tested up to:      7.2
  * Text Domain:       wetterwarner
  * Domain Path:       /languages
  * License:           GPLv2 or later
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WETTERWARNER_VERSION', '3.1.0' );
+define( 'WETTERWARNER_VERSION', '3.2.0' );
 define( 'WETTERWARNER_FILE', __FILE__ );
 define( 'WETTERWARNER_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WETTERWARNER_URL', plugin_dir_url( __FILE__ ) );
@@ -26,6 +26,8 @@ require_once WETTERWARNER_DIR . 'includes/class-regions.php';
 require_once WETTERWARNER_DIR . 'includes/class-source.php';
 require_once WETTERWARNER_DIR . 'includes/class-map.php';
 require_once WETTERWARNER_DIR . 'includes/class-renderer.php';
+require_once WETTERWARNER_DIR . 'includes/class-live.php';
+require_once WETTERWARNER_DIR . 'includes/class-banner.php';
 require_once WETTERWARNER_DIR . 'includes/class-rest.php';
 require_once WETTERWARNER_DIR . 'includes/class-widget.php';
 require_once WETTERWARNER_DIR . 'includes/class-admin.php';

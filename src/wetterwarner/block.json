@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "wetterwarner/warnings",
-	"version": "3.0.0",
+	"version": "3.2.0",
 	"title": "Wetterwarner",
 	"category": "widgets",
 	"description": "Official weather alerts of the Deutscher Wetterdienst for a warning region.",
@@ -24,7 +24,10 @@
 		"linkWarnings": { "type": "boolean", "default": false },
 		"hideDuplicates": { "type": "boolean", "default": true },
 		"mapSize": { "type": "number", "default": 0 },
-		"mapRegion": { "type": "string", "default": "auto" }
+		"mapRegion": { "type": "string", "default": "auto" },
+		"minStage": { "type": "number", "default": 1 },
+		"eventTypes": { "type": "string", "default": "" },
+		"showPrior": { "type": "boolean", "default": true }
 	},
 	"supports": {
 		"html": false,

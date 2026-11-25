@@ -32,6 +32,56 @@ class Renderer {
 			'hideDuplicates' => true,
 			'mapSize'        => 0,
 			'mapRegion'      => 'auto',
+			'minStage'       => 1,
+			'eventTypes'     => '',
+			'showPrior'      => true,
+		);
+	}
+
+	/** @return array<int, string> Auswahl für die Mindest-Warnstufe. */
+	public static function stage_labels() {
+		return array(
+			1 => __( 'All warnings', 'wetterwarner' ),
+			2 => __( 'From level 2 (significant weather)', 'wetterwarner' ),
+			3 => __( 'From level 3 (severe weather)', 'wetterwarner' ),
+			4 => __( 'Only level 4 (extreme weather)', 'wetterwarner' ),
+		);
+	}
+
+	/** @return array<string, string> Warnarten. */
+	public static function type_labels() {
+		return array(
+			'thunderstorm' => __( 'Thunderstorm', 'wetterwarner' ),
+			'wind'         => __( 'Wind and storm', 'wetterwarner' ),
+			'rain'         => __( 'Rain', 'wetterwarner' ),
+			'snow'         => __( 'Snow', 'wetterwarner' ),
+			'fog'          => __( 'Fog', 'wetterwarner' ),
+			'frost'        => __( 'Frost', 'wetterwarner' ),
+			'ice'          => __( 'Black ice', 'wetterwarner' ),
+			'thaw'         => __( 'Thaw', 'wetterwarner' ),
+			'heat'         => __( 'Heat', 'wetterwarner' ),
+			'uv'           => __( 'UV radiation', 'wetterwarner' ),
+			'other'        => __( 'Other', 'wetterwarner' ),
+		);
+	}
+
+	/**
+	 * Wendet Mindeststufe, Warnarten und Vorabinformationen an.
+	 *
+	 * @param array[] $warnings Warnungen.
+	 * @param array   $atts     minStage, eventTypes, showPrior.
+	 */
+	public static function filter( array $warnings, array $atts ) {
+		$types = array_filter( explode( ',', $atts['eventTypes'] ) );
+		return array_values(
+			array_filter(
+				$warnings,
+				static function ( $w ) use ( $atts, $types ) {
+					return $w['stage'] >= $atts['minStage']
+						&& ( $atts['showPrior'] || ! $w['prior'] )
+						&& ( ! $types || in_array( $w['type'], $types, true ) );
+				}
+			)
 		);
 	}
 
@@ -44,6 +94,11 @@ class Renderer {
 		$defaults = self::defaults();
 		$atts     = array_merge( $defaults, array_intersect_key( $atts, $defaults ) );
 
+		// Das Widget-Formular liefert die Warnarten als Liste.
+		if ( is_array( $atts['eventTypes'] ) ) {
+			$atts['eventTypes'] = implode( ',', array_filter( $atts['eventTypes'], 'is_string' ) );
+		}
+
 		foreach ( $defaults as $key => $default ) {
 			if ( is_bool( $default ) ) {
 				$atts[ $key ] = filter_var( $atts[ $key ], FILTER_VALIDATE_BOOLEAN );
@@ -53,6 +108,10 @@ class Renderer {
 				$atts[ $key ] = sanitize_text_field( (string) $atts[ $key ] );
 			}
 		}
+
+		$types              = array_map( 'trim', explode( ',', strtolower( $atts['eventTypes'] ) ) );
+		$atts['eventTypes'] = implode( ',', array_intersect( Source::TYPES, $types ) );
+		$atts['minStage']   = max( 1, min( 4, $atts['minStage'] ) );
 
 		$atts['mapSize']   = min( 100, $atts['mapSize'] );
 		$atts['mapRegion'] = array_key_exists( $atts['mapRegion'], Map::choices() ) ? $atts['mapRegion'] : 'auto';
@@ -67,7 +126,8 @@ class Renderer {
 	 * Erzeugt das HTML.
 	 *
 	 * @param array $atts    Optionen.
-	 * @param array $context wrapper (Attribut-String), before_title, after_title, preview (bool).
+	 * @param array $context wrapper (Attribut-String), before_title, after_title, preview (bool),
+	 *                       live (Beschreibung zum Nachladen, siehe Live; null = nicht nachladen).
 	 */
 	public static function render( array $atts, array $context = array() ) {
 		$atts    = self::sanitize( $atts );
@@ -77,6 +137,7 @@ class Renderer {
 				'before_title' => '<h3 class="wetterwarner__title">',
 				'after_title'  => '</h3>',
 				'preview'      => false,
+				'live'         => null,
 			),
 			$context
 		);
@@ -93,19 +154,32 @@ class Renderer {
 
 		$warnings = Source::get_warnings( $region['id'] );
 		$error    = is_wp_error( $warnings ) ? $warnings : null;
-		$warnings = $error ? array() : self::limit( $warnings, $atts );
+		$total    = $error ? 0 : count( $warnings );
+		$warnings = $error ? array() : self::filter( $warnings, $atts );
+		// Warnungen vorhanden, aber alle ausgefiltert: Das darf nicht wie "keine Warnungen" aussehen.
+		$filtered_out = $total && ! $warnings;
+		$warnings     = self::limit( $warnings, $atts );
+
+		$live = $context['live'] && ! $context['preview']
+			? Live::attributes( $context['live'], $error ? 0 : Source::fetched_at( $region['id'] ) )
+			: '';
 
 		if ( ! $warnings && ! $error && ! $atts['showAlways'] ) {
-			return $context['preview']
-				? self::notice( __( 'There are currently no warnings. The block is hidden on the website until a warning is issued (option "Show always").', 'wetterwarner' ), $context, false )
-				: '';
+			if ( $context['preview'] ) {
+				$notice = $filtered_out
+					? __( 'There are warnings, but none matches the filter. The block is hidden on the website (option "Show always").', 'wetterwarner' )
+					: __( 'There are currently no warnings. The block is hidden on the website until a warning is issued (option "Show always").', 'wetterwarner' );
+				return self::notice( $notice, $context, false );
+			}
+			// Unsichtbarer Platzhalter, damit auch gecachte Seiten neue Warnungen zeigen.
+			return $live ? '<div hidden data-ww-empty="1"' . $live . '></div>' : '';
 		}
 
 		$replace = static function ( $text ) use ( $region ) {
 			return str_replace( '%region%', $region['name'], $text );
 		};
 
-		$html = '<div ' . $context['wrapper'] . '>';
+		$html = '<div ' . $context['wrapper'] . $live . '>';
 
 		if ( '' !== $atts['title'] ) {
 			$html .= $context['before_title'] . esc_html( $replace( $atts['title'] ) ) . $context['after_title'];
@@ -128,7 +202,8 @@ class Renderer {
 			}
 			$html .= '</ul>';
 		} elseif ( '' !== $atts['noWarningsText'] ) {
-			$html .= '<p class="wetterwarner__none">' . esc_html( $replace( $atts['noWarningsText'] ) ) . '</p>';
+			$none  = $filtered_out ? __( 'No alerts matching the selection for %region%', 'wetterwarner' ) : $atts['noWarningsText'];
+			$html .= '<p class="wetterwarner__none">' . esc_html( $replace( $none ) ) . '</p>';
 		}
 
 		if ( $map_code ) {
@@ -216,7 +291,7 @@ class Renderer {
 		return $html . '</li>';
 	}
 
-	private static function validity( array $w ) {
+	public static function validity( array $w ) {
 		$tz   = wp_timezone();
 		$from = $w['start'] ? wp_date( __( 'D, m/d, g:i a', 'wetterwarner' ), $w['start'], $tz ) : '';
 

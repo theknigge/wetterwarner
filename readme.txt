@@ -3,7 +3,7 @@ Contributors: bocanegra
 Donate link: https://wetterwarner.de/unterstuetzen/
 Tags: weather, weather warnings, dwd, germany, block
 Requires at least: 6.3
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.4
 Stable tag: 3.1.0
 License: GPLv2 or later
@@ -23,6 +23,9 @@ Wetterwarner displays the official weather warnings of the German Weather Servic
 * More than 11,000 DWD warning regions (districts, municipalities, coasts, inland lakes) with a convenient search
 * Colour coding by warning level, icons, validity period and expandable details with safety instructions
 * Prior information (Vorabinformation) is marked as such
+* **Warning banner:** current warnings at the top or bottom of every page
+* Filters: minimum warning level, types of warnings, and whether prior information is shown
+* Stays up to date with page caching: warnings are refreshed in the browser from your own website
 * Optional: current DWD warning map for Germany or a federal state
 * Background updates and local caching – fast page loads and gentle on the data source
 * Privacy friendly: visitors never connect to external servers, the warning map is served from your own site
@@ -32,7 +35,7 @@ Wetterwarner displays the official weather warnings of the German Weather Servic
 
 = Wetterwarner Supporter license =
 
-Wetterwarner is and remains free – with all features and the same official DWD data for everyone. It is developed and maintained in my spare time, and the Wetterwarner API that supplies the data to every installation has real running costs. The optional **Wetterwarner Supporter license** is a way to directly support that ongoing development and operation – and as a thank-you, it also gives your site a few practical extras:
+The Wetterwarner plugin is free and fully functional – with the same official DWD data for everyone. It is developed and maintained in my spare time, and the Wetterwarner API that supplies the data to every installation has real running costs. The optional **Wetterwarner Supporter license** is a way to directly support that ongoing development and operation – and as a thank-you, it also gives your site a few practical extras:
 
 * **Faster updates:** new warnings every 5 instead of 15 minutes
 * **Fallback server:** if the main API is unavailable, your site automatically switches to a separate, independently hosted server
@@ -46,7 +49,7 @@ Wetterwarner is and remains free – with all features and the same official DWD
 
 This plugin relies on the **Wetterwarner API** (`api.wetterwarner.de`), a service operated by the plugin author. The API caches the official warnings of the German Weather Service centrally, so that not every website has to download the DWD data, which can be several megabytes in size.
 
-All requests are made server-side by your WordPress installation – every 15 minutes (every 5 minutes with a Supporter license), with all regions in use combined into a single request. Visitors of your website never connect to external servers. No data about the visitors of your website is transmitted.
+All requests are made server-side by your WordPress installation – at the interval specified by the API (currently every 15 minutes, with a Supporter license every 5 minutes), with all regions in use combined into a single request. Visitors of your website never connect to external servers. No data about the visitors of your website is transmitted.
 
 **Optional: support development** – Only if you explicitly agree (notice in the admin area or "Settings > Wetterwarner"), the address of your website as well as the plugin, WordPress and PHP versions are additionally sent with the regular request. You can revoke your consent at any time; the stored information is then deleted. Entries without contact are removed automatically after 90 days.
 
@@ -89,7 +92,13 @@ Search for "demo" and select the sample region. Sample warnings of all warning l
 Your widgets are migrated automatically. The old wettwarn.de feed IDs are assigned to the matching DWD warning region. If this is not possible for an ID, a notice appears in the admin area – simply select the region again.
 
 = The warnings are not updated =
-If you use a caching plugin, pages may be cached for longer. Under "Settings > Wetterwarner" you can see when the data was last loaded.
+Even if a caching plugin delivers an older page, the warnings are refreshed in the visitor's browser from your own website (can be turned off under "Settings > Wetterwarner"). There you can also see when the data was last loaded.
+
+= How do I show warnings on every page? =
+Enable the warning banner under "Settings > Wetterwarner" and choose a region and a minimum warning level. Without a matching warning, nothing is displayed.
+
+= Can I show only severe warnings? =
+Yes. In the block, widget or shortcode you can set a minimum warning level, select the types of warnings and hide prior information. The warning map always shows all warnings.
 
 = What happens if the Wetterwarner API is not reachable? =
 The last loaded warnings remain visible for up to two hours. After that, a notice with a link to the current warnings on dwd.de is shown instead of outdated warnings. "Tools > Site Health" reports the outage as critical.
@@ -99,11 +108,15 @@ Please use the WordPress [support forum](https://wordpress.org/support/plugin/we
 
 == Screenshots ==
 
-1. Wetterwarner in the frontend
-2. Block with region search in the editor
-3. Settings
+1. Warning banner at the top of every page
+2. Weather alerts on a page
+3. Block in the editor with filter options
+4. Banner settings
 
 == Upgrade Notice ==
+
+= 3.2.0 =
+New: warning banner, filters by level and type, and current warnings even with page caching.
 
 = 3.1.0 =
 New: Wetterwarner Supporter license – support the ongoing development and operation of Wetterwarner, and get updates every 5 minutes, an automatic fallback server and priority support in return. Launch offer: 19 € per year (regular price 29 €).
@@ -112,6 +125,14 @@ New: Wetterwarner Supporter license – support the ongoing development and oper
 Major update: official DWD warnings via the new Wetterwarner API, block and shortcode. Requires WordPress 6.3 and PHP 7.4. Existing widgets are migrated automatically – please check them briefly after the update.
 
 == Changelog ==
+
+= 3.2.0 =
+* New: warning banner for every page
+* New: filters for minimum warning level, types of warnings and prior information
+* New: warnings are refreshed in the browser, so page caches no longer show outdated warnings
+* Change: the update interval is now specified by the Wetterwarner API
+* Compatibility with WordPress 7.2
+* Bugfix: the stored license status is now removed on uninstall
 
 = 3.1.0 =
 * New: [Wetterwarner Supporter license](https://wetterwarner.de/unterstuetzen/#supporter) – support the ongoing development and operation of Wetterwarner, and get a few extras as a thank-you:

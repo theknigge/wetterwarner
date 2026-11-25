@@ -1,5 +1,7 @@
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import {
+	BaseControl,
+	CheckboxControl,
 	Disabled,
 	PanelBody,
 	Placeholder,
@@ -30,6 +32,27 @@ const MAP_REGIONS = [
 	{ value: 'thu', label: 'Thüringen' },
 ];
 
+const STAGES = [
+	{ value: 1, label: __( 'All warnings', 'wetterwarner' ) },
+	{ value: 2, label: __( 'From level 2 (significant weather)', 'wetterwarner' ) },
+	{ value: 3, label: __( 'From level 3 (severe weather)', 'wetterwarner' ) },
+	{ value: 4, label: __( 'Only level 4 (extreme weather)', 'wetterwarner' ) },
+];
+
+const TYPES = [
+	[ 'thunderstorm', __( 'Thunderstorm', 'wetterwarner' ) ],
+	[ 'wind', __( 'Wind and storm', 'wetterwarner' ) ],
+	[ 'rain', __( 'Rain', 'wetterwarner' ) ],
+	[ 'snow', __( 'Snow', 'wetterwarner' ) ],
+	[ 'fog', __( 'Fog', 'wetterwarner' ) ],
+	[ 'frost', __( 'Frost', 'wetterwarner' ) ],
+	[ 'ice', __( 'Black ice', 'wetterwarner' ) ],
+	[ 'thaw', __( 'Thaw', 'wetterwarner' ) ],
+	[ 'heat', __( 'Heat', 'wetterwarner' ) ],
+	[ 'uv', __( 'UV radiation', 'wetterwarner' ) ],
+	[ 'other', __( 'Other', 'wetterwarner' ) ],
+];
+
 export default function Edit( { attributes, setAttributes } ) {
 	const blockProps = useBlockProps();
 
@@ -40,6 +63,13 @@ export default function Edit( { attributes, setAttributes } ) {
 		noWarningsText: __( 'No weather alerts for %region%', 'wetterwarner' ),
 	};
 	const textValue = ( key ) => attributes[ key ] ?? texts[ key ];
+
+	// Leer = alle Warnarten.
+	const selected = attributes.eventTypes ? attributes.eventTypes.split( ',' ) : [];
+	const toggleType = ( type, checked ) =>
+		setAttributes( {
+			eventTypes: ( checked ? [ ...selected, type ] : selected.filter( ( t ) => t !== type ) ).join( ',' ),
+		} );
 
 	const picker = (
 		<RegionPicker
@@ -115,7 +145,32 @@ export default function Edit( { attributes, setAttributes } ) {
 					{ toggle( 'linkWarnings', __( 'Link alerts to dwd.de', 'wetterwarner' ) ) }
 				</PanelBody>
 
+				<PanelBody title={ __( 'Filter', 'wetterwarner' ) } initialOpen={ false }>
+					<SelectControl
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
+						label={ __( 'Minimum warning level', 'wetterwarner' ) }
+						value={ attributes.minStage }
+						options={ STAGES }
+						onChange={ ( value ) => setAttributes( { minStage: Number( value ) } ) }
+					/>
+					<BaseControl __nextHasNoMarginBottom>
+						<BaseControl.VisualLabel>{ __( 'Types of warnings (none selected = all)', 'wetterwarner' ) }</BaseControl.VisualLabel>
+						{ TYPES.map( ( [ type, label ] ) => (
+							<CheckboxControl
+								__nextHasNoMarginBottom
+								key={ type }
+								label={ label }
+								checked={ selected.includes( type ) }
+								onChange={ ( checked ) => toggleType( type, checked ) }
+							/>
+						) ) }
+					</BaseControl>
+					{ toggle( 'showPrior', __( 'Show prior information', 'wetterwarner' ) ) }
+				</PanelBody>
+
 				<PanelBody title={ __( 'Warning map', 'wetterwarner' ) } initialOpen={ false }>
+					<p>{ __( 'The warning map always shows all warnings.', 'wetterwarner' ) }</p>
 					<RangeControl
 						__next40pxDefaultSize
 						__nextHasNoMarginBottom
