@@ -27,7 +27,7 @@
 	cursor: pointer;
 }
 
-.wetterwarner-region-results li:hover,
+.wetterwarner-region-results li[role="option"]:hover,
 .wetterwarner-region-results li[aria-selected="true"] {
 	background: #2271b1;
 	color: #fff;

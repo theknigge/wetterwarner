@@ -1,6 +1,6 @@
 {
 	"name": "wetterwarner",
-	"version": "3.2.0",
+	"version": "3.2.1",
 	"description": "Amtliche Wetterwarnungen des Deutschen Wetterdienstes als Block, Shortcode und Widget.",
 	"author": "Tim Knigge",
 	"license": "GPL-2.0-or-later",

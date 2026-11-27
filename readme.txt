@@ -5,7 +5,7 @@ Tags: weather, weather warnings, dwd, germany, block
 Requires at least: 6.3
 Tested up to: 7.2
 Requires PHP: 7.4
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -117,6 +117,9 @@ Please use the WordPress [support forum](https://wordpress.org/support/plugin/we
 
 == Upgrade Notice ==
 
+= 3.2.1 =
+Bugfix: the region search in the block editor now shows all results, including searches for a warncell ID, and shows an error message if the search fails.
+
 = 3.2.0 =
 New: warning banner for every page, filters by warning level and type, and current warnings even with page caching. Tested with WordPress 7.2.
 
@@ -127,6 +130,11 @@ New: Wetterwarner Supporter license – support the ongoing development and oper
 Major update: official DWD warnings via the new Wetterwarner API, block and shortcode. Requires WordPress 6.3 and PHP 7.4. Existing widgets are migrated automatically – please check them briefly after the update.
 
 == Changelog ==
+
+= 3.2.1 =
+* Bugfix: the region search in the block editor did not show any results when searching for a warncell ID
+* Bugfix: the region search in the block editor and the classic widget now shows an error message instead of an empty list if the search fails (e.g. if the REST API is blocked)
+* Bugfix: the region search now also finds places written with ae, oe or ue instead of umlauts (e.g. "Muenchen")
 
 = 3.2.0 =
 * New: **warning banner** – shows current warnings of one region at the top or bottom of every page

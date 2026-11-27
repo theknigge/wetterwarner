@@ -3,7 +3,7 @@
  * Plugin Name:       Wetterwarner
  * Plugin URI:        https://wetterwarner.de
  * Description:       Displays official weather warnings from the German Weather Service (DWD) as a block, shortcode or widget.
- * Version:           3.2.0
+ * Version:           3.2.1
  * Author:            Tim Knigge
  * Author URI:        https://it93.systems/
  * Requires at least: 6.3
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WETTERWARNER_VERSION', '3.2.0' );
+define( 'WETTERWARNER_VERSION', '3.2.1' );
 define( 'WETTERWARNER_FILE', __FILE__ );
 define( 'WETTERWARNER_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WETTERWARNER_URL', plugin_dir_url( __FILE__ ) );

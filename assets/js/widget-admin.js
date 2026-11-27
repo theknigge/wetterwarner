@@ -50,6 +50,23 @@
 		f.search.setAttribute( 'aria-expanded', regions.length ? 'true' : 'false' );
 	}
 
+	/**
+	 * Zeigt einen Fehler der Suche an, statt die Liste stumm zu leeren.
+	 * Die Meldung kommt bereits übersetzt von WordPress bzw. aus der PHP-Antwort.
+	 */
+	function fail( f, error ) {
+		const li = document.createElement( 'li' );
+		li.setAttribute( 'role', 'presentation' );
+		li.className = 'wetterwarner-region-error';
+		li.style.color = '#cc1818';
+		li.style.cursor = 'default';
+		li.textContent = error && error.message ? error.message : String( error );
+		f.list.innerHTML = '';
+		f.list.appendChild( li );
+		f.list.hidden = false;
+		f.search.setAttribute( 'aria-expanded', 'false' );
+	}
+
 	document.addEventListener( 'input', ( event ) => {
 		if ( ! event.target.matches || ! event.target.matches( '.wetterwarner-region-search' ) ) {
 			return;
@@ -68,7 +85,7 @@
 		f.search.wetterwarnerTimer = setTimeout( () => {
 			apiFetch( { path: url.addQueryArgs( '/wetterwarner/v1/regions', { search: term } ) } )
 				.then( ( regions ) => f.search.value.trim() === term && render( f, regions ) )
-				.catch( () => close( f ) );
+				.catch( ( error ) => f.search.value.trim() === term && fail( f, error ) );
 		}, 250 );
 	} );
 
@@ -80,7 +97,7 @@
 		if ( ! f ) {
 			return;
 		}
-		const options = Array.from( f.list.children );
+		const options = Array.from( f.list.querySelectorAll( '[role="option"]' ) );
 		const active = f.list.querySelector( '[aria-selected="true"]' );
 		let index = options.indexOf( active );
 
